@@ -1,0 +1,4 @@
+*.pyc
+*.sqlite3
+static/files/
+site_media/media/static/files/

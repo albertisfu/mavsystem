@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Cliente{% endblock %}
+
+{% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+    <!-- Titulo-->
+        <h2>Detalle de Insumo</h2>
+   
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+
+
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+   
+
+
+
+
+<div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h2>{{insumo.nombre}}</h2>
+                                        </div>
+                                        <div class="panel-body">
+
+<ul>
+    <li>Codigo: {{insumo.codigo}}</li>
+    <li>Descripción: {{insumo.descripcion}}</li>
+    <li>Categoría: {{insumo.categoria}}</li>
+    <li>Unidad: {{insumo.unidad}}</li>
+    <li>Stock: {{insumo.stock}}</li>
+    <li>Imagen: <img alt="{{insumo.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{insumo.file}}" width="100" height="100"></li>
+</ul>
+
+
+
+
+                                                              </div>
+
+                                    </div>
+
+
+
+    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+
+
+    </div>
+
+</div>
+
+
+
+</div>
+
+    
+{% endblock %}
