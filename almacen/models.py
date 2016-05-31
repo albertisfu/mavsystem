@@ -6,7 +6,9 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
-
+from django.db.models import signals
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
 
 class Categoria(models.Model):
 	nombre = models.CharField(max_length = 255)
@@ -61,3 +63,23 @@ class Salida(models.Model):
 	usuario = models.ForeignKey(User) 
 	def __unicode__(self):
 		return self.insumo.nombre
+
+
+@receiver(post_save, sender=Entrada)  
+def proyect_mount(sender, instance, created,  **kwargs):
+  currentinstanceid = instance.id
+  entrada = Entrada.objects.get(pk=currentinstanceid)
+  print entrada.cantidad
+  insumo = Insumo.objects.get(pk=entrada.insumo.pk)
+  print insumo
+  print insumo.stock
+  currentstock = insumo.stock
+  print currentstock
+  newstock = currentstock + entrada.cantidad
+  print newstock
+  Insumo.objects.filter(pk=entrada.insumo.pk).update(stock=newstock)
+
+
+ 
+
+

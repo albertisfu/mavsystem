@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
 from django.template.loader import get_template
 from django.contrib.auth.decorators import login_required
@@ -13,7 +13,7 @@ from django.views.generic import ListView
 
 from django.shortcuts import get_object_or_404
 
-
+from django.core.urlresolvers import reverse
 #Vista Home
 @login_required
 def administradorHome(request):
@@ -135,13 +135,14 @@ def adminInsumoEntrada(request, insumo):
 		'insumo':insumo,'form': form,
 	}
 	if 'save' in request.POST:
-		print 'request'
+		
 		form = EntradaForm(request.POST)
 		if form.is_valid():
-			print 'valid form'
-			post = form.save()
-			post.save()
+			
+			form.save()
+			#post.save() revisar en plataforma, se guarda 2 veces
 			print 'guardado'
+			return HttpResponseRedirect(reverse('adminInsumoDetail', args=(insumo.id,)))
 
 
 	return HttpResponse(template.render(context, request))
