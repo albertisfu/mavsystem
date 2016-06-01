@@ -112,12 +112,42 @@ class SearchListView(InsumoListView):
         return result
 
 
+class EntradasFilter(django_filters.FilterSet):
+
+	class Meta:
+		model = Entrada
+		fields = { #creamos los filtros necesarios 
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha', 'Recientes'),
+				    ('fecha', 'Antiguos'),
+
+				)
+
+
 @login_required
 def adminInsumoDetail(request, insumo):
-	insumo = get_object_or_404(Insumo, pk = insumo) #solamente mostramos el contenido si coincide con pk y es del usuario
+	insumo = get_object_or_404(Insumo, pk = insumo) 
+	entradas = Entrada.objects.filter(insumo=insumo)
 	template =  get_template("admininsumodetail.html")
+	sort = request.GET.get('o') #orden del query filter
+	if sort == None: #si no hay orden en URL se refiere a -fecha 
+		sort = '-fecha'
+	filters = EntradasFilter(request.GET, queryset=Entrada.objects.filter(insumo=insumo))
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		entradas= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		entradas = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		entradas = paginator.page(paginator.num_pages)
+
+
 	context = {
-        'insumo': insumo,
+        'insumo': insumo, 'entradas': entradas,'filters': filters,'sort':sort,
     }
 	return HttpResponse(template.render(context, request))
 
