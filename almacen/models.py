@@ -56,17 +56,17 @@ class Entrada(models.Model):
 		return self.insumo.nombre
 
 class Salida(models.Model):
-	insumo = models.OneToOneField(Insumo)
-	cantidad = models.IntegerField()
+	insumo = models.ForeignKey(Insumo)
+	cantidad = models.FloatField()
 	comentario = models.CharField(max_length = 1000)
 	fecha = models.DateTimeField(default=timezone.now)
 	usuario = models.ForeignKey(User) 
 	def __unicode__(self):
 		return self.insumo.nombre
 
-
+#signal suma stock
 @receiver(post_save, sender=Entrada)  
-def proyect_mount(sender, instance, created,  **kwargs):
+def entrada_insumo(sender, instance, created,  **kwargs):
   currentinstanceid = instance.id
   entrada = Entrada.objects.get(pk=currentinstanceid)
   print entrada.cantidad
@@ -79,7 +79,20 @@ def proyect_mount(sender, instance, created,  **kwargs):
   print newstock
   Insumo.objects.filter(pk=entrada.insumo.pk).update(stock=newstock)
 
-
+#signal resta stock
+@receiver(post_save, sender=Salida)  
+def salida_insumo(sender, instance, created,  **kwargs):
+  currentinstanceid = instance.id
+  salida = Salida.objects.get(pk=currentinstanceid)
+  print salida.cantidad
+  insumo = Insumo.objects.get(pk=salida.insumo.pk)
+  print insumo
+  print insumo.stock
+  currentstock = insumo.stock
+  print currentstock
+  newstock = currentstock - salida.cantidad
+  print newstock
+  Insumo.objects.filter(pk=salida.insumo.pk).update(stock=newstock)
  
 
 

@@ -18,3 +18,10 @@ class EntradaForm(forms.ModelForm):
 	class Meta:
 		model = Entrada
 		fields = ('cantidad', 'comentario', 'insumo', 'usuario', 'fecha')
+
+
+
+class SalidaForm(forms.ModelForm):
+	class Meta:
+		model = Salida
+		fields = ('cantidad', 'comentario', 'insumo', 'usuario', 'fecha')
