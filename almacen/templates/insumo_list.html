@@ -54,7 +54,7 @@
          <tr>
                                     
                                 
-                                   <td><a href="#">{{insumo.nombre}}</a></td>
+                                   <td><a href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a></td>
                                     <td class="tablecolumnhosting">{{insumo.codigo}} </td>
                                     <td>{{insumo.categoria}} </td>
                                     <td>{{insumo.stock}} </td>

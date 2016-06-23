@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Cliente{% endblock %}
+
+{% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+    <!-- Titulo-->
+        <h2>Detalle del Producto</h2>
+   
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+
+<div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h2>{{producto.nombre}}</h2>
+                                        </div>
+                                        <div class="panel-body">
+
+<ul>
+    <li>Codigo: {{producto.codigo}}</li>
+    <li>Descripción: {{producto.descripcion}}</li>
+    <li>Categoría: {{producto.categoria}}</li>
+    <li>Imagen: <img alt="{{producto.name}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.file}}" width="100" height="100"></li>
+</ul>
+
+                        
+                        <h2><a href="{% url "ProductoInsumo" producto.pk %}">Agregar Material</a></h2>
+
+                                                           </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                                        {% if materiales %}
+ <div class="col-lg-12">
+                                        <section id="pagos">  
+
+     
+                                            <div class="panel panel-default" style="clear: both;">
+                                                <div class="panel-heading">
+                                                    <h2>Lista de Materiales</h2>
+                                                </div>
+                                               
+                                                <div class="panel-body">
+                                                    <div class="ibox-content">
+   <form action="" method="get"> <!-- formulario de filtros y orden -->
+        {{ filters.form.as_p}}
+        <input type="submit" class="btn btn-w-m btn-primary"/>
+    </form>
+
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th> 
+                                                                    <th>Codigo</th>                  
+                                                                    <th>Cantidad</th>
+                                                                    <th>Stock</th>
+                                                                    <th>Borrar</th>
+                                                            
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+
+                                                                {% for material in materiales %}
+
+                                                                <tr>
+                                                                    <td class="text-navy" class="pull-left"><a href="{% url "adminInsumoDetail" material.insumo.pk %}">{{material.insumo.nombre}}</a></td>
+                                                                <td class="text-navy" class="pull-left">{{material.insumo.codigo}}</td>
+                                                                    <td class="text-navy" class="pull-left">{{material.cantidad}}</td>
+                            <td class="text-navy" class="pull-left">{{material.insumo.stock}}</td>
+                            <td class="text-navy" class="pull-left">Borrar </td>
+
+
+                                                                </tr>
+                                                                {% endfor %}
+
+                                                                {% else %}
+                                                                No hay Materiales
+                                                                {% endif %}
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="pagination"> <!-- paginacion-->
+                                                <span class="step-links">
+                                                    {% if materiales.has_previous %}
+                                                    <a href="?page={{ materiales.previous_page_number }}"><< Anterior</a>
+                                                    {% endif %}
+
+                                                    <span class="current">
+                                                        Pagina {{ materiales.number }} de {{ materiales.paginator.num_pages }}.
+                                                    </span>
+
+                                                    {% if materiales.has_next %}
+                                                    <a href="?page={{ materiales.next_page_number }}"> Siguiente>></a>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+
+
+                                        </section>
+
+
+
+
+
+    </div>
+            </div>
+
+          </div>
+    </div>
+
+
+</div>
+
+
+    
+{% endblock %}

@@ -169,6 +169,8 @@ def adminInsumoEntrada(request, insumo):
 	if 'save' in request.POST:
 		
 		form = EntradaForm(request.POST)
+		cantidad = request.POST['cantidad']
+		print cantidad
 		if form.is_valid():
 			
 			form.save()

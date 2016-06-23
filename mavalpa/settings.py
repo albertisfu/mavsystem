@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'almacen.apps.AlmacenConfig',
+    'produccion.apps.ProduccionConfig',
 )
 
 MIDDLEWARE_CLASSES = (
