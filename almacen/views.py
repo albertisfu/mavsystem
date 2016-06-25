@@ -85,7 +85,7 @@ def administradorInsumos(request):
 
 class InsumoListView(ListView):
 	model = Insumo
-	template_name = 'templates/insumo_list.html'
+	template_name = 'insumo_list.html'
   
 
 import operator

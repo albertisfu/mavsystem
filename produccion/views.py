@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from forms import *
 import django_filters
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from almacen.models import Insumo
 from django.views.generic import ListView
 
 from django.shortcuts import get_object_or_404
@@ -104,17 +104,75 @@ def ProductoInsumo(request, producto):
 		'producto':producto,'form': form,
 	}
 	if 'save' in request.POST:
-		
+
 		form = ProductoInsumoForm(request.POST)
 		cantidad = request.POST['cantidad']
 		print cantidad
-		if form.is_valid():
-			form.save()
-			#post.save() revisar en plataforma, se guarda 2 veces
-			print 'guardado'
-			return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
-
+		insumopk = request.POST['insumo']
+		insumo = get_object_or_404(Insumo, pk = insumopk) 
+		print insumo
+		insumoproducto= InsumoProducto.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
+		print 'guardado'
+		return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
 	return HttpResponse(template.render(context, request))
 
+
+
+
+class InsumosFilter(django_filters.FilterSet):
+
+	class Meta:
+		model = Insumo
+		fields = { #creamos los filtros necesarios 
+        		  'categoria':['exact'],
+        		 }
+
+
+@login_required
+def popInsumo(request):
+	filters = InsumosFilter(request.GET, queryset=Insumo.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
+
+	context = {'insumos': insumos,'filters': filters,
+	}
+	template =  get_template("popinsumo.html")
+	return HttpResponse(template.render(context, request))
+
+
+
+
+
+class InsumoPopListView(ListView):
+	model = Insumo
+	template_name = 'listpop_list.html'
+  
+import operator
+from django.db.models import Q
+class SearchPopListView(InsumoPopListView):
+    paginate_by = 5
+
+    def get_queryset(self):
+        result = super(SearchPopListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(nombre__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(codigo__icontains=q) for q in query_list))
+            )
+
+        return result
 
 
