@@ -49,8 +49,8 @@ class Orden(models.Model):
 	codigo = models.CharField(max_length = 100)
 	descripcion = models.CharField(max_length = 255)
 	cliente = models.ForeignKey(Cliente)
-	fecha_expedicion = models.DateTimeField(default=timezone.now)
-	fecha_entrega = models.DateTimeField()
+	fecha_expedicion = models.DateField(default=timezone.now)
+	fecha_entrega = models.DateField()
 	pendiente = 1
 	confirmada = 2
 	proceso = 3
@@ -73,7 +73,8 @@ class ProductoOrden(models.Model):
 	producto = models.ForeignKey(Producto)
 	orden = models.ForeignKey(Orden)
 	cantidad = models.FloatField()
-	color = models.CharField(max_length = 100)
+	color = models.CharField(max_length = 100, blank=True, null=True)
+	comentario = models.CharField(max_length = 1000, blank=True, null=True)
 	pieza = 1
 	metro = 2
 	kilo = 3
@@ -91,7 +92,30 @@ class ProductoOrden(models.Model):
 class ComentariosOrden(models.Model):
 	orden = models.ForeignKey(Orden)
 	fecha = models.DateTimeField(default=timezone.now)
-	comentario = models.CharField(max_length = 500)
+	comentario = models.CharField(max_length = 500, blank=True, null=True)
+	pendiente = 1
+	confirmada = 2
+	proceso = 3
+	conflicto = 4
+	cancelada = 5
+	estatus_options = (
+	      (pendiente, 'Pendiente'),
+	      (confirmada, 'Confirmada'),
+	      (proceso, 'Proceso'),
+	      (conflicto, 'Conflicto'),
+	      (cancelada, 'Cancelada'),
+	  )
+	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
+	usuario = models.ForeignKey(User)
+	def __unicode__(self):
+		return self.orden.nombre
+
+
+class CheckInsumoProducto(models.Model):
+	productorden = models.ForeignKey(ProductoOrden)
+	insumo = models.ForeignKey(InsumoProducto)
+	fecha = models.DateTimeField(default=timezone.now)
+	estatus = models.CharField(max_length = 140)
 	usuario = models.ForeignKey(User)
 	def __unicode__(self):
 		return self.orden.nombre

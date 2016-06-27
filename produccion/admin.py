@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from models import Cliente, Categoria, Producto, InsumoProducto, Orden, ProductoOrden, ComentariosOrden
+from models import Cliente, Categoria, Producto, InsumoProducto, Orden, ProductoOrden, ComentariosOrden, CheckInsumoProducto
 
 class CategoriaAdmin(admin.ModelAdmin):
     model = Categoria
@@ -28,6 +28,9 @@ class ProductoOrdenAdmin(admin.ModelAdmin):
 class ComentariosOrdenAdmin(admin.ModelAdmin):
     model = ProductoOrden
 
+class CheckInsumoProductoAdmin(admin.ModelAdmin):
+	model = CheckInsumoProducto
+
 admin.site.register(Categoria, CategoriaAdmin)
 admin.site.register(InsumoProducto, InsumoProductoAdmin)
 admin.site.register(Cliente, ClienteAdmin)
@@ -35,3 +38,4 @@ admin.site.register(Producto, ProductoAdmin)
 admin.site.register(Orden, OrdenAdmin)
 admin.site.register(ProductoOrden, ProductoOrdenAdmin)
 admin.site.register(ComentariosOrden, ComentariosOrdenAdmin)
+admin.site.register(CheckInsumoProducto, CheckInsumoProductoAdmin)

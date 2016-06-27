@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 import produccion.views
-from views import SearchPopListView, InsumoPopListView
+from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView
 
 urlpatterns = [
 
@@ -13,5 +13,19 @@ urlpatterns = [
    	url(r'^administrador/popsearch/$', SearchPopListView.as_view(), name='searchpop_url'),
    	url(r'^administrador/popinsumo$', produccion.views.popInsumo, name='popInsumo'), 
    	#url(r'^administrador/salidas/(?P<insumo>\w+)/', 'almacen.views.adminSalidas', name='adminSalidas'),  
+
+
+      #ordenes 
+
+    url(r'^administrador/alta_orden$', produccion.views.altaOrden, name='altaOrden'), 
+    url(r'^administrador/lista_ordenes$', produccion.views.listaOrdenes, name='listaOrdenes'), 
+    url(r'^administrador/orden/(?P<orden>\w+)/', produccion.views.OrdenDetail, name='OrdenDetail'), 
+    url(r'^administrador/asignar_producto/(?P<insumo>\w+)/', produccion.views.OrdenProducto, name='OrdenProducto'),
+
+    #search Orders
+    url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
+   	url(r'^administrador/search_orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
+
+
    ]
 

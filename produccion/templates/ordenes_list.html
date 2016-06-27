@@ -1,3 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Cliente{% endblock %}
+
+{% block content %}
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -19,46 +25,53 @@
    
 
 
-
 {% if object_list %}
+
 <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            <h2>Insumos</h2>
+                                            <h2>Ordenes</h2>
                                         </div>
                                         <div class="panel-body">
 <div class="ibox-content">
 
                             <table class="table table-hover">
                                 <thead>
-                                <tr>
+                                 <tr>
                                     
                                     
                                     <th>Nombre</th>
                                     <th class="tablecolumnhosting">Codigo</th>
-                                    <th>Categoría</th>
-                   
-                                    <th>Foto</th>
-                                     <th>Seleccionar</th>
+                            
+                                    <th>Descripción</th>
+                                    <th>Cliente</th>
+                                    <th>Fecha Expedicion</th>
+                                    <th>Fecha Entrega</th>
+                                    <th>Estatus</th>
+                                    <th>Usuario</th>
+
                                 </tr>
                                 </thead>
                                 <tbody>
 
 
-{% for insumo in object_list %}
+{% for orden in object_list %}
     
-         <tr>
+        <tr>
                                     
                                 
-                                   <td><a href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a></td>
-                                    <td class="tablecolumnhosting">{{insumo.codigo}} </td>
-                                    <td>{{insumo.categoria}} </td>
-                                 
-                                    <td><img alt="{{insumo.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{insumo.file}}" width="100" height="100"></td>
-
-                                    <td><a href="#" onClick="sendValue({{insumo.pk}})">Seleccionar</a></td>
-                                    
+                                   <td><a href="#">{{orden.nombre}}</a></td>
+                                    <td class="tablecolumnhosting">{{orden.codigo}} </td>
+                                    <td>{{orden.descripcion}} </td>
+                                    <td>{{orden.cliente}} </td>
+                                    <td>{{orden.fecha_expedicion}} </td>
+                                    <td>{{orden.fecha_entrega}} </td>
+                                    <td>{{orden.estatus}} </td>
+                                    <td>{{orden.usuario}} </td>
+                                   
+                          
                               
                                 </tr>
+
 {% endfor %}
                                
 
@@ -83,7 +96,6 @@
                              No hay ordenes.
                             </div>
 {% endif %}
-
 
 
 
@@ -115,15 +127,5 @@
 
 </div>
 
-
-
-<script type="text/javascript">
-function sendValue(value)
-{
-    var parentId = 'insumo';
-    window.opener.updateValue(parentId, value);
-    window.close();
-}
-</script>
-
     
+{% endblock %}

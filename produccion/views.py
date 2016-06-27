@@ -148,9 +148,6 @@ def popInsumo(request):
 	return HttpResponse(template.render(context, request))
 
 
-
-
-
 class InsumoPopListView(ListView):
 	model = Insumo
 	template_name = 'listpop_list.html'
@@ -174,5 +171,157 @@ class SearchPopListView(InsumoPopListView):
             )
 
         return result
+
+
+
+#Ordenes Views
+
+@login_required
+def altaOrden(request):
+	current_user = request.user
+	template =  get_template("altaorden.html")
+	form = altaOrdenForm(initial={'usuario':current_user})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	context = {
+	'form': form,
+	}
+	if 'save' in request.POST:
+		form = altaOrdenForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	return HttpResponse(template.render(context, request))
+
+
+class OrdenesFilter(django_filters.FilterSet):
+	class Meta:
+		model = Orden
+		fields = { #creamos los filtros necesarios 
+        		  'estatus':['exact'],
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha_entrega', 'Fecha de entrega menor'),
+				    ('fecha_entrega', 'Fecha de entrega mayor'),
+				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
+				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
+
+				)
+
+
+
+
+
+@login_required
+def listaOrdenes(request):
+	filters = OrdenesFilter(request.GET, queryset=Orden.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("listaordenes.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
+@login_required
+def OrdenDetail(request, orden):
+	orden = get_object_or_404(Orden, pk = orden) 
+	template =  get_template("ordendetail.html")
+	productos = ProductoOrden.objects.filter(orden=orden)
+	paginator = Paginator(productos, 10)
+	page = request.GET.get('page')
+	try:
+		productos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		materiales = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		productos = paginator.page(paginator.num_pages)
+
+
+	context = {
+        'orden': orden, 'productos': productos,
+    }
+	return HttpResponse(template.render(context, request))
+
+
+
+
+
+
+@login_required
+def OrdenProducto(request, orden):
+	orden = get_object_or_404(Orden, pk = orden)
+	template =  get_template("ordeninsumo.html")
+	form = OrdenProductoForm(initial={'orden':orden})
+	form.fields['orden'].widget = forms.HiddenInput()
+	context = {
+		'orden':orden,'form': form,
+	}
+	if 'save' in request.POST:
+
+		form = OrdenProductoForm(request.POST)
+		cantidad = request.POST['cantidad']
+		print cantidad
+		productopk = request.POST['producto']
+		producto = get_object_or_404(Producto, pk = productopk) 
+		print producto
+		productoorden= ProductoOrden.objects.create(producto=producto, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		print 'guardado'
+		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
+	return HttpResponse(template.render(context, request))
+
+
+
+#search
+
+
+class OrdenesListView(ListView):
+	model = Orden
+	template_name = 'ordenes_list.html'
+  
+
+import operator
+from django.db.models import Q
+class SearchOrdenesListView(OrdenesListView):
+    """
+    Display a Blog List page filtered by the search query.
+    """
+    paginate_by = 10
+
+    def get_queryset(self):
+        result = super(SearchOrdenesListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(nombre__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(codigo__icontains=q) for q in query_list))|
+                reduce(operator.and_,
+                       (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+            )
+
+        return result
+
+
 
 
