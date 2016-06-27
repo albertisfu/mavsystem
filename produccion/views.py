@@ -268,16 +268,18 @@ def OrdenDetail(request, orden):
 @login_required
 def OrdenProducto(request, orden):
 	orden = get_object_or_404(Orden, pk = orden)
-	template =  get_template("ordeninsumo.html")
-	form = OrdenProductoForm(initial={'orden':orden})
-	form.fields['orden'].widget = forms.HiddenInput()
+	template =  get_template("ordenproducto.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
 	context = {
-		'orden':orden,'form': form,
+		'orden':orden,
 	}
 	if 'save' in request.POST:
-
-		form = OrdenProductoForm(request.POST)
 		cantidad = request.POST['cantidad']
+		unidad = request.POST['unidad']
+		color = request.POST['color']
+		comentario = request.POST['comentario']
+
 		print cantidad
 		productopk = request.POST['producto']
 		producto = get_object_or_404(Producto, pk = productopk) 
@@ -318,6 +320,62 @@ class SearchOrdenesListView(OrdenesListView):
                        (Q(codigo__icontains=q) for q in query_list))|
                 reduce(operator.and_,
                        (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+            )
+
+        return result
+
+
+
+
+class ProductosFilter(django_filters.FilterSet):
+
+	class Meta:
+		model = Producto
+		fields = { #creamos los filtros necesarios 
+        		  'categoria':['exact'],
+        		 }
+
+
+@login_required
+def popProducto(request):
+	filters = ProductosFilter(request.GET, queryset=Producto.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		productos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		productos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		productos = paginator.page(paginator.num_pages)
+
+	context = {'productos': productos,'filters': filters,
+	}
+	template =  get_template("pop_product.html")
+	return HttpResponse(template.render(context, request))
+
+
+class ProductoPopListView(ListView):
+	model = Producto
+	template_name = 'listpop_list.html'
+  
+import operator
+from django.db.models import Q
+class SearchProductoPopListView(ProductoPopListView):
+    paginate_by = 5
+
+    def get_queryset(self):
+        result = super(SearchProductoPopListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(nombre__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(codigo__icontains=q) for q in query_list))
             )
 
         return result

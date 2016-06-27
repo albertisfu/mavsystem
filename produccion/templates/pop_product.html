@@ -1,14 +1,8 @@
-{% extends "base.html" %}
-
-{% block title %}Panel Cliente{% endblock %}
-
-{% block content %}
-
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
     <!-- Titulo-->
-        <h2>Productos</h2>
+        <h2>Insumos</h2>
    
     </div>
     <div class="col-lg-2">
@@ -24,7 +18,7 @@
                 <div class="ibox-content text-center p-md">
 
 
-  <form id="searchform" action="{% url 'search_orden_url' %}" method="get" accept-charset="utf-8">
+  <form id="searchform" action="{% url 'searchpop_url' %}" method="get" accept-charset="utf-8">
       <button class="searchbutton" type="submit">
         <i class="fa fa-search"></i>
       </button>
@@ -34,7 +28,7 @@
     
 
 <!--<h1 id="titulo_header">Hola {{customer.name}}</h1>-->
-            <section id="ordenes">  
+            <section id="productos">  
         
 
         <form action="" method="get"> <!-- formulario de filtros y orden -->
@@ -46,7 +40,7 @@
     {% endfor %}-->
 
 
-{% if ordenes %}
+{% if productos %}
         
 
 <div class="panel panel-default">
@@ -61,43 +55,35 @@
                                 <tr>
                                     
                                     
-                                    <th>Nombre</th>
+                                   <th>Nombre</th>
                                     <th class="tablecolumnhosting">Codigo</th>
-                            
+                                    <th>Categoría</th>
                                     <th>Descripción</th>
-                                    <th>Cliente</th>
-                                    <th>Fecha Expedicion</th>
-                                    <th>Fecha Entrega</th>
-                                    <th>Estatus</th>
-                                    <th>Usuario</th>
-
+                                    <th>Foto</th>
+                                    <th>Seleccionar</th>
                                 </tr>
                                 </thead>
                                 <tbody>
 
 
-{% for orden in ordenes %}
+{% for producto in productos %}
     
          <tr>
-                                    
+                             
                                 
-                                   <td><a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a></td>
-                                    <td class="tablecolumnhosting">{{orden.codigo}} </td>
-                                    <td>{{orden.descripcion}} </td>
-                                    <td>{{orden.cliente}} </td>
-                                    <td>{{orden.fecha_expedicion}} </td>
-                                    <td>{{orden.fecha_entrega}} </td>
-                                    <td>{{orden.estatus}} </td>
-                                    <td>{{orden.usuario}} </td>
-                                   
-                          
+                                  <td><a href="{% url "ProductoDetail" producto.pk %}">{{producto.nombre}}</a></td>
+                                    <td class="tablecolumnhosting">{{producto.codigo}} </td>
+                                    <td>{{producto.categoria}} </td>
+                                    <td>{{producto.descripcion}} </td>
+                                    <td><img alt="{{producto.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{producto.file}}" width="100" height="100"></td>
+                                    <td><a href="#" onClick="sendValue({{producto.pk}})">Seleccionar</a></td>
                               
                                 </tr>
 {% endfor %}
 
         {% else %}
             <div class="alert alert-warning payments">
-                             No hay Productos.
+                             No hay productos.
                             </div>
         {% endif %}
 
@@ -107,16 +93,16 @@
                       
         <div class="pagination"> <!-- paginacion-->
     <span class="step-links">
-        {% if ordenes.has_previous %}
-            <a href="?page={{ ordenes.previous_page_number }}"><< Anterior</a>
+        {% if productos.has_previous %}
+            <a href="?page={{ productos.previous_page_number }}"><< Anterior</a>
         {% endif %}
 
         <span class="current">
-            Pagina {{ ordenes.number }} de {{ ordenes.paginator.num_pages }}.
+            Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
         </span>
 
-        {% if ordenes.has_next %}
-            <a href="?page={{ ordenes.next_page_number }}"> Siguiente>></a>
+        {% if productos.has_next %}
+            <a href="?page={{ productos.next_page_number }}"> Siguiente>></a>
         {% endif %}
     </span>
 </div>
@@ -147,6 +133,15 @@
 
 </div>
 
-    
-{% endblock %}
+
+
+
+<script type="text/javascript">
+function sendValue(value)
+{
+    var parentId = 'producto';
+    window.opener.updateValue(parentId, value);
+    window.close();
+}
+</script>
 

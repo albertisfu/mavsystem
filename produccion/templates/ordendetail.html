@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Cliente{% endblock %}
+
+{% block content %}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+    <!-- Titulo-->
+        <h2>Detalle de la Orden</h2>
+   
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+
+<div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h2>{{orden.nombre}}</h2>
+                                        </div>
+                                        <div class="panel-body">
+
+<ul>
+    <li>Codigo: {{orden.codigo}}</li>
+    <li>Descripción: {{orden.descripcion}}</li>
+    <li>Cliente: {{orden.cliente}}</li>
+    <li>Fecha de Expedición: {{orden.fecha_expedicion}}</li>
+    <li>Fecha de Entrega: {{orden.fecha_entrega}}</li>
+    <li>Estatus: {{orden.estatus}}</li>
+    <li>Creada por: {{orden.usuario}}</li>
+
+    
+</ul>
+
+                        
+                        <h2><a href="{% url "OrdenProducto" orden.pk %}">Agregar Productos</a></h2>
+
+                                                           </div>
+                                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                                        {% if productos %}
+ <div class="col-lg-12">
+                                        <section id="pagos">  
+
+     
+                                            <div class="panel panel-default" style="clear: both;">
+                                                <div class="panel-heading">
+                                                    <h2>Productos de la orden</h2>
+                                                </div>
+                                               
+                                                <div class="panel-body">
+                                                    <div class="ibox-content">
+
+
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Codigo</th>
+                                                                    <th>Nombre</th> 
+                                                                    <th>Unidad</th> 
+                                                                    <th>Descripción</th> 
+                                                                    <th>Cantidad</th>
+                                                                    <th>Color</th>
+                                                                    <th>Comentario</th>
+                                                                    <th>Foto</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+
+                                                                {% for producto in productos %}
+
+                                                                <tr>
+                                                                     <td class="text-navy" class="pull-left">{{producto.producto.codigo}}</td>
+                                                                    <td class="text-navy" class="pull-left"><a href="#">{{producto.producto.nombre}}</a></td>
+                                                                <td class="text-navy" class="pull-left">{{producto.unidad}}</td>
+                                                                    <td class="text-navy" class="pull-left">{{producto.producto.descripcion}}</td>
+                            <td class="text-navy" class="pull-left">{{producto.cantidad}}</td>
+                            <td class="text-navy" class="pull-left">{{producto.color}}</td>
+                            <td class="text-navy" class="pull-left">{{producto.comentario}}</td>
+                             <td class="text-navy" class="pull-left"> <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
+                                                                </tr>
+                                                                {% endfor %}
+
+                                                                {% else %}
+                                                                No hay productos
+                                                                {% endif %}
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="pagination"> <!-- paginacion-->
+                                                <span class="step-links">
+                                                    {% if productos.has_previous %}
+                                                    <a href="?page={{ productos.previous_page_number }}"><< Anterior</a>
+                                                    {% endif %}
+
+                                                    <span class="current">
+                                                        Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
+                                                    </span>
+
+                                                    {% if productos.has_next %}
+                                                    <a href="?page={{ productos.next_page_number }}"> Siguiente>></a>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+
+
+                                        </section>
+
+
+
+
+
+    </div>
+            </div>
+
+          </div>
+    </div>
+
+
+</div>
+
+
+    
+{% endblock %}
