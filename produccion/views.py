@@ -92,8 +92,6 @@ def ProductoDetail(request, producto):
 
 
 
-
-
 @login_required
 def ProductoInsumo(request, producto):
 	producto = get_object_or_404(Producto, pk = producto)
@@ -115,7 +113,6 @@ def ProductoInsumo(request, producto):
 		print 'guardado'
 		return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
 	return HttpResponse(template.render(context, request))
-
 
 
 
@@ -243,21 +240,21 @@ def OrdenDetail(request, orden):
 	orden = get_object_or_404(Orden, pk = orden) 
 	template =  get_template("ordendetail.html")
 	productos = ProductoOrden.objects.filter(orden=orden)
-	paginator = Paginator(productos, 10)
+	paginator = Paginator(productos, 5)
 	page = request.GET.get('page')
 	try:
 		productos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		materiales = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		productos = paginator.page(paginator.num_pages)
 
-
 	context = {
-        'orden': orden, 'productos': productos,
-    }
+		'orden': orden, 'productos': productos,
+	}
+
 	return HttpResponse(template.render(context, request))
 
 
