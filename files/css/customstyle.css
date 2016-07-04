@@ -1,0 +1,175 @@
+/* Theme colors */
+
+.nav > li.active {
+  /*mod*/
+/*  border-left: 4px solid #19aa8d;
+  background: #293846;*/
+    border-left: 4px solid #346ec3;
+  background: #374B5D;
+}
+
+.btn-primary {
+    /*mod*/
+/*      background-color: #1ab394;
+      border-color: #1ab394;*/
+  background-color: #2d89ef;
+  border-color: #427cd1;
+  color: #FFFFFF;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.open .dropdown-toggle.btn-primary {
+    /*mod*/
+/*  background-color: #18a689;
+  border-color: #18a689;*/
+    background-color: #76b3f6;
+  border-color: #2b5797;
+  color: #FFFFFF;
+}
+
+.label-primary,
+.badge-primary {
+      /*mod*/
+/*  background-color: #1ab394;
+  color: #FFFFFF;*/
+    background-color: #346ec3;
+  color: #FFFFFF;
+}
+
+.pace .pace-progress {
+    /*mod*/
+  background: #346ec3;
+  position: fixed;
+  z-index: 2000;
+  top: 0px;
+  left: 220px;
+  height: 2px;
+  -webkit-transition: width 1s;
+  -moz-transition: width 1s;
+  -o-transition: width 1s;
+  transition: width 1s;
+}
+
+.toast-success {
+  /* mod */
+/*  background-color: #1ab394;
+*/  background-color: #346ec3;
+}
+
+.toast-success {
+  /* mod */
+/*  background-color: #1ab394;
+*/  background-color: #346ec3;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+  /* mod */
+  border-top: 1px solid #e7eaec;
+  line-height: 1.42857;
+  padding: 8px;
+  vertical-align: top;
+  text-align: center;
+}
+
+/* FORM LLENAR */
+
+.insumoformstyle textarea {
+    display: block;
+    background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+    font-size: 14px;
+
+}
+
+.insumoformstyle input {
+    background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    color: inherit;
+    display: block;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+    font-size: 14px;
+}
+
+.insumoformstyle select {
+ background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    color: inherit;
+    display: block;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+    font-size: 14px;
+}
+
+
+/* FORM FILTROS */
+
+
+.formfiltros select {
+ background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    color: inherit;
+    display: inline-block;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 150px;
+    font-size: 14px;
+}
+
+.elementsinline li {
+    display: inline-block;
+}
+
+
+/**** LISTAR ****/
+
+.paginationbox {
+    text-align: center;
+}
+
+
+/*** BOTONES ****/
+.btn-xlg, .btn-group-xlg>.btn {
+    padding: 10px 60px !important;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 6px;
+}
+
+
+/***** GENERALES ****/
+
+.helptext {
+    display: none;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.align-left {
+    text-align: left;
+}
