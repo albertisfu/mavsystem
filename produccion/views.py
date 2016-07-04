@@ -237,9 +237,26 @@ def listaOrdenes(request):
 
 @login_required
 def OrdenDetail(request, orden):
+	current_user = request.user
 	orden = get_object_or_404(Orden, pk = orden) 
 	template =  get_template("ordendetail.html")
 	productos = ProductoOrden.objects.filter(orden=orden)
+	form = comentarioOrdenForm(initial={'usuario':current_user, 'orden':orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['orden'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = comentarioOrdenForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	comentarios = ComentariosOrden.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)
 	page = request.GET.get('page')
 	try:
@@ -252,7 +269,7 @@ def OrdenDetail(request, orden):
 		productos = paginator.page(paginator.num_pages)
 
 	context = {
-		'orden': orden, 'productos': productos,
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
 	}
 
 	return HttpResponse(template.render(context, request))
@@ -285,6 +302,38 @@ def OrdenProducto(request, orden):
 		print 'guardado'
 		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
+
+
+
+@login_required
+def OrdenProductoDetail(request, producto):
+	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
+	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
+	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
+	template =  get_template("ordenproductodetail.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	paginator = Paginator(insumos, 20)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
+
+
+	context = {
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
 
 
 

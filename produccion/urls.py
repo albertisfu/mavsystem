@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^administrador/lista_ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
     url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'), 
     url(r'^administrador/asignar_producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenProducto, name='OrdenProducto'),
+    url(r'^administrador/producto_orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'), 
+
 
     url(r'^administrador/pop_product_list$', ProductoPopListView.as_view(), name='producto_pop_list'),
     url(r'^administrador/popsearch_product/$', SearchProductoPopListView.as_view(), name='searchpop_producto_url'),

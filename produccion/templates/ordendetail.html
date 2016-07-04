@@ -23,6 +23,8 @@
                                             <h2>{{orden.nombre}}</h2>
                                         </div>
                                         <div class="panel-body">
+ <div class="col-md-4">
+
 
 <ul>
     <li>Codigo: {{orden.codigo}}</li>
@@ -40,6 +42,64 @@
                         <h2><a href="{% url "OrdenProducto" orden.pk %}">Agregar Productos</a></h2>
 
                                                            </div>
+
+                                                           <div class="col-md-4">
+
+<h2>Estatus</h2>
+
+<span>{{orden.estatus}}</span></br>
+
+<button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
+
+
+</div>
+
+                                                           <div class="col-md-4">
+
+<h2>Historial</h2>
+
+{% if comentarios %}
+
+
+       <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Fecha</th>
+                                                                    <th>Estatus</th> 
+                                                                    <th>Comentario</th> 
+                                                                    <th>Usuario</th> 
+            
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+
+
+                                                                 {% for comentario in comentarios %}
+
+                                                                <tr>
+                                                                     <td class="text-navy" class="pull-left">{{comentario.fecha}}</td>
+                                                                    <td class="text-navy" class="pull-left">{{comentario.estatus}}</td>
+                                                                <td class="text-navy" class="pull-left">{{comentario.comentario}}</td>
+                                                                    <td class="text-navy" class="pull-left">{{comentario.usuario}}</td>
+                          
+                          
+                                                                </tr>
+                                                                {% endfor %}
+
+                                                                {% else %}
+                                                                No hay comentarios
+                                                                {% endif %}
+
+                                                            </tbody>
+                                                        </table>
+
+
+</div>
+
+
+
+
+                                                            </div>
                                     </div>
 
 
@@ -77,7 +137,7 @@
 
                                                                 <tr>
                                                                      <td class="text-navy" class="pull-left">{{producto.producto.codigo}}</td>
-                                                                    <td class="text-navy" class="pull-left"><a href="#">{{producto.producto.nombre}}</a></td>
+                                                                    <td class="text-navy" class="pull-left"><a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a></td>
                                                                 <td class="text-navy" class="pull-left">{{producto.unidad}}</td>
                                                                     <td class="text-navy" class="pull-left">{{producto.producto.descripcion}}</td>
                             <td class="text-navy" class="pull-left">{{producto.cantidad}}</td>
@@ -129,6 +189,34 @@
 
 
 </div>
+
+
+
+
+   <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+                                            <h3 class="modal-title">Cambiar Estatus</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Por favor introduzca el nombre de la nueva sección a agregar:</p>
+                            <form id='formulario' method='post' enctype='multipart/form-data'>
+{% csrf_token %}
+<ul>
+  {{form.as_p}}
+</ul>
+
+  <p><input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/></p>
+                                    
+  </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
 
 
     

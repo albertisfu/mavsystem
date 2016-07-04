@@ -39,3 +39,10 @@ class altaOrdenForm(forms.ModelForm):
 
 
       
+
+
+
+class comentarioOrdenForm(forms.ModelForm):
+	class Meta:
+		model = ComentariosOrden
+		fields = ('orden', 'comentario', 'estatus', 'usuario')
