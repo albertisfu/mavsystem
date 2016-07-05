@@ -30,8 +30,8 @@
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
                         <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="/administrador/alta"> <i class="fa fa-plus"></i>
-                                Agregar nuevo insumo
+                            <a class="btn btn-success btn-facebook" href="/administrador/alta_producto"> <i class="fa fa-plus"></i>
+                                Agregar nuevo producto
                             </a>
                         </div>
 
@@ -104,9 +104,10 @@
                                             <td>{{insumo.categoria}}</td>
                                             <td>{{insumo.stock}}</td>
                                             <td>
-                                                <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" width="200"></td>
+                                                <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md"></td>
                                             <td>
-                                                <a href="{% url "adminInsumoEntrada" insumo.pk %}">Agregar Entrada</a>
+
+                                                <a href="{% url "adminInsumoEntrada" insumo.pk %}"><button type="button" class="btn btn-outline btn-success btn-lg">Agregar Entrada</button></a>
                                             </td>
 
                                         </tr>
@@ -150,3 +151,8 @@
 
     </div>
     {% endblock %}
+
+        <script src="{{ STATIC_URL }}js/jquery-2.1.1.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="{{ STATIC_URL }}js/plugins/slimscroll/jquery.slimscroll.min.js"></script>

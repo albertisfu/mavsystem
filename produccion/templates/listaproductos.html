@@ -3,143 +3,137 @@
 {% block title %}Panel Cliente{% endblock %}
 
 {% block content %}
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Lista de productos</h2>
 
-
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Productos</h2>
-   
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Producción</a>
+            </li>
+            <li class="active"> <strong>Lista de productos</strong>
+            </li>
+        </ol>
     </div>
-    <div class="col-lg-2">
 
-    </div>
+</div>
 
+<div class="col-lg-2"></div>
 
-
-    <div class="wrapper wrapper-content animated fadeInRight">
+<!-- Area contenido -->
+<div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-content text-center p-md">
+                <div class="ibox-content p-md">
 
+                    <!-- BOTON Y BARRA DE BUSQUEDA-->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <a class="btn btn-success btn-facebook" href="/administrador/alta_producto"> <i class="fa fa-plus"></i>
+                                Agregar nuevo producto
+                            </a>
+                        </div>
 
-  <form id="searchform" action="{% url 'search_url' %}" method="get" accept-charset="utf-8">
-      <button class="searchbutton" type="submit">
-        <i class="fa fa-search"></i>
-      </button>
-      <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-    </form>
+                        <div class="col-lg-4 pull-right">
+                            <form id="searchform" action="{% url 'search_url' %}" method="get" accept-charset="utf-8" class="align-right searchform">
+                                <div class="input-group">
+                                    <input class="searchfield form-control input-lg" id="searchbox" name="q" type="text" placeholder="Buscar">
+                                    <div class="input-group-btn">
+                                        <button class="searchbutton btn btn-lg btn-primary" type="submit"> <i class="fa fa-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    
-
-<!--<h1 id="titulo_header">Hola {{customer.name}}</h1>-->
-            <section id="productos">  
-        
-
-        <form action="" method="get"> <!-- formulario de filtros y orden -->
-        {{ filters.form.as_p}}
-        <input type="submit" class="btn btn-w-m btn-primary"/>
-    </form>
-  <!--  {% for obj in filters %}
+                    <div class="row">
+                        <div class="col-lg-12 align-center"></br>
+                        <h3>Filtros</h3>
+                        <form action="" method="get" class="formfiltros">
+                            <!-- formulario de filtros y orden -->
+                            <ul class="elementsinline">
+                                {{ filters.form.as_ul}}
+                                <input type="submit" class="btn btn-w-m btn-primary"/>
+                            </ul >
+                        </form>
+                    </br>
+                    <!--  {% for obj in filters %}
         {{ obj.name }}<br />
-    {% endfor %}-->
+                    {% endfor %}-->
+                </div>
+            </div>
+            {% if productos %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2>Productos</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="ibox-content">
 
-
-{% if productos %}
-        
-
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>Productos</h2>
-                                        </div>
-                                        <div class="panel-body">
-<div class="ibox-content">
-
-                            <table class="table table-hover">
-                                <thead>
+                        <table class="table table-hover">
+                            <thead>
                                 <tr>
-                                    
-                                    
+
                                     <th>Nombre</th>
                                     <th class="tablecolumnhosting">Codigo</th>
                                     <th>Categoría</th>
                                     <th>Descripción</th>
                                     <th>Foto</th>
- 
-                                </tr>
-                                </thead>
-                                <tbody>
 
-
-{% for producto in productos %}
-    
-         <tr>
-                                    
-                                
-                                   <td><a href="{% url "ProductoDetail" producto.pk %}">{{producto.nombre}}</a></td>
-                                    <td class="tablecolumnhosting">{{producto.codigo}} </td>
-                                    <td>{{producto.categoria}} </td>
-                                    <td>{{producto.descripcion}} </td>
-                                    <td><img alt="{{producto.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{producto.file}}" width="100" height="100"></td>
-                                   
-                          
-                              
                                 </tr>
-{% endfor %}
+                            </thead>
+                            <tbody>
+                                {% for producto in productos %}
+                                <tr>
+
+                                    <td>
+                                        <a href="{% url "ProductoDetail" producto.pk %}">{{producto.nombre}}</a>
+                                    </td>
+                                    <td class="tablecolumnhosting">{{producto.codigo}}</td>
+                                    <td>{{producto.categoria}}</td>
+                                    <td>{{producto.descripcion}}</td>
+                                    <td>
+                                        <img alt="{{producto.name}}" class="img-md" src="{{ MEDIA_URL }}{{producto.file}}"></td>
+
+                                </tr>
+                                {% endfor %}
 
         {% else %}
-            <div class="alert alert-warning payments">
-                             No hay Productos.
-                            </div>
-        {% endif %}
-
-
-  </tbody>
-                            </table>
-                      
-        <div class="pagination"> <!-- paginacion-->
-    <span class="step-links">
-        {% if productos.has_previous %}
-            <a href="?page={{ productos.previous_page_number }}"><< Anterior</a>
-        {% endif %}
-
-        <span class="current">
-            Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
-        </span>
-
-        {% if productos.has_next %}
-            <a href="?page={{ productos.next_page_number }}"> Siguiente>></a>
-        {% endif %}
-    </span>
+                                <div class="alert alert-warning payments">No hay Productos.</div>
+                                {% endif %}
+                            </tbody>
+                        </table>
+<div class="paginationbox">
+                        <div class="pagination">
+                            <!-- paginacion-->
+                            <span class="step-links">
+                                {% if productos.has_previous %}
+                                <a href="?page={{ productos.previous_page_number }}">
+                                    << Anterior</a>
+                                        {% endif %}
+                                        <span class="current">
+                                            Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
+                                        </span>
+                                        {% if productos.has_next %}
+                                        <a href="?page={{ productos.next_page_number }}">Siguiente>></a>
+                                        {% endif %}
+                                    </span>
+                                </div>
 </div>
+                            </div>
+                        </div>
 
-  </div>
-                                                              </div>
+                    </div>
 
-                                    </div>
+                </section>
 
-
-
-    </section>
-
-
-    </div>
             </div>
         </div>
     </div>
-    <div class="row">
-
-
-
-    </div>
+</div>
+<div class="row"></div>
 
 </div>
-
-
-
-</div>
-
-    
 {% endblock %}
-
