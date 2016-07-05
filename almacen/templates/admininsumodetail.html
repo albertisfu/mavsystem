@@ -3,61 +3,110 @@
 {% block title %}Panel Cliente{% endblock %}
 
 {% block content %}
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Insumos</h2>
 
-
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Detalle de Insumo</h2>
-   
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Insumos</a>
+            </li>
+            <li class="active"> <strong>Detalles de insumo</strong>
+            </li>
+        </ol>
     </div>
 
-    <div class="wrapper wrapper-content animated fadeInRight">
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
 
-   
+                <div class="panel panel-default">
 
+                    <div class="panel-heading">
+                        <h2>{{insumo.nombre}}</h2>
+                    </div>
 
+                    <div class="panel-body">
+                        <div class="row">
 
+                            <div class="col-lg-3 align-right">
 
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>{{insumo.nombre}}</h2>
-                                        </div>
-                                        <div class="panel-body">
+                                <p>
+                                    <img alt="{{insumo.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{insumo.file}}" class="detailimagen"></p>
+                            </div>
 
-<ul>
-    <li>Codigo: {{insumo.codigo}}</li>
-    <li>Descripción: {{insumo.descripcion}}</li>
-    <li>Categoría: {{insumo.categoria}}</li>
-    <li>Unidad: {{insumo.unidad}}</li>
-    <li>Stock: {{insumo.stock}}</li>
-    <li>Imagen: <img alt="{{insumo.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{insumo.file}}" width="100" height="100"></li>
-</ul>
+                            <div class="col-lg-5">
 
- <h2><a href="{% url "adminInsumoEntrada" insumo.pk %}">Agregar Entrada</a></h2>
-  <h2><a href="{% url "adminInsumoSalida" insumo.pk %}">Agregar Salida</a></h2>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                        Info Panel
+                                    </div>
+                                    <div class="panel-body">
 
+                                        <dl class="dl-horizontal">
 
- <h2><a href="{% url "adminEntradas" insumo.pk %}">Ver Entradas</a></h2>
- <h2><a href="{% url "adminSalidas" insumo.pk %}">Ver Salidas</a></h2>
-                                                              </div>
+                                            <dt class="font-16">Codigo:</dt>
+                                            <dd class="font-16">{{insumo.codigo}}</dd>
+                                            <dt class="font-16">Descripción:</dt>
+                                            <dd class="font-16">{{insumo.descripcion}}</dd>
+                                            <dt class="font-16">Categoría:</dt>
+                                            <dd class="font-16">{{insumo.categoria}}</dd>
+                                            <dt class="font-16">Unidad:</dt>
+                                            <dd class="font-16">{{insumo.unidad}}</dd>
+                                            <dt class="font-16">Stock:</dt>
+                                            <dd class="font-16">{{insumo.stock}}</dd>
+
+                                        </dl>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                        Info Panel
+                                    </div>
+                                    <div class="panel-body align-center">
+
+                                        <h2>
+                                            <a href="{% url "adminInsumoEntrada" insumo.pk %}">
+                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Entrada</button>
+                                            </a>
+                                        </h2>
+                                        <h2>
+                                            <a href="{% url "adminInsumoSalida" insumo.pk %}">
+                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Salida</button>
+                                            </a>
+                                        </h2>
+
+                                        <h2>
+                                            <a href="{% url "adminEntradas" insumo.pk %}">
+                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Ver Entradas</button>
+                                            </a>
+                                        </h2>
+                                        <h2>
+                                            <a href="{% url "adminSalidas" insumo.pk %}">
+                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Ver Salidas</button>
+                                            </a>
+                                        </h2>
 
                                     </div>
+                                </div>
+                            </div>
 
+                        </div>
 
+                    </div>
 
-    </div>
+                </div>
+
             </div>
+        </div>
 
-          </div>
     </div>
-
-
 </div>
-
-
-    
 {% endblock %}
