@@ -3,93 +3,123 @@
 {% block title %}Panel Cliente{% endblock %}
 
 {% block content %}
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Lista de salidas</h2>
 
-
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Lista de Salidas</h2>
-   
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Insumos</a>
+            </li>
+            <li class="active"> <strong>Ver salidas</strong>
+            </li>
+        </ol>
     </div>
 
-    <div class="wrapper wrapper-content animated fadeInRight">
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
 
-   
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>{{insumo.nombre}}</h2>
+                    </div>
 
+                    <div class="panel-body">
 
+                        <div class="row">
+                            <div class="col-lg-3 align-right">
+                                <img alt="{{insumo.name}}" class="detailimagen" src="{{ MEDIA_URL }}{{insumo.file}}" ></div>
 
+                            <div class="col-lg-5">
 
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>{{insumo.nombre}}</h2>
-                                        </div>
-                                        <div class="panel-body">
-
-<ul>
-    <li>Codigo: {{insumo.codigo}}</li>
-    <li>Stock: {{insumo.stock}}</li>
-    <li>Imagen: <img alt="{{insumo.name}}" class="insumoimg" src="{{ MEDIA_URL }}{{insumo.file}}" width="100" height="100"></li>
-</ul>
-
- <h2><a href="{% url "adminInsumoSalida" insumo.pk %}">Agregar Salida</a></h2>
-
-
-                                                              </div>
-
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                        Info Panel
                                     </div>
+                                    <div class="panel-body">
 
+                                        <dl class="dl-horizontal">
 
+                                            <dt class="font-16">Codigo:</dt>
+                                            <dd class="font-16">{{insumo.codigo}}</dd>
+                                            <dt class="font-16">Stock:</dt>
+                                            <dd class="font-16">{{insumo.stock}}</dd>
 
-    </div>
+                                        </dl>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                        Info Panel
+                                    </div>
+                                    <div class="panel-body align-center">
+
+                                        <a href="{% url "adminInsumoSalida" insumo.pk %}">
+                                            <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Salida</button>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
+        </div>
+        {% if salidas %}
+        <div class="col-lg-12">
+            <section id="pagos">
 
+                <div class="panel panel-default" style="clear: both;">
+                    <div class="panel-heading">
+                        <h2>Lista de salidas</h2>
+                    </div>
 
+                    <div class="panel-body">
+                        <div class="ibox-content">
 
+                            <div class="row">
+                                <div class="col-lg-12 align-center"></br>
+                                <h3>Filtros</h3>
 
+                                <form action="" method="get" class="formfiltros">
+                                    <!-- formulario de filtros y orden -->
+                                    <ul class="elementsinline">
+                                        {{ filters.form.as_ul}}
+                                        <input type="submit" class="btn btn-w-m btn-primary"/>
+                                    </ul>
+                                </form>
+                            </div>
+                        </div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cantidad</th>
+                                    <th class="tablecolumnpayments">Comentario</th>
+                                    <th>Usuario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for salida in salidas %}
+                                <tr>
 
-                                        {% if salidas %}
- <div class="col-lg-12">
-                                        <section id="pagos">  
-
-     
-                                            <div class="panel panel-default" style="clear: both;">
-                                                <div class="panel-heading">
-                                                    <h2>Lista de salidas</h2>
-                                                </div>
-                                               
-                                                <div class="panel-body">
-                                                    <div class="ibox-content">
-   <form action="" method="get"> <!-- formulario de filtros y orden -->
-        {{ filters.form.as_p}}
-        <input type="submit" class="btn btn-w-m btn-primary"/>
-    </form>
-
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Fecha</th>                  
-                                                                    <th>Cantidad</th>
-                                                                    <th class="tablecolumnpayments">Comentario</th>
-                                                                    <th>Usuario</th> 
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-
-
-                                                                {% for salida in salidas %}
-
-                                                                <tr>
-
-
-                                                                    <td>{{salida.fecha}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{salida.cantidad}}</td>
-                                                                    <td class="text-navy tablecolumnpayments" class="pull-left">{{salida.comentario}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{salida.usuario.first_name}} {{salida.usuario.last_name}}</td>
-                                                                </tr>
-                                                                {% endfor %}
+                                    <td>{{salida.fecha}}</td>
+                                    <td class="text-navy" class="pull-left">{{salida.cantidad}}</td>
+                                    <td class="text-navy tablecolumnpayments" class="pull-left">{{salida.comentario}}</td>
+                                    <td class="text-navy" class="pull-left">{{salida.usuario.first_name}} {{salida.usuario.last_name}}</td>
+                                </tr>
+                                {% endfor %}
 
 
 
@@ -97,41 +127,35 @@
                                                                 {% else %}
                                                                 No hay pagos
                                                                 {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
+            </div>
 
-                                            </div>
+            <div class="paginationbox">
+                <div class="pagination">
+                    <!-- paginacion-->
+                    <span class="step-links">
+                        {% if salidas.has_previous %}
+                        <a href="?page={{ salidas.previous_page_number }}&o={{sort}}">
+                            << Anterior</a>
+                                {% endif %}
+                                <span class="current">
+                                    Pagina {{ salidas.number }} de {{ salidas.paginator.num_pages }}.
+                                </span>
+                                {% if salidas.has_next %}
+                                <a href="?page={{ salidas.next_page_number }}&o={{sort}}">Siguiente>></a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
 
-                                            <div class="pagination"> <!-- paginacion-->
-                                                <span class="step-links">
-                                                    {% if salidas.has_previous %}
-                                                    <a href="?page={{ salidas.previous_page_number }}&o={{sort}}"><< Anterior</a>
-                                                    {% endif %}
+                </section>
 
-                                                    <span class="current">
-                                                        Pagina {{ salidas.number }} de {{ salidas.paginator.num_pages }}.
-                                                    </span>
+            </div>
 
-                                                    {% if salidas.has_next %}
-                                                    <a href="?page={{ salidas.next_page_number }}&o={{sort}}"> Siguiente>></a>
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-
-
-                                        </section>
-
-</div>
-
-          </div>
+        </div>
     </div>
-
-
-</div>
-
-
-    
-{% endblock %}
+    {% endblock %}
