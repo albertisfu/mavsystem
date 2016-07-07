@@ -80,6 +80,10 @@
 }
 
 /* FORM LLENAR */
+.insumoformstyle li {
+    list-style: none;
+}
+
 
 .insumoformstyle textarea {
     display: block;
@@ -179,6 +183,26 @@
     text-align: left;
 }
 
+.img-sm {
+    width: 100px;
+}
+
+.img-md {
+    width: 200px;
+}
+
+.img-lg {
+    width: 300px;
+}
+
+.font-15 {
+  font-size: 15px;
+}
+
 .font-16 {
   font-size: 16px;
+}
+
+.font-18 {
+  font-size: 18px;
 }

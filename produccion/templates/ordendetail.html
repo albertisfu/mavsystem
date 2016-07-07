@@ -3,221 +3,236 @@
 {% block title %}Panel Cliente{% endblock %}
 
 {% block content %}
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Detalle de la orden</h2>
 
-
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Detalle de la Orden</h2>
-   
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Ordenes</a>
+            </li>
+            <li class="active"> <strong>Detalle de la orden</strong>
+            </li>
+        </ol>
     </div>
 
-    <div class="wrapper wrapper-content animated fadeInRight">
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
 
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>{{orden.nombre}}</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                    Información de orden
+                                </div>
+                                <div class="panel-body">
 
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>{{orden.nombre}}</h2>
-                                        </div>
-                                        <div class="panel-body">
- <div class="col-md-4">
+                                    <dl class="dl-horizontal">
 
+                                        <dt class="font-15">Codigo:</dt>
+                                        <dd class="font-15">{{orden.codigo}}</dd>
+                                        <dt class="font-15">Cliente:</dt>
+                                        <dd class="font-15">{{orden.cliente}}</dd>
+                                        <dt class="font-15">Fecha de expedición:</dt>
+                                        <dd class="font-15">{{orden.fecha_expedicion}}</dd>
+                                        <dt class="font-15">Fecha de entrega:</dt>
+                                        <dd class="font-15">{{orden.fecha_entrega}}</dd>
+                                        <dt class="font-15">Estatus original:</dt>
+                                        <dd class="font-15">{{orden.get_estatus_display}}</dd>
+                                        <dt class="font-15">Creada por:</dt>
+                                        <dd class="font-15">{{orden.usuario}}</dd>
 
-<ul>
-    <li>Codigo: {{orden.codigo}}</li>
-    <li>Descripción: {{orden.descripcion}}</li>
-    <li>Cliente: {{orden.cliente}}</li>
-    <li>Fecha de Expedición: {{orden.fecha_expedicion}}</li>
-    <li>Fecha de Entrega: {{orden.fecha_entrega}}</li>
-    <li>Estatus: {{orden.estatus}}</li>
-    <li>Creada por: {{orden.usuario}}</li>
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="align-center">
+                                <a href="{% url "OrdenProducto" orden.pk %}" class="align-center">
+                                    <button type="button" class="btn btn-outline btn-success btn-lg">Agregar Productos</button>
+                                </a>
+                            </div>
+                        </div>
 
-    
-</ul>
+                        <div class="col-md-3">
 
-                        
-                        <h2><a href="{% url "OrdenProducto" orden.pk %}">Agregar Productos</a></h2>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                    Estatus
+                                </div>
+                                <div class="panel-body">
 
-                                                           </div>
+                                    <span>
+                                        <!--     {{orden.get_estatus_display}} -->
+                                        Ultimo estatus: 
+{% for comentario in comentarios %}
+    {% if forloop.last or friendlist.count == 1 %}
+        {{comentario.get_estatus_display}}
+    {% endif %}
+{% endfor %}
+                                    </span>
+                                    <br>
+                                    <br>
+                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
 
-                                                           <div class="col-md-4">
+                                </div>
+                            </div>
 
-<h2>Estatus</h2>
+                        </div>
 
-<span>{{orden.estatus}}</span></br>
+                        <!-- col-md-5 -->
+                        <div class="col-md-5">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-info-circle"></i>
+                                    Historial de estatus
+                                </div>
+                                <div class="panel-body">
+                                    {% if comentarios %}
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Estatus</th>
+                                                <th>Comentario</th>
+                                                <th>Usuario</th>
 
-<button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for comentario in comentarios %}
+                                            <tr>
+                                                <td class="" class="pull-left">{{comentario.fecha}}</td>
+                                                <td class="" class="pull-left">{{comentario.get_estatus_display}}</td>
+                                                <td class="" class="pull-left">{{comentario.comentario}}</td>
+                                                <td class="" class="pull-left">{{comentario.usuario}}</td>
 
-
-</div>
-
-                                                           <div class="col-md-4">
-
-<h2>Historial</h2>
-
-{% if comentarios %}
-
-
-       <table class="table table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Fecha</th>
-                                                                    <th>Estatus</th> 
-                                                                    <th>Comentario</th> 
-                                                                    <th>Usuario</th> 
-            
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-
-
-                                                                 {% for comentario in comentarios %}
-
-                                                                <tr>
-                                                                     <td class="text-navy" class="pull-left">{{comentario.fecha}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{comentario.estatus}}</td>
-                                                                <td class="text-navy" class="pull-left">{{comentario.comentario}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{comentario.usuario}}</td>
-                          
-                          
-                                                                </tr>
-                                                                {% endfor %}
+                                            </tr>
+                                            {% endfor %}
 
                                                                 {% else %}
                                                                 No hay comentarios
                                                                 {% endif %}
+                                        </tbody>
+                                    </table>
 
-                                                            </tbody>
-                                                        </table>
-
-
-</div>
-
-
-
-
-                                                            </div>
-                                    </div>
-
-
-                                        {% if productos %}
- <div class="col-lg-12">
-                                        <section id="pagos">  
-
-     
-                                            <div class="panel panel-default" style="clear: both;">
-                                                <div class="panel-heading">
-                                                    <h2>Productos de la orden</h2>
-                                                </div>
-                                               
-                                                <div class="panel-body">
-                                                    <div class="ibox-content">
-
-
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Codigo</th>
-                                                                    <th>Nombre</th> 
-                                                                    <th>Unidad</th> 
-                                                                    <th>Descripción</th> 
-                                                                    <th>Cantidad</th>
-                                                                    <th>Color</th>
-                                                                    <th>Comentario</th>
-                                                                    <th>Foto</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-
-
-                                                                {% for producto in productos %}
-
-                                                                <tr>
-                                                                     <td class="text-navy" class="pull-left">{{producto.producto.codigo}}</td>
-                                                                    <td class="text-navy" class="pull-left"><a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a></td>
-                                                                <td class="text-navy" class="pull-left">{{producto.unidad}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{producto.producto.descripcion}}</td>
-                            <td class="text-navy" class="pull-left">{{producto.cantidad}}</td>
-                            <td class="text-navy" class="pull-left">{{producto.color}}</td>
-                            <td class="text-navy" class="pull-left">{{producto.comentario}}</td>
-                             <td class="text-navy" class="pull-left"> <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
-                                                                </tr>
-                                                                {% endfor %}
-
-                                                                {% else %}
-                                                                No hay productos
-                                                                {% endif %}
-
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-
-                                            <div class="pagination"> <!-- paginacion-->
-                                                <span class="step-links">
-                                                    {% if productos.has_previous %}
-                                                    <a href="?page={{ productos.previous_page_number }}"><< Anterior</a>
-                                                    {% endif %}
-
-                                                    <span class="current">
-                                                        Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
-                                                    </span>
-
-                                                    {% if productos.has_next %}
-                                                    <a href="?page={{ productos.next_page_number }}"> Siguiente>></a>
-                                                    {% endif %}
-                                                </span>
-                                            </div>
-
-
-                                        </section>
-
-
-
-
-
-    </div>
-            </div>
-
-          </div>
-    </div>
-
-
-</div>
-
-
-
-
-   <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
-                                            <h3 class="modal-title">Cambiar Estatus</h3>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Por favor introduzca el nombre de la nueva sección a agregar:</p>
-                            <form id='formulario' method='post' enctype='multipart/form-data'>
-{% csrf_token %}
-<ul>
-  {{form.as_p}}
-</ul>
-
-  <p><input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/></p>
-                                    
-  </form>
-
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
+                        </div>
+                        <!-- col-md-5 --> </div>
+                </div>
+                {% if productos %}
+                <!-- col-lg-12 -->
+                <div class="col-lg-12">
+                    <section id="pagos">
 
+                        <div class="panel panel-default" style="clear: both;">
+                            <div class="panel-heading">
+                                <h2>Productos de la orden</h2>
+                            </div>
 
-    
-{% endblock %}
+                            <div class="panel-body">
+                                <div class="ibox-content">
+
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Codigo</th>
+                                                <th>Nombre</th>
+                                                <th>Unidad</th>
+                                                <th>Descripción</th>
+                                                <th>Cantidad</th>
+                                                <th>Color</th>
+                                                <th>Comentario</th>
+                                                <th>Foto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for producto in productos %}
+                                            <tr>
+                                                <td class="" class="pull-left">{{producto.producto.codigo}}</td>
+                                                <td class="" class="pull-left">
+                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a>
+                                                </td>
+                                                <td class="" class="pull-left">{{producto.unidad}}</td>
+                                                <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
+                                                <td class="" class="pull-left">{{producto.cantidad}}</td>
+                                                <td class="" class="pull-left">{{producto.color}}</td>
+                                                <td class="" class="pull-left">{{producto.comentario}}</td>
+                                                <td class="" class="pull-left">
+                                                    <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+</div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning payments">No hay productos.</div>
+                        {% endif %}
+
+                        {% if is_paginated %}
+                        <div class="paginationbox">
+                            <div class="pagination">
+                                <!-- paginacion-->
+                                <span class="step-links">
+                                    {% if productos.has_previous %}
+                                    <a href="?page={{ productos.previous_page_number }}">
+                                        << Anterior</a>
+                                            {% endif %}
+                                            <span class="current">
+                                                Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
+                                            </span>
+                                            {% if productos.has_next %}
+                                            <a href="?page={{ productos.next_page_number }}">Siguiente>></a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- col-lg-12 -->{% endif %}</div>
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Cambiar Estatus</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Por favor seleccione el estatus de la orden:</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form.as_p}}</ul>
+
+                            <p>
+                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </p>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}

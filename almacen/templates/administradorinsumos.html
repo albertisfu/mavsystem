@@ -104,19 +104,27 @@
                                             <td>{{insumo.categoria}}</td>
                                             <td>{{insumo.stock}}</td>
                                             <td>
-                                                <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" width="200"></td>
+                                                <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md"></td>
                                             <td>
-                                                <a href="{% url "adminInsumoEntrada" insumo.pk %}">Agregar Entrada</a>
+
+                                                <a href="{% url "adminInsumoEntrada" insumo.pk %}"><button type="button" class="btn btn-outline btn-success btn-lg">Agregar Entrada</button></a>
                                             </td>
 
                                         </tr>
                                         {% endfor %}
+                                        </tbody>
+                                </table>
+            </div>
+        </div>
+
+    </div>
 
         {% else %}
-                                        <div class="alert alert-warning payments">No hay hosting contratado.</div>
+                                        <div class="alert alert-warning payments">No hay insumos disponibles.</div>
                                         {% endif %}
-                                    </tbody>
-                                </table>
+                                    
+
+
 <div class="paginationbox">
                                 <div class="pagination">
                                     <!-- paginacion-->
@@ -144,9 +152,10 @@
 
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row"></div>
 
-    </div>
     {% endblock %}
+
+        <script src="{{ STATIC_URL }}js/jquery-2.1.1.js"></script>
+    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+    <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="{{ STATIC_URL }}js/plugins/slimscroll/jquery.slimscroll.min.js"></script>

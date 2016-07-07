@@ -3,14 +3,13 @@
 {% block title %}Panel Cliente{% endblock %}
 
 {% block content %}
-
 <script>
 
 function selectValue(id)
 {
     // open popup window and pass field id
     window.open('/administrador/pop_product','popuppage',
-      'width=400,toolbar=1,resizable=1,scrollbars=yes,height=400,top=100,left=100');
+      'width=800,toolbar=1,resizable=1,scrollbars=yes,height=400,top=100,left=100');
 }
 
 function updateValue(id, value)
@@ -21,73 +20,93 @@ function updateValue(id, value)
 
 </script>
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Asignar Producto</h2>
-   
-    </div>
-    <div class="col-lg-2">
+<div class="row  border-bottom white-bg dashboard-header">
+  <h2>Asignar Producto</h2>
 
-    </div>
+  <div class="col-lg-8">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#">Ordenes</a>
+      </li>
+      <li class="active"> <strong>Asignar producto</strong>
+      </li>
+    </ol>
+  </div>
 
+</div>
 
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
 
-    <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-
-
-
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>{{orden.nombre}}-{{orden.codigo}}</h2>
-                                        </div>
-
-
-<form id='formulario' method='post' enctype='multipart/form-data'>
-{% csrf_token %}
-<ul>
-<li><label class="control-label">Producto</label><input id="producto" type="hidden" name="producto"/><button type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
-</li>
-     <li><label class="control-label">Cantidad</label><input type="number" name="cantidad" /></li>
-      <li><label class="control-label">Color</label><input type="text" name="color" /></li>
-      <li><label class="control-label">Comentario</label><input type="text" name="comentario" /></li>
-     <li> <select name="unidad" id="unidad"><option value="1">Pieza</option>
-     <option value="2">Metro</option>
- <option value="3">Kilo</option>
-<option value="4">Litro</option>
-</li>
-</ul>
-
-  <p><input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/></p>
-                                    
-  </form>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2>
+              Asignar insumo para: <strong>{{orden.nombre}}-{{orden.codigo}}</strong>
+            </h2>
+          </div>
 
 
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="p-xs">
+                                <div class="insumoformstyle">
 
-                                    </div>
+          <form id='formulario' method='post' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <ul>
+              <li>
+                <label class="control-label">Producto: &nbsp;</label>
+                <input id="producto" type="hidden" name="producto"/>
+                <button type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
+              </li>
+              <li>
+                <label class="control-label">Cantidad:</label>
+                <input type="number" name="cantidad" />
+              </li>
+              <li>
+                <label class="control-label">Color:</label>
+                <input type="text" name="color" />
+              </li>
+              <li>
+                <label class="control-label">Comentario:</label>
+                <input type="text" name="comentario" />
+              </li>
+              <li>
+              <label class="control-label">Unidad:</label>
+                <select name="unidad" id="unidad">
+                  <option value="1">Pieza</option>
+                  <option value="2">Metro</option>
+                  <option value="3">Kilo</option>
+                  <option value="4">Litro</option>
+                </select>
+              </li>
+            </ul>
+
+                           </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4"></div>
+                        </div>
+
+                                                <div class="row p-xs">
+                            <div class="col-lg-12">
+                                <div class="wrapper wrapper-content">
+
+                                    <button type="submit" name="save" class="btn btn-xlg btn-primary pull-right m-t-n-xs">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
 
 
-    </div>
-            </div>
         </div>
+
+      </div>
     </div>
-    <div class="row">
-
-
-
-    </div>
-
+  </div>
 </div>
-
-
-
-</div>
-
-    
-
-
+<div class="row"></div>
 {% endblock %}

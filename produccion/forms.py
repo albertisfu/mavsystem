@@ -1,6 +1,7 @@
 from django import forms
 from models import *
 
+
 from functools import partial
 
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
@@ -46,3 +47,13 @@ class comentarioOrdenForm(forms.ModelForm):
 	class Meta:
 		model = ComentariosOrden
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
+
+
+#modal agregar categoria en producto nuevo
+class productoaddcat(forms.ModelForm):
+	class Meta:
+		model = Categoria
+		fields = ('nombre',)
+		labels = {
+			'nombre': ('Nombre de categoria'),
+		}
