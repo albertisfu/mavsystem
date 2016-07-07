@@ -118,5 +118,5 @@ class CheckInsumoProducto(models.Model):
 	estatus = models.CharField(max_length = 140)
 	usuario = models.ForeignKey(User)
 	def __unicode__(self):
-		return self.orden.nombre
+		return self.productorden.producto.nombre
 

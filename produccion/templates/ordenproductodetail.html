@@ -43,7 +43,7 @@
 
 
 
-
+{% load ordertag %}
 
 
 
@@ -71,8 +71,10 @@
                                                                 <tr>
                                                                     <th>Nombre</th> 
                                                                     <th>Codigo</th>                  
-                                                                    <th>Cantidad</th>
-                                                                    <th>Stock</th>
+                                                                    <th>Estado</th>
+                                                                    <th>Fecha</th>
+                                                                    <th>Historial</th>
+                                                                    <th>Actualizar</th>
                                                                 
                                                             
                                                                 </tr>
@@ -83,10 +85,12 @@
                                                                 {% for insumo in insumos %}
 
                                                                 <tr>
-                                                                    <td class="text-navy" class="pull-left"><a href="{% url "adminInsumoDetail" insumo.insumo.pk %}">{{insumo.insumo.nombre}}</a></td>
+                                                                    <td class="text-navy" class="pull-left">{{insumo.insumo.nombre}}</td>
                                                                 <td class="text-navy" class="pull-left">{{insumo.insumo.codigo}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{insumo.cantidad}}</td>
-                            <td class="text-navy" class="pull-left">{{insumo.insumo.stock}}</td>
+                                                                    <td class="text-navy" class="pull-left">{% get_obj insumo.pk producto_orden.pk %} </td>
+                            <td class="text-navy" class="pull-left">{% get_fecha insumo.pk producto_orden.pk %}</td>
+                            <td class="text-navy" class="pull-left">{{checkinsumos.insumo}}</td>
+                            <td class="text-navy" class="pull-left">Actualizar</td>
 
 
 
