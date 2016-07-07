@@ -30,8 +30,8 @@
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
                         <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="/administrador/alta_producto"> <i class="fa fa-plus"></i>
-                                Agregar nuevo producto
+                            <a class="btn btn-success btn-facebook" href="/administrador/alta"> <i class="fa fa-plus"></i>
+                                Agregar nuevo insumo
                             </a>
                         </div>
 
@@ -112,12 +112,19 @@
 
                                         </tr>
                                         {% endfor %}
+                                        </tbody>
+                                </table>
+            </div>
+        </div>
+
+    </div>
 
         {% else %}
-                                        <div class="alert alert-warning payments">No hay hosting contratado.</div>
+                                        <div class="alert alert-warning payments">No hay insumos disponibles.</div>
                                         {% endif %}
-                                    </tbody>
-                                </table>
+                                    
+
+
 <div class="paginationbox">
                                 <div class="pagination">
                                     <!-- paginacion-->
@@ -145,11 +152,7 @@
 
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row"></div>
 
-    </div>
     {% endblock %}
 
         <script src="{{ STATIC_URL }}js/jquery-2.1.1.js"></script>
