@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from models import *
 
@@ -56,4 +57,17 @@ class productoaddcat(forms.ModelForm):
 		fields = ('nombre',)
 		labels = {
 			'nombre': ('Nombre de categoria'),
+		}
+
+#modal agregar nuevo cliente
+class addcliente(forms.ModelForm):
+	class Meta:
+		model = Cliente
+		fields = ('nombrecontacto','empresainstitucion','telefono','direccion','email')
+		labels = {
+			'nombrecontacto': ('Nombre de contacto'),
+			'empresainstitucion': ('Empresa o institución'),
+			'telefono': ('Telefono'),
+			'direccion': ('Dirección'),
+			'email': ('Email'),
 		}

@@ -194,18 +194,35 @@ def altaOrden(request):
 	template =  get_template("altaorden.html")
 	form = altaOrdenForm(initial={'usuario':current_user})
 	form.fields['usuario'].widget = forms.HiddenInput()
-	context = {
-	'form': form,
-	}
+	#context = {
+	#'form': form,
+	#}
 	if 'save' in request.POST:
 		form = altaOrdenForm(request.POST)
 		print request.POST
 		if form.is_valid():
 			print 'valid'
 			form.save()
+			return redirect('listaOrdenes')
+		#else:
+		#	print 'error'
+		#	print form.errors, len(form.errors)
+
+	form2 = addcliente()
+	if 'save1' in request.POST:
+		form2 = addcliente(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('altaOrden'))
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
+
+	context = {
+	'form': form, 'form2' : form2,
+	}
 
 	return HttpResponse(template.render(context, request))
 
