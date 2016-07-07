@@ -43,7 +43,7 @@
 
 
 
-
+{% load ordertag %}
 
 
 
@@ -87,8 +87,8 @@
                                                                 <tr>
                                                                     <td class="text-navy" class="pull-left">{{insumo.insumo.nombre}}</td>
                                                                 <td class="text-navy" class="pull-left">{{insumo.insumo.codigo}}</td>
-                                                                    <td class="text-navy" class="pull-left">{{insumo.cantidad}}</td>
-                            <td class="text-navy" class="pull-left">{{insumo.insumo.stock}}</td>
+                                                                    <td class="text-navy" class="pull-left">{% get_obj insumo.pk producto_orden.pk %} </td>
+                            <td class="text-navy" class="pull-left">{% get_fecha insumo.pk producto_orden.pk %}</td>
                             <td class="text-navy" class="pull-left">{{checkinsumos.insumo}}</td>
                             <td class="text-navy" class="pull-left">Actualizar</td>
 
