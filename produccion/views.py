@@ -12,7 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from almacen.models import Insumo
 from django.views.generic import ListView
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
 
@@ -20,14 +20,29 @@ from django.core.urlresolvers import reverse
 def altaProducto(request):
 	template =  get_template("altaproducto.html")
 	form = altaProductoForm()
-	context = {
-	'form': form,
-	}
+
 	if 'save' in request.POST:
 		form = altaProductoForm(request.POST, request.FILES)
 		if form.is_valid():
 			post = form.save()
 			post.save()
+			return redirect('listaProducto')
+
+	form2 = productoaddcat()
+	if 'save1' in request.POST:
+		form2 = productoaddcat(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('altaProducto'))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	context = {
+	'form': form, 'form2' : form2,
+	}
 
 	return HttpResponse(template.render(context, request))
 

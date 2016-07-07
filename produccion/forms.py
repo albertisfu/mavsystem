@@ -49,3 +49,11 @@ class comentarioOrdenForm(forms.ModelForm):
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
 
+#modal agregar categoria en producto nuevo
+class productoaddcat(forms.ModelForm):
+	class Meta:
+		model = Categoria
+		fields = ('nombre',)
+		labels = {
+			'nombre': ('Nombre de categoria'),
+		}
