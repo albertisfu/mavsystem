@@ -29,118 +29,110 @@
                     </div>
                     <div class="panel-body">
                         <div class="col-md-4">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Información de orden
-                                    </div>
-                                    <div class="panel-body">
-
-                                        <dl class="dl-horizontal">
-
-                                            <dt class="font-15">Codigo:</dt>
-                                            <dd class="font-15">{{orden.codigo}}</dd>
-                                            <dt class="font-15">Cliente:</dt>
-                                            <dd class="font-15">{{orden.cliente}}</dd>
-                                            <dt class="font-15">Fecha de expedición:</dt>
-                                            <dd class="font-15">{{orden.fecha_expedicion}}</dd>
-                                            <dt class="font-15">Fecha de entrega:</dt>
-                                            <dd class="font-15">{{orden.fecha_entrega}}</dd>
-                                            <dt class="font-15">Estatus original:</dt>
-                                            <dd class="font-15">{{orden.get_estatus_display}}</dd>
-                                            <dt class="font-15">Creada por:</dt>
-                                            <dd class="font-15">{{orden.usuario}}</dd>
-
-                                        </dl>
-                                    </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                    Información de orden
                                 </div>
-<div class="align-center">
-                                <a href="{% url "OrdenProducto" orden.pk %}" class="align-center"><button type="button" class="btn btn-outline btn-success btn-lg">Agregar Productos</button></a>
-</div>
+                                <div class="panel-body">
+
+                                    <dl class="dl-horizontal">
+
+                                        <dt class="font-15">Codigo:</dt>
+                                        <dd class="font-15">{{orden.codigo}}</dd>
+                                        <dt class="font-15">Cliente:</dt>
+                                        <dd class="font-15">{{orden.cliente}}</dd>
+                                        <dt class="font-15">Fecha de expedición:</dt>
+                                        <dd class="font-15">{{orden.fecha_expedicion}}</dd>
+                                        <dt class="font-15">Fecha de entrega:</dt>
+                                        <dd class="font-15">{{orden.fecha_entrega}}</dd>
+                                        <dt class="font-15">Estatus original:</dt>
+                                        <dd class="font-15">{{orden.get_estatus_display}}</dd>
+                                        <dt class="font-15">Creada por:</dt>
+                                        <dd class="font-15">{{orden.usuario}}</dd>
+
+                                    </dl>
+                                </div>
+                            </div>
+                            <div class="align-center">
+                                <a href="{% url "OrdenProducto" orden.pk %}" class="align-center">
+                                    <button type="button" class="btn btn-outline btn-success btn-lg">Agregar Productos</button>
+                                </a>
+                            </div>
                         </div>
 
                         <div class="col-md-3">
 
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                    Estatus
+                                </div>
+                                <div class="panel-body">
 
-                                                        <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Estatus
-                                    </div>
-                                    <div class="panel-body">
-
-                            <span>
-                                <!--     {{orden.get_estatus_display}} -->
-                                Ultimo estatus: 
+                                    <span>
+                                        <!--     {{orden.get_estatus_display}} -->
+                                        Ultimo estatus: 
 {% for comentario in comentarios %}
     {% if forloop.last or friendlist.count == 1 %}
         {{comentario.get_estatus_display}}
     {% endif %}
 {% endfor %}
-                            </span>
-                            <br>
-<br>
-                            <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
+                                    </span>
+                                    <br>
+                                    <br>
+                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
 
-                                    </div>
                                 </div>
-
-                        
-
+                            </div>
 
                         </div>
 
-
-
-
-
+<!-- col-md-5 -->
                         <div class="col-md-5">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Historial de estatus
-                                    </div>
-                                    <div class="panel-body">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-info-circle"></i>
+                                    Historial de estatus
+                                </div>
+                                <div class="panel-body">
+                                    {% if comentarios %}
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha</th>
+                                                <th>Estatus</th>
+                                                <th>Comentario</th>
+                                                <th>Usuario</th>
 
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for comentario in comentarios %}
+                                            <tr>
+                                                <td class="" class="pull-left">{{comentario.fecha}}</td>
+                                                <td class="" class="pull-left">{{comentario.get_estatus_display}}</td>
+                                                <td class="" class="pull-left">{{comentario.comentario}}</td>
+                                                <td class="" class="pull-left">{{comentario.usuario}}</td>
 
-                            {% if comentarios %}
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Estatus</th>
-                                        <th>Comentario</th>
-                                        <th>Usuario</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for comentario in comentarios %}
-                                    <tr>
-                                        <td class="text-navy" class="pull-left">{{comentario.fecha}}</td>
-                                        <td class="text-navy" class="pull-left">{{comentario.get_estatus_display}}</td>
-                                        <td class="text-navy" class="pull-left">{{comentario.comentario}}</td>
-                                        <td class="text-navy" class="pull-left">{{comentario.usuario}}</td>
-
-                                    </tr>
-                                    {% endfor %}
+                                            </tr>
+                                            {% endfor %}
 
                                                                 {% else %}
                                                                 No hay comentarios
                                                                 {% endif %}
-                                </tbody>
-                            </table>
+                                        </tbody>
+                                    </table>
 
-                                    </div>
                                 </div>
-
-
-
-
-      
+                            </div>
 
                         </div>
+<!-- col-md-5 -->
 
                     </div>
                 </div>
                 {% if productos %}
+
+<!-- col-lg-12 -->
                 <div class="col-lg-12">
                     <section id="pagos">
 
@@ -168,60 +160,65 @@
                                         <tbody>
                                             {% for producto in productos %}
                                             <tr>
-                                                <td class="text-navy" class="pull-left">{{producto.producto.codigo}}</td>
-                                                <td class="text-navy" class="pull-left">
+                                                <td class="" class="pull-left">{{producto.producto.codigo}}</td>
+                                                <td class="" class="pull-left">
                                                     <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a>
                                                 </td>
-                                                <td class="text-navy" class="pull-left">{{producto.unidad}}</td>
-                                                <td class="text-navy" class="pull-left">{{producto.producto.descripcion}}</td>
-                                                <td class="text-navy" class="pull-left">{{producto.cantidad}}</td>
-                                                <td class="text-navy" class="pull-left">{{producto.color}}</td>
-                                                <td class="text-navy" class="pull-left">{{producto.comentario}}</td>
-                                                <td class="text-navy" class="pull-left">
+                                                <td class="" class="pull-left">{{producto.unidad}}</td>
+                                                <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
+                                                <td class="" class="pull-left">{{producto.cantidad}}</td>
+                                                <td class="" class="pull-left">{{producto.color}}</td>
+                                                <td class="" class="pull-left">{{producto.comentario}}</td>
+                                                <td class="" class="pull-left">
                                                     <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
                                     </table>
-                                    {% else %}
-                                    <div class="alert alert-warning payments">No hay productos.</div>
-                                    {% endif %}
                                 </div>
                             </div>
 
                         </div>
+                        {% else %}
+                        <div class="alert alert-warning payments">No hay productos.</div>
+                        {% endif %}
 
-{% if is_paginated %}
-<div class="paginationbox">
-                        <div class="pagination">
-                            <!-- paginacion-->
-                            <span class="step-links">
-                                {% if productos.has_previous %}
-                                <a href="?page={{ productos.previous_page_number }}">
-                                    << Anterior</a>
-                                        {% endif %}
-                                        <span class="current">
-                                            Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
-                                        </span>
-                                        {% if productos.has_next %}
-                                        <a href="?page={{ productos.next_page_number }}">Siguiente>></a>
-                                        {% endif %}
-                                    </span>
-                                </div>
-</div>
-{% endif %}
-                            </section>
-
+                        {% if is_paginated %}
+                        <div class="paginationbox">
+                            <div class="pagination">
+                                <!-- paginacion-->
+                                <span class="step-links">
+                                    {% if productos.has_previous %}
+                                    <a href="?page={{ productos.previous_page_number }}">
+                                        << Anterior</a>
+                                            {% endif %}
+                                            <span class="current">
+                                                Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
+                                            </span>
+                                            {% if productos.has_next %}
+                                            <a href="?page={{ productos.next_page_number }}">Siguiente>></a>
+                                            {% endif %}
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
                 </div>
-            </div>
+<!-- col-lg-12 -->
 
-        </div>
+            
+                    
+        
+                    {% endif %}
 
+                    </div>
 
-<!-- MODAL -->
+                    </div>
+                </section>
+
+    </div>
+</div>
+
+        <!-- MODAL -->
         <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
             <div class="modal-dialog modal-sm">
                 <div class="modal-content">
