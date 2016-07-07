@@ -310,6 +310,7 @@ def OrdenProductoDetail(request, producto):
 	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
 	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
 	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
+	checkinsumos = CheckInsumoProducto.objects.filter(productorden=producto_orden)
 	template =  get_template("ordenproductodetail.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
@@ -327,7 +328,7 @@ def OrdenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos,
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos,
 	}
 	
 	return HttpResponse(template.render(context, request))
