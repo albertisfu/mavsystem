@@ -131,7 +131,7 @@
                                                 <td class="text-navy" class="pull-left">{{insumo.insumo.codigo}}</td>
                                                 <td class="text-navy" class="pull-left">{% get_obj insumo.pk producto_orden.pk %}</td>
                                                 <td class="text-navy" class="pull-left">{% get_fecha insumo.pk producto_orden.pk %}</td>
-                                                <td class="text-navy" class="pull-left">{{checkinsumos.insumo}}</td>
+                                                <td class="text-navy" class="pull-left"><button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button></td>
                                                 <td class="text-navy" class="pull-left">Actualizar</td>
 
                                             </tr>
@@ -172,5 +172,55 @@
           </div>
       
               
+
+
+        <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Historial</h3>
+<div id="modalcontent">
+                         </div>
+                    </div>
+                    <div class="modal-body">
+           
+                        
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+<script>
+
+function history(orden, insumo)
+{
+
+$( "#modalcontent" ).empty();
+
+var url = '{% url "HistoryCheckInsumo" "orden1" "insumo1" %}';
+url = url.replace('orden1', orden);
+url = url.replace('insumo1', insumo);
+
+
+
+  $.get(url,function(data){
+                 var myModal = $(data);
+                 $('#modalcontent').append(myModal);
+             });
+}
+
+</script>
+
+
+
   
         {% endblock %}

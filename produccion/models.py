@@ -10,6 +10,13 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+
+# Create your models here.
+from django.db.models import signals
+from django.db.models.signals import post_save, pre_save
+from django.dispatch import receiver
+
+
 class Cliente(models.Model):
 	nombrecontacto = models.CharField(max_length = 255)
 	empresainstitucion = models.CharField(max_length = 500, blank=True, null=True)
@@ -116,7 +123,25 @@ class CheckInsumoProducto(models.Model):
 	insumo = models.ForeignKey(InsumoProducto)
 	fecha = models.DateTimeField(default=timezone.now)
 	estatus = models.CharField(max_length = 140)
-	usuario = models.ForeignKey(User)
+	usuario = models.ForeignKey(User, blank=True, null=True)
 	def __unicode__(self):
 		return self.productorden.producto.nombre
+
+
+
+ #Crear Check insumos
+
+@receiver(post_save, sender=ProductoOrden)  
+def producto_orden(sender, instance, created,  **kwargs):
+  currentinstanceid = instance.id
+  productoorden = ProductoOrden.objects.get(pk=currentinstanceid)
+  #producto = Producto.objects.get(pk=productoorden.producto.pk)
+  insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
+  for insumo in insumos:
+  	CheckInsumoProducto.objects.create(producto=productoorden, insumo=insumo, estatus='Producto Creado' )
+
+  
+
+
+
 

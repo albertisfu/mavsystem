@@ -365,6 +365,36 @@ def OrdenProductoDetail(request, producto):
 	
 	return HttpResponse(template.render(context, request))
 
+@login_required
+def HistoryCheckInsumo(request, orden, insumo):
+	producto_orden = get_object_or_404(ProductoOrden, pk = orden)
+	insumo_producto =  get_object_or_404(InsumoProducto, pk = insumo)
+	print producto_orden
+	print insumo_producto
+	insumos = CheckInsumoProducto.objects.filter(insumo=insumo_producto, productorden=producto_orden)
+	template =  get_template("checkinsumos.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	paginator = Paginator(insumos, 20)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
+
+
+	context = { 'insumos':insumos,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
 
 
 
