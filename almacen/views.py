@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.views.generic import ListView
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
 #Vista Home
@@ -31,15 +31,31 @@ def administradorAlta(request):
 	current_user = request.user
 	template =  get_template("administradoralta.html")
 	form = AltaForm()
-	context = {
-		'current_user': current_user, 'form': form,
-	}
+	#context = {
+	#	'current_user': current_user, 'form': form,
+	#}
 	if 'save' in request.POST:
 		form = AltaForm(request.POST, request.FILES)
 		if form.is_valid():
 			post = form.save()
 			post.save()
+			return redirect('administradorInsumos')
 
+	form2 = insumoaddcat()
+	if 'save1' in request.POST:
+		form2 = insumoaddcat(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('administradorAlta'))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	context = {
+		'current_user': current_user, 'form': form, 'form2' : form2,
+	}
 
 	return HttpResponse(template.render(context, request))
 

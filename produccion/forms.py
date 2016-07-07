@@ -1,6 +1,7 @@
 from django import forms
 from models import *
 
+
 from functools import partial
 
 DateInput = partial(forms.DateInput, {'class': 'datepicker'})
@@ -46,3 +47,5 @@ class comentarioOrdenForm(forms.ModelForm):
 	class Meta:
 		model = ComentariosOrden
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
+
+

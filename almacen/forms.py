@@ -25,3 +25,13 @@ class SalidaForm(forms.ModelForm):
 	class Meta:
 		model = Salida
 		fields = ('cantidad', 'comentario', 'insumo', 'usuario', 'fecha')
+
+
+#modal agregar categoria en insumo nuevo
+class insumoaddcat(forms.ModelForm):
+	class Meta:
+		model = Categoria
+		fields = ('nombre',)
+		labels = {
+			'nombre': ('Nombre de categoria'),
+		}
