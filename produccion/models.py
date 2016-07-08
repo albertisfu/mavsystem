@@ -133,12 +133,14 @@ class CheckInsumoProducto(models.Model):
 
 @receiver(post_save, sender=ProductoOrden)  
 def producto_orden(sender, instance, created,  **kwargs):
-  currentinstanceid = instance.id
-  productoorden = ProductoOrden.objects.get(pk=currentinstanceid)
-  #producto = Producto.objects.get(pk=productoorden.producto.pk)
-  insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
-  for insumo in insumos:
-  	CheckInsumoProducto.objects.create(producto=productoorden, insumo=insumo, estatus='Producto Creado' )
+	currentinstanceid = instance.id
+	productoorden = ProductoOrden.objects.get(pk=currentinstanceid)
+	print productoorden
+	#producto = Producto.objects.get(pk=productoorden.producto.pk)
+	insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
+	print insumos
+	for insumo in insumos:
+		CheckInsumoProducto.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
 
   
 

@@ -39,7 +39,7 @@
                                     <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.producto.file}}" class="detailimagen"></p>
                             </div>
 
-                            <div class="col-lg-5">
+                            <div class="col-lg-8">
 
                                 <div class="panel panel-default">
                                     <div class="panel-heading"> <i class="fa fa-info-circle"></i>
@@ -68,23 +68,6 @@
 
                             </div>
 
-                            <div class="col-lg-4">
-                                <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Acciones
-                                    </div>
-                                    <div class="panel-body align-center">
-
-                                        <h2>
-                                            <a href="#">
-                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Insumo</button>
-                                            </a>
-                                        </h2>
-
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
 
                     </div>
@@ -106,11 +89,7 @@
 
                             <div class="panel-body">
                                 <div class="ibox-content">
-                                    <form action="" method="get">
-                                        <!-- formulario de filtros y orden -->
-                                        {{ filters.form.as_p}}
-                                        <input type="submit" class="btn btn-w-m btn-primary"/>
-                                    </form>
+                                    
 
                                     <table class="table table-hover">
                                         <thead>
@@ -132,7 +111,7 @@
                                                 <td class="text-navy" class="pull-left">{% get_obj insumo.pk producto_orden.pk %}</td>
                                                 <td class="text-navy" class="pull-left">{% get_fecha insumo.pk producto_orden.pk %}</td>
                                                 <td class="text-navy" class="pull-left"><button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button></td>
-                                                <td class="text-navy" class="pull-left">Actualizar</td>
+                                                <td class="text-navy" class="pull-left"><button data-toggle="modal" data-target="#myModal7" type="button" class="btn btn-primary" onClick="insumo({{insumo.pk}})" >Actualizar</button></td>
 
                                             </tr>
                                             {% endfor %}
@@ -197,6 +176,34 @@
             </div>
         </div>
 
+ <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModal7" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Cambiar Estatus</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Por favor seleccione el estatus de la orden:</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form.as_p}}</ul>
+
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 <script>
@@ -217,6 +224,15 @@ url = url.replace('insumo1', insumo);
                  $('#modalcontent').append(myModal);
              });
 }
+
+
+function insumo(val)
+{
+
+document.getElementById('id_insumo').value = val;
+
+}
+
 
 </script>
 

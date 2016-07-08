@@ -339,6 +339,7 @@ def OrdenProducto(request, orden):
 
 @login_required
 def OrdenProductoDetail(request, producto):
+	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
 	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
 	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
@@ -346,6 +347,23 @@ def OrdenProductoDetail(request, producto):
 	template =  get_template("ordenproductodetail.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
+
+	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['productorden'].widget = forms.HiddenInput()
+	form.fields['insumo'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = estatusProductoInsumo(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('OrdenProductoDetail', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
 
 	paginator = Paginator(insumos, 20)
 	page = request.GET.get('page')
@@ -360,7 +378,7 @@ def OrdenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos,
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form,
 	}
 	
 	return HttpResponse(template.render(context, request))

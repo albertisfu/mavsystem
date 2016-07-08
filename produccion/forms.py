@@ -50,6 +50,14 @@ class comentarioOrdenForm(forms.ModelForm):
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
 
+
+class estatusProductoInsumo(forms.ModelForm):
+	class Meta:
+		model = CheckInsumoProducto
+		fields = ('productorden', 'insumo', 'estatus', 'usuario')
+
+
+
 #modal agregar categoria en producto nuevo
 class productoaddcat(forms.ModelForm):
 	class Meta:
