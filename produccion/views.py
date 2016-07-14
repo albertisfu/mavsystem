@@ -507,6 +507,31 @@ class SearchProductoPopListView(ProductoPopListView):
 
         return result
 
+from django.views.decorators.csrf import csrf_exempt
+from json import dumps
+@csrf_exempt
+def ajaxInsumo(request):
+	if request.method == 'POST':
+		print 'entroajax'
+		pkinsumo = request.POST['pk']
+		insumo = get_object_or_404(Insumo, pk = pkinsumo)
+		insumonombre =  insumo.nombre
+		insumocodigo = insumo.codigo
+		data = [{'insumo':insumonombre}, {'insumosku':insumocodigo}] 
+		#print data
+        return HttpResponse(dumps(data))
 
+
+@csrf_exempt
+def ajaxProducto(request):
+	if request.method == 'POST':
+		print 'entroajax'
+		pkproducto = request.POST['pk']
+		producto = get_object_or_404(Producto, pk = pkproducto)
+		productonombre =  producto.nombre
+		productocodigo = producto.codigo
+		data = [{'producto':productonombre}, {'productosku':productocodigo}] 
+		#print data
+        return HttpResponse(dumps(data))
 
 

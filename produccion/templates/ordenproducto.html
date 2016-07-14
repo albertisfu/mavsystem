@@ -16,6 +16,33 @@ function updateValue(id, value)
 {
     // this gets called from the popup window and updates the field with a new value
     document.getElementById(id).value = value;
+
+    $.ajax({
+     crossDomain: true,
+    data : {csrfmiddlewaretoken: '{{ csrf_token }}', 'pk':value},
+    url: '/administrador/producto_ajax',
+    type: 'post',
+     dataType: 'json',
+    success: function(data){
+        //console.log(data);
+        var html = ''
+
+        html += '<span> '+data[0].producto+' codigo:'+data[1].productosku+'</span>'
+        //console.log(html);
+        $('#viewproducto').html(html); 
+
+    },
+
+    error: function(data) {
+//console.log("Data not found");
+
+},
+
+});
+
+$("#seleccionar").html('Cambiar');
+
+
 }
 
 </script>
@@ -58,6 +85,7 @@ function updateValue(id, value)
             <ul>
               <li>
                 <label class="control-label">Producto: &nbsp;</label>
+              <span id="viewproducto"></span>
                 <input id="producto" type="hidden" name="producto"/>
                 <button type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
               </li>

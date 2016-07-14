@@ -16,6 +16,34 @@ function updateValue(id, value)
 {
     // this gets called from the popup window and updates the field with a new value
     document.getElementById(id).value = value;
+
+
+    $.ajax({
+     crossDomain: true,
+    data : {csrfmiddlewaretoken: '{{ csrf_token }}', 'pk':value},
+    url: '/administrador/insumo_ajax',
+    type: 'post',
+     dataType: 'json',
+    success: function(data){
+        //console.log(data);
+        var html = ''
+
+        html += '<span>: '+data[0].insumo+' codigo:'+data[1].insumosku+'</span>'
+        //console.log(html);
+        $('#viewinsumo').html(html); 
+
+    },
+
+    error: function(data) {
+//console.log("Data not found");
+
+},
+
+});
+
+$("#seleccionar").html('Cambiar');
+
+
 }
 
 </script>
@@ -55,9 +83,9 @@ function updateValue(id, value)
                                         {% csrf_token %}
                                         <ul>
                                             <li>
-                                                <label class="control-label">Insumo</label>
+                                                <label class="control-label">Insumo</label><span id="viewinsumo"></span>
                                                 <input id="insumo" type="hidden" name="insumo"/>
-                                                <button type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
+                                                <button id="seleccionar" type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
                                             </li>
                                             <li>
                                                 <label class="control-label">Cantidad</label>

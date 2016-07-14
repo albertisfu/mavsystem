@@ -14,6 +14,11 @@ urlpatterns = [
    	url(r'^administrador/popinsumo$', produccion_views.popInsumo, name='popInsumo'), 
    	#url(r'^administrador/salidas/(?P<insumo>[-\w]+)/', 'almacen.views.adminSalidas', name='adminSalidas'),  
 
+#ajax
+
+  url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
+  url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
+
 
       #ordenes 
 
@@ -32,6 +37,7 @@ urlpatterns = [
     #search Orders
     url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
    	url(r'^administrador/search_orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
+
 
 
    ]
