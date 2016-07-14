@@ -36,6 +36,7 @@ class Producto(models.Model):
 	codigo = models.CharField(max_length = 100)
 	descripcion = models.CharField(max_length = 255)
 	categoria = models.ForeignKey(Categoria, blank=True, null=True)
+	costo = models.FloatField(default=0)
 	file = models.FileField(upload_to="static/files", verbose_name="Imagen", blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
@@ -72,6 +73,7 @@ class Orden(models.Model):
 	  )
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
+	costo = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.nombre
 

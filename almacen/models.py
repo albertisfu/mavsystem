@@ -32,8 +32,10 @@ class Insumo(models.Model):
 	      (litro, 'Litro'),
 	  )
 	unidad = models.IntegerField(choices=unidad_options, default=pieza)
+	costounitario = models.FloatField(default=0)
 	file = models.FileField(upload_to="static/files", verbose_name="Imagen")
 	stock = models.FloatField(default=0)
+	costostock = models.FloatField(default=0)
 
 	def __unicode__(self):
 		return self.nombre
