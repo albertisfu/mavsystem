@@ -169,6 +169,30 @@ def adminInsumoDetail(request, insumo):
     }
 	return HttpResponse(template.render(context, request))
 
+def editinsumo(request, pk):
+    post = Insumo.objects.get(pk = pk)
+    print post
+    form = editinsumoform(instance=post)
+    if request.method == 'POST':
+       print request.POST
+       post.nombre = request.POST.get('nombre')
+       post.codigo = request.POST.get('codigo')
+       post.descripcion = request.POST.get('descripcion')
+       categoria = request.POST.get('categoria')
+       category = Categoria.objects.get(pk = categoria)
+       post.categoria = category 
+       post.unidad = request.POST.get('unidad')
+       post.costounitario = request.POST.get('costounitario')
+       if 'file' in request.POST:
+          post.file = request.POST.get('file')
+       post.save()
+       print 'save'
+                             #payload = {'success': 'Concepto editado'}
+                             #return HttpResponse(json.dumps(payload), content_type='application/json')
+    else:
+        form = editinsumoform(instance=post)
+    return render(request, 'editinsumo.html', {'form': form, 'post':post})
+
 
 @login_required
 def adminInsumoEntrada(request, insumo):

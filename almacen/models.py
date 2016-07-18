@@ -100,3 +100,16 @@ def salida_insumo(sender, instance, created,  **kwargs):
  
 
 
+@receiver(post_save, sender=Insumo)  
+def nuevo_insumo(sender, instance, created,  **kwargs):
+  currentinstanceid = instance.id
+  insumo = Insumo.objects.get(pk=currentinstanceid)
+  print insumo
+  print insumo.stock
+  currentstock = insumo.stock
+  costostock = insumo.costounitario * currentstock
+  Insumo.objects.filter(pk=currentinstanceid).update(costostock=costostock)
+
+
+
+

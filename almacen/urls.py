@@ -13,5 +13,6 @@ urlpatterns = [
    	url(r'^administrador/salida/(?P<insumo>[-\w]+)/$', almacen_views.adminInsumoSalida, name='adminInsumoSalida'), 
    	url(r'^administrador/entradas/(?P<insumo>[-\w]+)/$', almacen_views.adminEntradas, name='adminEntradas'),
    	url(r'^administrador/salidas/(?P<insumo>[-\w]+)/$', almacen_views.adminSalidas, name='adminSalidas'),  
+      url(r'^administrador/edit_insumo/(?P<pk>[0-9]+)/$', almacen_views.editinsumo, name='editinsumo'),
    ]
 

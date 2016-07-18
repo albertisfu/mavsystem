@@ -1,0 +1,48 @@
+
+<script>
+
+   function submiter(id)
+{
+
+$.ajax({
+                                 type: "POST",
+                                 url: "/administrador/edit_insumo/"+id+"/",
+                                 data: { 
+                                     'id':id, 
+                                     'nombre':$('#id_nombre').val(), 
+                                     'codigo':$('#id_codigo').val(), 
+                                     'descripcion':$('#id_descripcion').val(), 
+                                     'categoria':$('#id_categoria').val(), 
+                                     'unidad':$('#id_unidad').val(), 
+                                     'costounitario':$('#id_costounitario').val(), 
+                                     'file':$('#id_file').val(), 
+
+                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
+                                 },
+                                 success: function(response){
+                         
+                                     //recargar div
+                                     $('#reload-div').load(document.URL + ' #reload-div');
+                                      $('#myModal2').modal('toggle');
+                                 }
+                             });
+}
+
+
+</script>
+
+<p>Datos de concepto a editar:</p>
+                        <div class="doctorformstyle">
+                        <form id='formulario-modal' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form.as_p}}</ul>
+
+                            <div class="row align-center">
+                               <button class="btn btn-info btn-w-sm" name="button" type="button" id="{{ post.pk }}" onClick="submiter(this.id)" > <i class="fa fa-pencil"></i>
+                        Editar
+                    </button>
+                            </div>
+
+                        </form>
+
+</div>

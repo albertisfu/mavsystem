@@ -1,3 +1,6 @@
+# coding=utf-8
+
+
 from django import forms
 from models import *
 
@@ -36,3 +39,17 @@ class insumoaddcat(forms.ModelForm):
 		labels = {
 			'nombre': ('Nombre de categoria'),
 		}
+
+
+
+		Insumo
+
+class editinsumoform(forms.ModelForm):
+    class Meta:
+        model = Insumo
+        fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'unidad', 'costounitario', 'file')
+        #exclude = ('orden',)
+        labels = {					'descripcion': ('Descripción'),
+                                    'costounitario': ('Costo Unitario'),
+                                }
+

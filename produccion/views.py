@@ -321,9 +321,7 @@ def OrdenDetail(request, orden):
 	return HttpResponse(template.render(context, request))
 
 
-
-
-
+#from django.db.models.signals import post_save
 
 @login_required
 def OrdenProducto(request, orden):
@@ -344,7 +342,23 @@ def OrdenProducto(request, orden):
 		print cantidad
 		productopk = request.POST['producto']
 		producto = get_object_or_404(Producto, pk = productopk) 
-		print producto
+		insumos = InsumoProducto.objects.filter(producto=producto)
+		for insumo in insumos:
+			print insumo
+			total_insumos_producto = insumo.cantidad * int(cantidad)
+			print total_insumos_producto
+			if total_insumos_producto <= insumo.insumo.stock:
+				print 'suficiente'
+				newstock = insumo.insumo.stock - total_insumos_producto
+				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update precios
+			else:
+				newstock = insumo.insumo.stock - total_insumos_producto
+				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update precios
+				print 'no alcanza'
+
+		#print producto
 		productoorden= ProductoOrden.objects.create(producto=producto, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
 		print 'guardado'
 		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
