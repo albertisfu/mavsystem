@@ -87,6 +87,21 @@ def ProductoDetail(request, producto):
 	producto = get_object_or_404(Producto, pk = producto) 
 	template =  get_template("productodetail.html")
 	materials = InsumoProducto.objects.filter(producto=producto)
+	form = CostoEspecialForm(initial={'producto':producto})
+	form.fields['producto'].widget = forms.HiddenInput()
+	if 'save' in request.POST:
+		form = CostoEspecialForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	costoespeciales = CostoEspecial.objects.filter(producto=producto)[:15]
+
 	paginator = Paginator(materials, 20)
 	page = request.GET.get('page')
 	try:
@@ -100,10 +115,9 @@ def ProductoDetail(request, producto):
 
 
 	context = {
-        'producto': producto, 'materiales': materiales,
+        'producto': producto, 'materiales': materiales, 'form':form, 'costoespeciales':costoespeciales,
     }
 	return HttpResponse(template.render(context, request))
-
 
 
 
@@ -295,7 +309,7 @@ def OrdenDetail(request, orden):
 		productos= paginator.page(page)
 	except PageNotAnInteger:
 		# Si la pagina no es un entero muestra la primera pagina
-		materiales = paginator.page(1)
+		productos = paginator.page(1)
 	except EmptyPage:
 		# si la pagina esta fuera de rango, muestra la ultima pagina
 		productos = paginator.page(paginator.num_pages)
@@ -317,6 +331,7 @@ def OrdenProducto(request, orden):
 	template =  get_template("ordenproducto.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
+
 	context = {
 		'orden':orden,
 	}
@@ -348,6 +363,8 @@ def OrdenProductoDetail(request, producto):
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
+	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+
 	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
 	form.fields['productorden'].widget = forms.HiddenInput()
@@ -378,7 +395,7 @@ def OrdenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form,
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 'costoespeciales':costoespeciales,
 	}
 	
 	return HttpResponse(template.render(context, request))
@@ -533,5 +550,94 @@ def ajaxProducto(request):
 		data = [{'producto':productonombre}, {'productosku':productocodigo}] 
 		#print data
         return HttpResponse(dumps(data))
+
+
+
+#Lista cliente
+
+
+
+@login_required
+def listaClientes(request):
+	filters = Cliente.objects.all()
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		clientes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		clientes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		clientes = paginator.page(paginator.num_pages)
+	template =  get_template("listaclientes.html")
+	context = {
+		'clientes': clientes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
+
+
+#search clientes
+
+
+class ClientesListView(ListView):
+	model = Cliente
+	template_name = 'clientes_list.html'
+  
+
+import operator
+from django.db.models import Q
+class SearchClientesListView(ClientesListView):
+    """
+    Display a Blog List page filtered by the search query.
+    """
+    paginate_by = 10
+
+    def get_queryset(self):
+        result = super(SearchClientesListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(nombrecontacto__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(empresainstitucion__icontains=q) for q in query_list))|
+                reduce(operator.and_,
+                       (Q(email__icontains=q) for q in query_list))
+            )
+
+        return result
+
+
+
+
+
+@login_required
+def ClienteDetail(request, cliente):
+	cliente = get_object_or_404(Cliente, pk = cliente) 
+	template =  get_template("clientedetail.html")
+	ordenes = Orden.objects.filter(cliente=cliente)
+	paginator = Paginator(ordenes, 5)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+
+	context = {
+		'ordenes': ordenes, 'cliente': cliente,
+	}
+
+	return HttpResponse(template.render(context, request))
 
 

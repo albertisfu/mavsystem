@@ -42,10 +42,19 @@ class Producto(models.Model):
 		return self.nombre
 
 
+class CostoEspecial(models.Model):
+	producto = models.ForeignKey(Producto)
+	concepto = models.CharField(max_length = 255)
+	costo = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.producto.nombre
+
+
 class InsumoProducto(models.Model):
 	insumo = models.ForeignKey(Insumo)
 	producto = models.ForeignKey(Producto)
 	cantidad = models.FloatField()
+	costototal = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.insumo.nombre
 
@@ -74,8 +83,20 @@ class Orden(models.Model):
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
 	costo = models.FloatField(default=0)
+	bodega = 1
+	flete = 2
+	entrega_options = (
+	      (bodega, 'Bodega'),
+	      (flete, 'Flete'),
+	  )
+	entrega = models.IntegerField(choices=entrega_options, default=bodega)
+	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
+	costoflete = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.nombre
+
+
+
 
 
 class ProductoOrden(models.Model):
@@ -95,6 +116,7 @@ class ProductoOrden(models.Model):
 	      (litro, 'Litro'),
 	  )
 	unidad = models.IntegerField(choices=unidad_options, default=pieza)
+	#costo = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.producto.nombre
 
@@ -144,7 +166,58 @@ def producto_orden(sender, instance, created,  **kwargs):
 	for insumo in insumos:
 		CheckInsumoProducto.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
 
+	productos = ProductoOrden.objects.filter(orden=productoorden.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Orden.objects.filter(pk=productoorden.orden.id).update(costo=costo)
+
   
+@receiver(post_save, sender=InsumoProducto)  
+def producto_insumo(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProducto.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProducto.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecial.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	Producto.objects.filter(pk=producto.id).update(costo=costototalp)
+
+
+@receiver(post_save, sender=CostoEspecial)  
+def producto_especial(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProducto.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProducto.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecial.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	Producto.objects.filter(pk=producto.id).update(costo=costototalp)
+
+
+
+
+
+
+
+
 
 
 

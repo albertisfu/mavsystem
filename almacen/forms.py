@@ -4,11 +4,12 @@ from models import *
 class AltaForm(forms.ModelForm):
 	class Meta:
 		model = Insumo
-		fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'unidad', 'file')
+		fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'unidad', 'costounitario', 'file')
 		labels = {
             'nombre': ('Nombre del insumo'),
             'codigo': ('Codigo Unico'),
             'descripcion': ('Descripcion'),
+            'costounitario': ('Costo por unidad'),
         }
 
 

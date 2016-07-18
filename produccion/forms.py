@@ -30,16 +30,25 @@ class altaOrdenForm(forms.ModelForm):
 	fecha_entrega = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
 	class Meta:
 		model = Orden
-		fields = ('nombre', 'codigo', 'descripcion', 'cliente', 'fecha_entrega', 'usuario')
+		fields = ('nombre', 'codigo', 'descripcion', 'cliente', 'fecha_entrega', 'usuario', 'entrega', 'direccionentrega', 'costoflete')
 		labels = {
             'nombre': ('Nombre de la orden'),
             'codigo': ('Codigo Unico'),
             'descripcion': ('Descripcion'),
             'cliente': ('Seleccionar Cliente'),
             'fecha_entrega': ('Fecha de Entrega'),
+            'entrega': ('Metodo de Entrega'),
+            'direccionentrega': ('Dirección Entrega'),
+            'costoflete': ('Costo Flete'),
         }
 
 
+
+
+class CostoEspecialForm(forms.ModelForm):
+	class Meta:
+		model = CostoEspecial
+		fields = ('producto', 'concepto', 'costo')
       
 
 

@@ -79,7 +79,8 @@ def entrada_insumo(sender, instance, created,  **kwargs):
   print currentstock
   newstock = currentstock + entrada.cantidad
   print newstock
-  Insumo.objects.filter(pk=entrada.insumo.pk).update(stock=newstock)
+  costostock = insumo.costounitario * newstock
+  Insumo.objects.filter(pk=entrada.insumo.pk).update(stock=newstock, costostock=costostock)
 
 #signal resta stock
 @receiver(post_save, sender=Salida)  
@@ -94,7 +95,8 @@ def salida_insumo(sender, instance, created,  **kwargs):
   print currentstock
   newstock = currentstock - salida.cantidad
   print newstock
-  Insumo.objects.filter(pk=salida.insumo.pk).update(stock=newstock)
+  costostock = insumo.costounitario * newstock
+  Insumo.objects.filter(pk=salida.insumo.pk).update(stock=newstock, costostock=costostock)
  
 
 

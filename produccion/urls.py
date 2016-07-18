@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from produccion import views as produccion_views
-from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView
+from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView
 
 urlpatterns = [
 
@@ -38,6 +38,14 @@ urlpatterns = [
     url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
    	url(r'^administrador/search_orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
 
+
+#clientes
+url(r'^administrador/lista_clientes$', produccion_views.listaClientes, name='listaClientes'), 
+
+#search Clientes
+    url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),
+    url(r'^administrador/search_cliente/$', SearchClientesListView.as_view(), name='search_cliente_url'),
+    url(r'^administrador/cliente/(?P<cliente>[-\w]+)/$', produccion_views.ClienteDetail, name='ClienteDetail'), 
 
 
    ]

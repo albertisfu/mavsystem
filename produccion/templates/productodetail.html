@@ -51,6 +51,8 @@
                                             <dd class="font-16">{{producto.descripcion}}</dd>
                                             <dt class="font-16">Categoría:</dt>
                                             <dd class="font-16">{{producto.categoria}}</dd>
+                                            <dt class="font-16">Costo Producto:</dt>
+                                            <dd class="font-16">{{producto.costo}}</dd>
 
                                         </dl>
                                     </div>
@@ -67,9 +69,50 @@
 
                                         <a href="{% url "ProductoInsumo" producto.pk %}">
                                             <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Material</button>
-                                        </a>
+                                            
+                                        </a></br>
+                                         <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Agregar Costo Especial</button>
                                     </div>
                                 </div>
+
+
+
+                                <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-info-circle"></i>
+                                    Costos Especiales
+                                </div>
+                                <div class="panel-body">
+                                    {% if costoespeciales %}
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Concepto</th>
+                                                <th>Costo</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for costo in costoespeciales %}
+                                            <tr>
+                                                <td class="" class="pull-left">{{costo.concepto}}</td>
+                                                <td class="" class="pull-left">{{costo.costo}}</td>
+                                              
+
+                                            </tr>
+                                            {% endfor %}
+
+                                                                {% else %}
+                                                                No hay costos especiales
+                                                                {% endif %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+
+
 
                             </div>
                         </div>
@@ -98,8 +141,11 @@
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Codigo</th>
-                                                <th>Cantidad</th>
                                                 <th>Stock</th>
+                                                <th>Cantidad</th>
+                                                
+                                                 <th>Costo Unitario</th>
+                                                <th>Costo Total</th>
                                                 <th>Accion</th>
 
                                             </tr>
@@ -111,8 +157,12 @@
                                                     <a href="{% url "adminInsumoDetail" material.insumo.pk %}">{{material.insumo.nombre}}</a>
                                                 </td>
                                                 <td class="" class="pull-left">{{material.insumo.codigo}}</td>
-                                                <td class="" class="pull-left">{{material.cantidad}}</td>
                                                 <td class="" class="pull-left">{{material.insumo.stock}}</td>
+                                                <td class="" class="pull-left">{{material.cantidad}}</td>
+                                                
+                                                <td class="" class="pull-left">{{material.insumo.costounitario}}</td>
+                                                 <td class="" class="pull-left">{{material.costototal}}</td>
+                                                
                                                 <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="submit"><i class="fa fa-times"></i> Borrar</button></td>
 
                                             </tr>
@@ -158,6 +208,37 @@
 
                 </div>
             </div>
+
+
+
+<!-- MODAL -->
+        <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Agregar Concepto Especial</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Por favor agregue un concepto:</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form.as_p}}</ul>
+
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
         {% endblock %}

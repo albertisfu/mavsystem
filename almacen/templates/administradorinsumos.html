@@ -89,6 +89,8 @@
                                             <th class="tablecolumnhosting">Codigo</th>
                                             <th>Categoría</th>
                                             <th class="tablecolumnhosting">Stock</th>
+                                             <th class="tablecolumnhosting">Costo Unitario</th>
+                                              <th class="tablecolumnhosting">Costo Stock</th>
                                             <th>Foto</th>
                                             <th>Entrada</th>
                                         </tr>
@@ -103,6 +105,10 @@
                                             <td class="tablecolumnhosting">{{insumo.codigo}}</td>
                                             <td>{{insumo.categoria}}</td>
                                             <td>{{insumo.stock}}</td>
+                                            <td>{{insumo.costounitario}}</td>
+                                            <td>{{insumo.costostock}}</td>
+
+
                                             <td>
                                                 <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md"></td>
                                             <td>

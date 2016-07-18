@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
-    <h2>Lista de ordenes</h2>
+    <h2>Lista de clientes</h2>
 
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
-                <a href="#">Ordenes</a>
+                <a href="#">Clientes</a>
             </li>
-            <li class="active"> <strong>Lista de ordenes</strong>
+            <li class="active"> <strong>Lista de clientes</strong>
             </li>
         </ol>
     </div>
@@ -27,14 +27,10 @@
 
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
-                        <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="/administrador/alta_orden"> <i class="fa fa-plus"></i>
-                                Agregar nueva orden
-                            </a>
-                        </div>
+                       
 
                         <div class="col-lg-4 pull-right">
-                            <form id="searchform" action="{% url 'search_orden_url' %}" method="get" accept-charset="utf-8" class="align-right searchform">
+                            <form id="searchform" action="{%url 'search_cliente_url' %}" method="get" accept-charset="utf-8" class="align-right searchform">
                                 <div class="input-group">
                                     <input class="searchfield form-control input-lg" id="searchbox" name="q" type="text" placeholder="Buscar">
                                     <div class="input-group-btn">
@@ -46,25 +42,15 @@
                         </div>
                     </div>
 
-                    <section id="ordenes">
+                    <section id="clientes">
 
                         <div class="row">
-                            <div class="col-lg-12 align-center">
-                                <br>
-                                <h3>Filtros</h3>
-                                <form action="" method="get" class="formfiltros">
-                                    <!-- formulario de filtros y orden -->
-                                    <ul class="elementsinline">
-                                        {{ filters.form.as_ul}}
-                                        <input type="submit" class="btn btn-w-m btn-primary"/>
-                                    </ul >
-                                </form>
-                                <br></div>
+                           
                         </div>
-                        {% if ordenes %}
+                        {% if clientes %}
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h2>Ordenes</h2>
+                                <h2>Clientes</h2>
                             </div>
                             <div class="panel-body">
                                 <div class="ibox-content">
@@ -74,31 +60,26 @@
                                             <tr>
 
                                                 <th>Nombre</th>
-                                                <th class="tablecolumnhosting">Codigo</th>
+                                              
 
-                                                <th>Descripción</th>
-                                                <th>Cliente</th>
-                                                <th>Fecha Expedicion</th>
-                                                <th>Fecha Entrega</th>
-                                                <th>Estatus</th>
-                                                <th>Usuario</th>
+                                                <th>Empresa</th>
+                                                <th>Teléfono</th>
+                                                <th>email</th>
+                                            
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for orden in ordenes %}
+                                            {% for cliente in clientes %}
                                             <tr>
 
                                                 <td>
-                                                    <a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a>
+                                                    <a href="{% url "ClienteDetail" cliente.pk %}">{{cliente.nombrecontacto}}</a>
                                                 </td>
-                                                <td class="tablecolumnhosting">{{orden.codigo}}</td>
-                                                <td>{{orden.descripcion}}</td>
-                                                <td>{{orden.cliente}}</td>
-                                                <td>{{orden.fecha_expedicion}}</td>
-                                                <td>{{orden.fecha_entrega}}</td>
-                                                <td>{{orden.estatus}}</td>
-                                                <td>{{orden.usuario}}</td>
+                                                <td class="tablecolumnhosting">{{cliente.empresainstitucion}}</td>
+                                                <td>{{cliente.telefono}}</td>
+                                                <td>{{cliente.email}}</td>
+                                        
 
                                             </tr>
                                             {% endfor %}
@@ -115,15 +96,15 @@
                             <div class="pagination">
                                 <!-- paginacion-->
                                 <span class="step-links">
-                                    {% if ordenes.has_previous %}
-                                    <a href="?page={{ ordenes.previous_page_number }}">
+                                    {% if clientes.has_previous %}
+                                    <a href="?page={{ clientes.previous_page_number }}">
                                         << Anterior</a>
                                             {% endif %}
                                             <span class="current">
-                                                Pagina {{ ordenes.number }} de {{ ordenes.paginator.num_pages }}.
+                                                Pagina {{ clientes.number }} de {{ clientes.paginator.num_pages }}.
                                             </span>
-                                            {% if ordenes.has_next %}
-                                            <a href="?page={{ ordenes.next_page_number }}">Siguiente>></a>
+                                            {% if clientes.has_next %}
+                                            <a href="?page={{ clientes.next_page_number }}">Siguiente>></a>
                                             {% endif %}
                                         </span>
                                     </div>

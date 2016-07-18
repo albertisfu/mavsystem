@@ -7,6 +7,8 @@ register = template.Library()
 
 @register.simple_tag
 def get_obj(insumo, orden):
+	print insumo
+	print orden
 	producto_orden = get_object_or_404(ProductoOrden, pk = orden)
 	insumo_producto =  get_object_or_404(InsumoProducto, pk = insumo)
 	print producto_orden
@@ -27,3 +29,10 @@ def get_fecha(insumo, orden):
 	fecha = obj.fecha
 	print fecha
 	return fecha
+
+
+@register.simple_tag
+def get_costo(cantidad, unitario):
+	total = float(cantidad)*float(unitario)
+	print total
+	return total

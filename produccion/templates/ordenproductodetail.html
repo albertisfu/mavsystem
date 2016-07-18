@@ -39,7 +39,7 @@
                                     <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.producto.file}}" style="width: 207px;"  class="detailimagen"></p>
                             </div>
 
-                            <div class="col-lg-8">
+                            <div class="col-lg-4">
 
                                 <div class="panel panel-default">
                                     <div class="panel-heading"> <i class="fa fa-info-circle"></i>
@@ -61,12 +61,52 @@
                                             <dd class="font-16">{{producto_orden.color}}</dd>
                                             <dt class="font-16">Comentario:</dt>
                                             <dd class="font-16">{{producto_orden.comentario}}</dd>
+                                            <dt class="font-16">Costo Total:</dt>
+                                            <dd class="font-16">{{producto_orden.producto.costo}}</dd>
 
                                         </dl>
                                     </div>
                                 </div>
 
                             </div>
+
+<div class="col-lg-4">
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <i class="fa fa-info-circle"></i>
+                                    Costos Especiales
+                                </div>
+                                <div class="panel-body">
+                                    {% if costoespeciales %}
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Concepto</th>
+                                                <th>Costo</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for costo in costoespeciales %}
+                                            <tr>
+                                                <td class="" class="pull-left">{{costo.concepto}}</td>
+                                                <td class="" class="pull-left">{{costo.costo}}</td>
+                                              
+
+                                            </tr>
+                                            {% endfor %}
+
+                                                                {% else %}
+                                                                No hay costos especiales
+                                                                {% endif %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                             </div>
 
                         </div>
 
