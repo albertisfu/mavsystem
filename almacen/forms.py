@@ -47,7 +47,7 @@ class insumoaddcat(forms.ModelForm):
 class editinsumoform(forms.ModelForm):
     class Meta:
         model = Insumo
-        fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'unidad', 'costounitario', 'file')
+        fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'unidad', 'costounitario')
         #exclude = ('orden',)
         labels = {					'descripcion': ('Descripción'),
                                     'costounitario': ('Costo Unitario'),

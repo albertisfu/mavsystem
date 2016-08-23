@@ -321,7 +321,7 @@ def OrdenDetail(request, orden):
 	return HttpResponse(template.render(context, request))
 
 
-#from django.db.models.signals import post_save
+from django.db.models.signals import post_save
 
 @login_required
 def OrdenProducto(request, orden):
@@ -351,11 +351,11 @@ def OrdenProducto(request, orden):
 				print 'suficiente'
 				newstock = insumo.insumo.stock - total_insumos_producto
 				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
-				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update precios
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
 			else:
 				newstock = insumo.insumo.stock - total_insumos_producto
 				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
-				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update precios
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
 				print 'no alcanza'
 
 		#print producto

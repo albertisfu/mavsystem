@@ -183,8 +183,6 @@ def editinsumo(request, pk):
        post.categoria = category 
        post.unidad = request.POST.get('unidad')
        post.costounitario = request.POST.get('costounitario')
-       if 'file' in request.POST:
-          post.file = request.POST.get('file')
        post.save()
        print 'save'
                              #payload = {'success': 'Concepto editado'}

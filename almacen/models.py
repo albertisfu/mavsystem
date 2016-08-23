@@ -98,17 +98,52 @@ def salida_insumo(sender, instance, created,  **kwargs):
   costostock = insumo.costounitario * newstock
   Insumo.objects.filter(pk=salida.insumo.pk).update(stock=newstock, costostock=costostock)
  
-
+from produccion.models import InsumoProducto, Producto, CostoEspecial, ProductoOrden, Orden
 
 @receiver(post_save, sender=Insumo)  
 def nuevo_insumo(sender, instance, created,  **kwargs):
-  currentinstanceid = instance.id
-  insumo = Insumo.objects.get(pk=currentinstanceid)
-  print insumo
-  print insumo.stock
-  currentstock = insumo.stock
-  costostock = insumo.costounitario * currentstock
-  Insumo.objects.filter(pk=currentinstanceid).update(costostock=costostock)
+	currentinstanceid = instance.id
+	insumo = Insumo.objects.get(pk=currentinstanceid)
+	print insumo
+	print insumo.stock
+	currentstock = insumo.stock
+	costostock = insumo.costounitario * currentstock
+	Insumo.objects.filter(pk=currentinstanceid).update(costostock=costostock)
+	#actualizar costo de insumoProducto cantidad de insumos para producto * costo unitario
+	insumosp = InsumoProducto.objects.filter(insumo=insumo)
+	
+	for insumop in insumosp:
+		costotinsumo = insumop.insumo.costounitario * insumop.cantidad
+		InsumoProducto.objects.filter(pk=insumop.id).update(costototal=costotinsumo)
+		productos = Producto.objects.filter(insumoproducto__id=insumop.id)
+		for producto in productos:
+			materials = InsumoProducto.objects.filter(producto=producto)
+			costoproducto = 0
+			for material in materials:
+				costotinsumo = material.insumo.costounitario * material.cantidad
+				#InsumoProducto.objects.filter(pk=material.id).update(costototal=costotinsumo)
+				costoproducto = costoproducto + costotinsumo
+
+			costoespeciales = CostoEspecial.objects.filter(producto=producto)
+			costoespecial = 0
+			for costoe in costoespeciales:
+				costoespecial = costoespecial + costoe.costo
+
+			costototalp = costoespecial + costoproducto
+			Producto.objects.filter(pk=producto.id).update(costo=costototalp)
+
+			productosorden = ProductoOrden.objects.filter(producto=producto)
+
+			for productorder in productosorden:
+				orders = Orden.objects.filter(productoorden__id=productorder.id)
+				for order in orders:
+					productos = ProductoOrden.objects.filter(orden=order)
+					costo=0
+					for producto in productos:
+						costo = costo+(producto.cantidad*producto.producto.costo)
+
+					Orden.objects.filter(pk=order.id).update(costo=costo)
+
 
 
 
