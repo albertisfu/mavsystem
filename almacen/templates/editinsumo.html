@@ -1,3 +1,5 @@
+{% load staticfiles %}
+<link href="{% static "css/customstyle.css"%}" rel="stylesheet">
 
 <script>
 
@@ -32,13 +34,13 @@ $.ajax({
 </script>
 
 <p>Datos de concepto a editar:</p>
-                        <div class="doctorformstyle">
+                        <div class="insumoformstyle">
                         <form id='formulario-modal' method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
                             <ul>{{form.as_p}}</ul>
 
                             <div class="row align-center">
-                               <button class="btn btn-info btn-w-sm" name="button" type="button" id="{{ post.pk }}" onClick="submiter(this.id)" > <i class="fa fa-pencil"></i>
+                               <button class="btn btn-info btn-w-m button280" name="button" type="button" id="{{ post.pk }}" onClick="submiter(this.id)" > <i class="fa fa-pencil"></i>
                         Editar
                     </button>
                             </div>

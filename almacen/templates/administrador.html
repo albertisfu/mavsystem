@@ -2,7 +2,7 @@
 {% extends "base.html" %} {% block title %}Panel Cliente{% endblock %} {% block content %}
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-md-10">
-        <h1><strong>Bienvenido: {{user.first_name}}&nbsp;{{user.last_name}}</strong></h1>
+        <h1><strong>Bienvenido: {{user.first_name}}&nbsp;{{user.last_name}} ({{user.username}})</strong></h1>
         <ol class="breadcrumb">
             <li>
                 Has iniciado una nueva sesión
@@ -22,7 +22,7 @@
                     <h3>Accesos rapidos:</h3>
                     <br>
                     <a href="/administrador/alta">
-                        <button class="btn btn-outline btn-success  dim" type="button"><i class="fa fa-plus"></i>&nbsp;Agregar nuevo insumo</button>
+                        <button class="btn btn-outline btn-danger  dim" type="button"><i class="fa fa-plus"></i>&nbsp;Agregar nuevo insumo</button>
                     </a>
                     <a href="/administrador/alta_producto">
                         <button class="btn btn-outline btn-info  dim" type="button"><i class="fa fa-plus"></i>&nbsp;Agregar producto</button>

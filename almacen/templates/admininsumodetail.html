@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Detalles de insumo: {{insumo.nombre}}{% endblock %}
 
 {% block content %}
-
+{% load humanize %}
 
 <script>
 
@@ -31,7 +31,6 @@
 
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Insumos</h2>
-
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
@@ -41,110 +40,87 @@
             </li>
         </ol>
     </div>
-
 </div>
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
+            <a href="/administrador/insumos">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar a lista de insumos
+                </button>
+            </a>
+            <p></p>
             <div class="ibox float-e-margins">
-
                 <div class="panel panel-default">
-
                     <div class="panel-heading">
                         <h2>{{insumo.nombre}}</h2>
                     </div>
-
                     <div class="panel-body">
                         <div class="row">
-
-                            <div class="col-lg-3 align-right">
-
+                            <div class="col-lg-3 align-center">
                                 <p>
-                                    <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="detailimagen"></p>
+                                    <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md1"></p>
                             </div>
-
                             <div class="col-lg-5">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Detalles
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Detalles
                                     </div>
                                     <div class="panel-body">
-<div id="reload-div">
-                                        <dl class="dl-horizontal">
-
-                                            <dt class="font-16">Codigo:</dt>
-                                            <dd class="font-16">{{insumo.codigo}}</dd>
-                                            <dt class="font-16">Descripción:</dt>
-                                            <dd class="font-16">{{insumo.descripcion}}</dd>
-                                            <dt class="font-16">Categoría:</dt>
-                                            <dd class="font-16">{{insumo.categoria}}</dd>
-                                            <dt class="font-16">Unidad:</dt>
-                                            <dd class="font-16">{{insumo.get_unidad_display}}</dd>
-                                            <dt class="font-16">Stock:</dt>
-                                            <dd class="font-16">{{insumo.stock}}</dd>
-                                            <dt class="font-16">Costo unitario:</dt>
-                                            <dd class="font-16">{{insumo.costounitario}}</dd>
-                                            <dt class="font-16">Costo Stock:</dt>
-                                            <dd class="font-16">{{insumo.costostock}}</dd>
-
-                                        </dl>
-  </div>
-                                         <button class="btn btn-info btn-w-sm" class="edit_button" type="button" data-toggle="modal" name="edit1" data-target="#myModal2" id="{{insumo.pk}}" onClick="edit(this.id)" > <i class="fa fa-pencil"></i>
-                        Editar
-                    </button>
-                    &nbsp;
-
+                                        <div id="reload-div">
+                                            <dl class="dl-horizontal">
+                                                <dt class="font-16">Codigo:</dt>
+                                                <dd class="font-16">{{insumo.codigo}}</dd>
+                                                <dt class="font-16">Descripción:</dt>
+                                                <dd class="font-16">{{insumo.descripcion|default:"----"}}</dd>
+                                                <dt class="font-16">Categoría:</dt>
+                                                <dd class="font-16">{{insumo.categoria|default_if_none:"----"}}</dd>
+                                                <dt class="font-16">Unidad:</dt>
+                                                <dd class="font-16">{{insumo.get_unidad_display}}</dd>
+                                                <dt class="font-16">Stock:</dt>
+                                                <dd class="font-16">{{insumo.stock}}</dd>
+                                                <dt class="font-16">Costo unitario:</dt>
+                                                <dd class="font-16">${{insumo.costounitario|floatformat:2|intcomma}}</dd>
+                                                <dt class="font-16">Costo Stock:</dt>
+                                                <dd class="font-16">${{insumo.costostock|floatformat:2|intcomma}}</dd>
+                                            </dl>
+                                        </div>
+                                        <button class="btn btn-info btn-w-m pull-right" class="edit_button" type="button" data-toggle="modal" name="edit1" data-target="#myModal2" id="{{insumo.pk}}" onClick="edit(this.id)"> <i class="fa fa-pencil"></i> Editar
+                                        </button>
+                                        &nbsp;
                                     </div>
                                 </div>
-
                             </div>
-
                             <div class="col-lg-4">
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Acciones
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Acciones
                                     </div>
                                     <div class="panel-body align-center">
+                                        <h2>
 
-                                        <h2>
-                                            <a href="{% url "adminInsumoEntrada" insumo.pk %}">
-                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Entrada</button>
-                                            </a>
-                                        </h2>
-                                        <h2>
-                                            <a href="{% url "adminInsumoSalida" insumo.pk %}">
-                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Salida</button>
-                                            </a>
-                                        </h2>
+                                            <a href="{% url 'adminInsumoEntrada' insumo.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Entrada</a>
 
-                                        <h2>
-                                            <a href="{% url "adminEntradas" insumo.pk %}">
-                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Ver Entradas</button>
-                                            </a>
                                         </h2>
                                         <h2>
-                                            <a href="{% url "adminSalidas" insumo.pk %}">
-                                                <button type="button" class="btn btn-outline btn-success btn-xlg">Ver Salidas</button>
-                                            </a>
-                                        </h2>
 
+                                            <a href="{% url 'adminInsumoSalida' insumo.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Salida</a>
+                                        </h2>
+                                        <h2>
+                                            <a href="{% url 'adminEntradas' insumo.pk %}" class="btn btn-lg btn-warning m-t-n-xs button280"><i class="fa fa-list"></i>&nbsp;Ver Entradas</a>
+
+                                        </h2>
+                                        <h2>
+                                            <a href="{% url 'adminSalidas' insumo.pk %}" class="btn btn-lg btn-warning m-t-n-xs button280"><i class="fa fa-list"></i>&nbsp;Ver Salidas</a>
+                                        </h2>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
         </div>
-
     </div>
 </div>
+
 
 
 <!-- modal editar concepto -->

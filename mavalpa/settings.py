@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'almacen.apps.AlmacenConfig',
     'produccion.apps.ProduccionConfig',
+    'django.contrib.humanize',
 )
 
 MIDDLEWARE_CLASSES = (

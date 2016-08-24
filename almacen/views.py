@@ -14,7 +14,9 @@ from django.views.generic import ListView
 from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
-#Vista Home
+
+# ---------------------------------------------------------
+# Vista Home
 @login_required
 def administradorHome(request):
 	current_user = request.user
@@ -25,7 +27,8 @@ def administradorHome(request):
 	return HttpResponse(template.render(context, request))
 
 
-
+# ---------------------------------------------------------
+# Vista Alta insumos
 @login_required
 def administradorAlta(request):
 	current_user = request.user

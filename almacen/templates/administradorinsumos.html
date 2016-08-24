@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}Panel Cliente{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% block title %}Lista de insumos{% endblock %} {% block content %} {% load humanize %}
 <!-- Area titulo-->
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Insumos</h2>
-
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
@@ -16,152 +11,121 @@
             </li>
         </ol>
     </div>
-
 </div>
-
 <!-- Area contenido -->
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row ">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-content p-md">
-
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
                         <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="/administrador/alta"> <i class="fa fa-plus"></i>
-                                Agregar nuevo insumo
+                            <a class="btn btn-success btn-facebook" href="/administrador/alta"> <i class="fa fa-plus"></i> Agregar nuevo insumo
                             </a>
                         </div>
-
-
-
-
-
                         <div class="col-lg-4 pull-right">
                             <form id="searchform" action="{% url 'search_url' %}" method="get" accept-charset="utf-8" class="align-right searchform">
                                 <div class="input-group">
-                                    <input class="searchfield form-control input-lg" id="searchbox" name="q" type="text" placeholder="Buscar"></form>
-                                <div class="input-group-btn">
-                                    <button class="searchbutton btn btn-lg btn-primary" type="submit"> <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
+                                    <input class="searchfield form-control input-lg" id="searchbox" name="q" type="text" placeholder="Buscar">
+                            </form>
+                            <div class="input-group-btn">
+                                <button class="searchbutton btn btn-lg btn-primary" type="submit"> <i class="fa fa-search"></i>
+                                </button>
+                            </div>
                             </div>
                         </div>
                     </div>
-                    <!--<h1 id="titulo_header">Hola {{customer.name}}</h1>
-                -->
-                <section id="insumos">
-
-                    <div class="row">
-                        <div class="col-lg-12 align-center">
-                        </br>
-                            <h3>Filtros</h3>
-                            <form action="" method="get" class="formfiltros">
-                                <!-- formulario de filtros y orden -->
-                                <ul class="elementsinline">
-                                    {{ filters.form.as_ul}}
-                                    <input type="submit" class="btn btn-w-m btn-primary"/>
-                                </ul >
-                            </form>
-                            </br>
-                            <!--  {% for obj in filters %}
-        {{ obj.name }}<br />
-                            {% endfor %}-->
+                    <!--             Filtros -->
+                    <section id="insumos">
+                        <div class="row">
+                            <div class="col-lg-12 align-center">
+                                <br>
+                                <h3>Filtros</h3>
+                                <form action="" method="get" class="formfiltros">
+                                    <!-- formulario de filtros y orden -->
+                                    <ul class="elementsinline">
+                                        {{ filters.form.as_ul}}
+                                        <input type="submit" class="btn btn-w-m btn-primary" />
+                                    </ul>
+                                </form>
+                                <br>
+                            </div>
                         </div>
-                    </div>
+                        <!-- LISTAR INSUMOS -->
+                        {% if insumos %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h2>Insumos</h2>
+                            </div>
+                            <div class="panel-body">
+                                <div class="ibox-content">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Codigo</th>
+                                                <th>Categoría</th>
+                                                <th>Stock</th>
+                                                <th>Costo Unitario</th>
+                                                <th>Costo Stock</th>
+                                                <th>Foto</th>
+                                                <th>Entrada</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for insumo in insumos %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'adminInsumoDetail' insumo.pk %}">{{insumo.nombre}}</a>
+                                                </td>
+                                                <td>{{insumo.codigo}}</td>
+                                                <td>{{insumo.categoria|default_if_none:"----"}}</td>
+                                                <td>{{insumo.stock}}</td>
+                                                <td>${{insumo.costounitario|floatformat:2|intcomma}}</td>
+                                                <td>${{insumo.costostock|floatformat:2|intcomma}}</td>
+                                                <td>
+                                                    <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md"></td>
+                                                <td>
+                                            
+<a class="btn btn-success btn-facebook" href="{% url 'adminInsumoEntrada' insumo.pk %}"> <i class="fa fa-plus"></i>
+                                Agregar Entrada
+                            </a>
 
-                    <!-- LISTAR INSUMOS -->
-                    {% if insumos %}
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h2>Insumos</h2>
-                        </div>
-                        <div class="panel-body">
-                            <div class="ibox-content">
-
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-
-                                            <th>Nombre</th>
-                                            <th class="tablecolumnhosting">Codigo</th>
-                                            <th>Categoría</th>
-                                            <th class="tablecolumnhosting">Stock</th>
-                                             <th class="tablecolumnhosting">Costo Unitario</th>
-                                              <th class="tablecolumnhosting">Costo Stock</th>
-                                            <th>Foto</th>
-                                            <th>Entrada</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for insumo in insumos %}
-                                        <tr>
-
-                                            <td>
-                                                <a href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a>
-                                            </td>
-                                            <td class="tablecolumnhosting">{{insumo.codigo}}</td>
-                                            <td>{{insumo.categoria}}</td>
-                                            <td>{{insumo.stock}}</td>
-                                            <td>{{insumo.costounitario}}</td>
-                                            <td>{{insumo.costostock}}</td>
-
-
-                                            <td>
-                                                <img alt="{{insumo.name}}" src="{{ MEDIA_URL }}{{insumo.file}}" class="img-md"></td>
-                                            <td>
-
-                                                <a href="{% url "adminInsumoEntrada" insumo.pk %}"><button type="button" class="btn btn-outline btn-success btn-lg">Agregar Entrada</button></a>
-                                            </td>
-
-                                        </tr>
-                                        {% endfor %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
                                         </tbody>
-                                </table>
-            </div>
-        </div>
-
-    </div>
-
-        {% else %}
-                                        <div class="alert alert-warning payments">No hay insumos disponibles.</div>
-                                        {% endif %}
-                                    
-
-
-<div class="paginationbox">
-                                <div class="pagination">
-                                    <!-- paginacion-->
-                                    <span class="step-links">
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning payments">No hay insumos disponibles.</div>
+                        {% endif %}
+                        <div class="paginationbox">
+                            <div class="pagination">
+                                <!-- paginacion-->
+                                <span class="step-links">
                                         {% if insumos.has_previous %}
                                         <a href="?page={{ insumos.previous_page_number }}">
                                             << Anterior</a>
                                                 {% endif %}
                                                 <span class="current">
                                                     Pagina {{ insumos.number }} de {{ insumos.paginator.num_pages }}.
-                                                </span>
-                                                {% if insumos.has_next %}
-                                                <a href="?page={{ insumos.next_page_number }}">Siguiente>></a>
-                                                {% endif %}
-                                            </span>
-                                        </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
+                                                </span> {% if insumos.has_next %}
+                                <a href="?page={{ insumos.next_page_number }}">Siguiente>></a> {% endif %}
+                                </span>
                             </div>
-
-                        </section>
-
-                    </div>
+                        </div>
                 </div>
-
-    {% endblock %}
-
-        <script src="{{ STATIC_URL }}js/jquery-2.1.1.js"></script>
-    <script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-    <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="{{ STATIC_URL }}js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+            </div>
+        </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
+<script src="{{ STATIC_URL }}js/jquery-2.1.1.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="{{ STATIC_URL }}js/plugins/slimscroll/jquery.slimscroll.min.js"></script>

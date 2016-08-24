@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Ver salidas de: {{insumo.nombre}} {% endblock %}
 
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
@@ -21,6 +21,11 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
+        <a href='javascript:window.location = document.referrer;'>
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+            <p></p>
             <div class="ibox float-e-margins">
 
                 <div class="panel panel-default">
@@ -31,14 +36,14 @@
                     <div class="panel-body">
 
                         <div class="row">
-                            <div class="col-lg-3 align-right">
-                                <img alt="{{insumo.name}}" class="detailimagen" src="{{ MEDIA_URL }}{{insumo.file}}" ></div>
+                            <div class="col-lg-3 align-center">
+                                <img alt="{{insumo.name}}" class="img-md1" src="{{ MEDIA_URL }}{{insumo.file}}" ></div>
 
                             <div class="col-lg-5">
 
                                 <div class="panel panel-default">
                                     <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Info Panel
+                                        Detalles de insumo
                                     </div>
                                     <div class="panel-body">
 
@@ -58,13 +63,11 @@
                             <div class="col-lg-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Info Panel
+                                        Acciones
                                     </div>
                                     <div class="panel-body align-center">
+<a href="{% url 'adminInsumoSalida' insumo.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Salida</a>
 
-                                        <a href="{% url "adminInsumoSalida" insumo.pk %}">
-                                            <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Salida</button>
-                                        </a>
                                     </div>
                                 </div>
 
@@ -89,7 +92,7 @@
                         <div class="ibox-content">
 
                             <div class="row">
-                                <div class="col-lg-12 align-center"></br>
+                                <div class="col-lg-12 align-center"><br>
                                 <h3>Filtros</h3>
 
                                 <form action="" method="get" class="formfiltros">
@@ -106,7 +109,7 @@
                                 <tr>
                                     <th>Fecha</th>
                                     <th>Cantidad</th>
-                                    <th class="tablecolumnpayments">Comentario</th>
+                                    <th>Comentario</th>
                                     <th>Usuario</th>
                                 </tr>
                             </thead>
@@ -114,10 +117,10 @@
                                 {% for salida in salidas %}
                                 <tr>
 
-                                    <td>{{salida.fecha}}</td>
-                                    <td class="text-navy" class="pull-left">{{salida.cantidad}}</td>
-                                    <td class="text-navy tablecolumnpayments" class="pull-left">{{salida.comentario}}</td>
-                                    <td class="text-navy" class="pull-left">{{salida.usuario.first_name}} {{salida.usuario.last_name}}</td>
+                                    <td>{{salida.fecha|date:"d/M/Y"}}</td>
+                                    <td>{{salida.cantidad}}</td>
+                                    <td>{{salida.comentario}}</td>
+                                    <td>{{salida.usuario.first_name}} {{salida.usuario.last_name}} ({{salida.usuario.username}})</td>
                                 </tr>
                                 {% endfor %}
 
