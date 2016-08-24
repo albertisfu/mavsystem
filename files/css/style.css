@@ -2809,7 +2809,7 @@ video {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 240px;
-    min-height: 1000px;
+    min-height: 900px; /*mod*/
   }
 }
 .title-action {
@@ -4902,7 +4902,7 @@ body.skin-3 {
   #page-wrapper {
     position: inherit;
     margin: 0 0 0 220px;
-    min-height: 1200px;
+    min-height: 900px; /*mod*/
   }
   .navbar-static-side {
     z-index: 101;
