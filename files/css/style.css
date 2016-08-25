@@ -147,10 +147,7 @@ h5 {
 .nav.navbar-top-links .dropdown-alerts a {
   font-size: 12px;
 }
-.nav-header {
-  padding: 33px 25px;
-  background: url("patterns/header-profile.png") no-repeat;
-}
+
 .pace-done .nav-header {
   transition: all 0.5s;
 }
@@ -329,10 +326,7 @@ body.mini-navbar .navbar-default .nav > li > a {
 body.mini-navbar .logo-element {
   display: block;
 }
-body.mini-navbar .nav-header {
-  padding: 0;
-  background-color: #1ab394;
-}
+
 body.mini-navbar #page-wrapper {
   margin: 0 0 0 70px;
 }

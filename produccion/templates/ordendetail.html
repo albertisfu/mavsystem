@@ -28,7 +28,7 @@
                 </button>
             </a>
             <p></p>
-        
+
             <div class="ibox float-e-margins">
 
                 <div class="panel panel-default">
@@ -193,13 +193,13 @@ Pendiente
                                                 <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
                                                 <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
                                                 
-                                                <td class="" class="pull-left">{{producto.color}}</td>
-                                                <td class="" class="pull-left">{{producto.comentario}}</td>
+                                                <td class="" class="pull-left">{{producto.color|default:"----"}}</td>
+                                                <td class="" class="pull-left">{{producto.comentario|default:"----"}}</td>
                                                 <td class="" class="pull-left">
                                                     <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
-                                                    <td class="" class="pull-left">{{producto.producto.costo}}</td>
-                                                    <td class="" class="pull-left">{% get_costo producto.cantidad producto.producto.costo %}</td>
+                                                    <td class="" class="pull-left">${{producto.producto.costo|floatformat:2|intcomma}}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.producto.costo %}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>

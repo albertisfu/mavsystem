@@ -93,11 +93,11 @@
                                                 <a href="{% url "ProductoDetail" producto.pk %}">{{producto.nombre}}</a>
                                             </td>
                                             <td class="tablecolumnhosting">{{producto.codigo}}</td>
-                                            <td>{{producto.categoria}}</td>
+                                            <td>{{producto.categoria|default_if_none:"----"}}</td>
                                             <td>
                                                 <img alt="{{producto.name}}" class="img-sm " src="{{ MEDIA_URL }}{{producto.file}}" ></td>
                                             <td>
-                                                <a href="#" onClick="sendValue({{producto.pk}})"><button type="button" class="btn btn-outline btn-success btn-lg">Seleccionar</button></a>
+                                                <a href="#" onClick="sendValue({{producto.pk}})"><button type="button" class="btn  btn-success btn-md">Seleccionar</button></a>
                                             </td>
 
                                         </tr>

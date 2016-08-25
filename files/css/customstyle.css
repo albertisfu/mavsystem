@@ -15,6 +15,17 @@ body {
   color: white;
 }
 
+.nav-header {
+  padding: 33px 25px;
+  background-color: #292929;
+  /*background: url("patterns/header-profile.png") no-repeat;*/
+}
+
+body.mini-navbar .nav-header {
+  padding: 0;
+  background-color: #292929;
+}
+
 .nav > li.active {
   border-left: 4px solid #f36523;
   background: #333;

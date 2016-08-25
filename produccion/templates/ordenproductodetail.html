@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Detalle de Producto de Orden{% endblock %}
 
 {% block content %}
+{% load humanize %}
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Detalle del Producto</h2>
 
@@ -21,116 +22,91 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-            <div class="ibox float-e-margins">
+        <a href="javascript:window.location = document.referrer;">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+            <p></p>
 
+            <div class="ibox float-e-margins">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h2>
                             Detalle del producto de orden: <strong>{{producto_orden.orden}}</strong>
                         </h2>
                     </div>
+                    <!-- panel body -->
                     <div class="panel-body">
-
                         <div class="row">
-
-                            <div class="col-lg-3 align-right">
-
+                            <div class="col-lg-3 align-center">
                                 <p>
-                                    <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.producto.file}}" style="width: 207px;"  class="detailimagen"></p>
+                                    <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.producto.file}}" style="width: 207px;" class="img-md1"></p>
                             </div>
-
                             <div class="col-lg-4">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Detalles
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Detalles
                                     </div>
                                     <div class="panel-body">
-
                                         <dl class="dl-horizontal">
-
                                             <dt class="font-16">Codigo:</dt>
                                             <dd class="font-16">{{producto_orden.producto.codigo}}</dd>
                                             <dt class="font-16">Descripción:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.descripcion}}</dd>
+                                            <dd class="font-16">{{producto_orden.producto.descripcion|default:"----"}}</dd>
                                             <dt class="font-16">Categoría:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.categoria}}</dd>
+                                            <dd class="font-16">{{producto_orden.producto.categoria|default_if_none:"----"}}</dd>
                                             <dt class="font-16">Cantidad:</dt>
                                             <dd class="font-16">{{producto_orden.cantidad}}</dd>
                                             <dt class="font-16">Color:</dt>
-                                            <dd class="font-16">{{producto_orden.color}}</dd>
+                                            <dd class="font-16">{{producto_orden.color|default:"----"}}</dd>
                                             <dt class="font-16">Comentario:</dt>
-                                            <dd class="font-16">{{producto_orden.comentario}}</dd>
+                                            <dd class="font-16">{{producto_orden.comentario|default:"----"}}</dd>
                                             <dt class="font-16">Costo Total:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.costo}}</dd>
-
+                                            <dd class="font-16">${{producto_orden.producto.costo|floatformat:2|intcomma}}</dd>
                                         </dl>
                                     </div>
                                 </div>
-
                             </div>
 
-<div class="col-lg-4">
-
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-info-circle"></i>
-                                    Costos Especiales
-                                </div>
-                                <div class="panel-body">
-                                    {% if costoespeciales %}
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Concepto</th>
-                                                <th>Costo</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for costo in costoespeciales %}
-                                            <tr>
-                                                <td class="" class="pull-left">{{costo.concepto}}</td>
-                                                <td class="" class="pull-left">{{costo.costo}}</td>
-                                              
-
-                                            </tr>
-                                            {% endfor %}
-
-                                                                {% else %}
-                                                                No hay costos especiales
-                                                                {% endif %}
-                                        </tbody>
-                                    </table>
-
+                            <div class="col-lg-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-info-circle"></i> Costos Especiales
+                                    </div>
+                                    <div class="panel-body">
+                                        {% if costoespeciales %}
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Concepto</th>
+                                                    <th>Costo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for costo in costoespeciales %}
+                                                <tr>
+                                                    <td class="" class="pull-left">{{costo.concepto}}</td>
+                                                    <td class="" class="pull-left">${{costo.costo|floatformat:2|intcomma}}</td>
+                                                </tr>
+                                                {% endfor %} {% else %} No hay costos especiales {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-
-                             </div>
-
                         </div>
-
                     </div>
-                    <!-- panel body --> </div>
-                {% load ordertag %}
-
-
-
-
-
-                                        {% if insumos %}
+                    <!-- panel body -->
+                </div>
+            </div> <!-- fin ibox -->
+                {% load ordertag %} {% if insumos %}
                 <div class="col-lg-12">
                     <section id="pagos">
-
                         <div class="panel panel-default" style="clear: both;">
                             <div class="panel-heading">
                                 <h2>Lista de insumos</h2>
                             </div>
-
                             <div class="panel-body">
                                 <div class="ibox-content">
-                                    
-
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
@@ -140,37 +116,36 @@
                                                 <th>Fecha</th>
                                                 <th>Historial</th>
                                                 <th>Actualizar</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for insumo in insumos %}
                                             <tr>
-                                                <td class="text-navy" class="pull-left">{{insumo.insumo.nombre}}</td>
-                                                <td class="text-navy" class="pull-left">{{insumo.insumo.codigo}}</td>
-                                                <td class="text-navy" class="pull-left">{% get_obj insumo.pk producto_orden.pk %}</td>
-                                                <td class="text-navy" class="pull-left">{% get_fecha insumo.pk producto_orden.pk %}</td>
-                                                <td class="text-navy" class="pull-left"><button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button></td>
-                                                <td class="text-navy" class="pull-left"><button data-toggle="modal" data-target="#myModal7" type="button" class="btn btn-primary" onClick="insumo({{insumo.pk}})" >Actualizar</button></td>
-
+                                                <td>{{insumo.insumo.nombre}}</td>
+                                                <td>{{insumo.insumo.codigo}}</td>
+                                                <td>{% get_obj insumo.pk producto_orden.pk %}</td>
+                                                <td>{% get_fecha insumo.pk producto_orden.pk %}</td>
+                                                <td>
+                                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button>
+                                                </td>
+                                                <td>
+                                                    <button data-toggle="modal" data-target="#myModal7" type="button" class="btn btn-primary" onClick="insumo({{insumo.pk}})">Actualizar</button>
+                                                </td>
                                             </tr>
                                             {% endfor %}
-                                             </tbody>
+                                        </tbody>
                                     </table>
-
-                                                                {% else %}
-                                            <div class="row">
-                                                <div class="col-md-6 col-md-offset-3">
-                                                    <div class="alert alert-danger">No se han agregado insumos.</div>
-                                                </div>
-                                            </div>
-                                            {% endif %}
-                                       
+                                    {% else %}
+                                    <div class="row">
+                                        <div class="col-md-6 col-md-offset-3">
+                                            <div class="alert alert-danger">No se han agregado insumos.</div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
-
                         </div>
-
+                         <div class="paginationbox">
                         <div class="pagination">
                             <!-- paginacion-->
                             <span class="step-links">
@@ -180,69 +155,62 @@
                                         {% endif %}
                                         <span class="current">
                                             Pagina {{ insumos.number }} de {{ insumos.paginator.num_pages }}.
-                                        </span>
-                                        {% if insumos.has_next %}
-                                        <a href="?page={{ insumos.next_page_number }}">Siguiente>></a>
-                                        {% endif %}
-                                    </span>
-                                </div>
-
-                            </section>
-          </div>
-      
-              
-
-
-        <!-- MODAL -->
-        <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Cerrar</span>
-                        </button>
-                        <h3 class="modal-title">Historial</h3>
-<div id="modalcontent">
-                         </div>
-                    </div>
-                    <div class="modal-body">
-           
-                        
-
-
-                    </div>
+                                        </span> {% if insumos.has_next %}
+                            <a href="?page={{ insumos.next_page_number }}">Siguiente>></a> {% endif %}
+                            </span>
+                        </div></div>
+                    </section>
                 </div>
             </div>
         </div>
+              
+    </div>
+
+<!-- MODAL -->
+<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Cerrar</span>
+                </button>
+                <h3 class="modal-title">Historial</h3>
+                <div id="modalcontent">
+                </div>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
 
  <!-- MODAL -->
-        <div class="modal inmodal fade" id="myModal7" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Cerrar</span>
-                        </button>
-                        <h3 class="modal-title">Cambiar Estatus</h3>
+<div class="modal inmodal fade" id="myModal7" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Cerrar</span>
+                </button>
+                <h3 class="modal-title">Cambiar Estatus</h3>
+            </div>
+            <div class="modal-body">
+                <p>Por favor seleccione el estatus de la orden:</p>
+                <form id='formulario' method='post' enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <ul>{{form.as_p}}</ul>
+                    <div class="row align-center">
+                        <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary" />
                     </div>
-                    <div class="modal-body">
-                        <p>Por favor seleccione el estatus de la orden:</p>
-                        <form id='formulario' method='post' enctype='multipart/form-data'>
-                            {% csrf_token %}
-                            <ul>{{form.as_p}}</ul>
-
-                              <div class="row align-center">
-                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
-                            </div>
-
-                        </form>
-
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
+    </div>
+</div>
+
 
 
 
