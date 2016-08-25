@@ -14,12 +14,12 @@
                                         <tbody>
                                             {% for insumo in insumos %}
                                             <tr>
-                                                <td class="text-navy" class="pull-left">
+                                                <td>
                                                    {{insumo.insumo.insumo.nombre}}
                                                 </td>
-                                                <td class="" class="pull-left">{{insumo.fecha}}</td>
-                                                <td class="" class="pull-left">{{insumo.estatus}}</td>
-                                                <td class="" class="pull-left">{{insumo.usuario}}</td>
+                                                <td>{{insumo.fecha|date:"d/M/Y - h:i A"}}</td>
+                                                <td>{{insumo.estatus}}</td>
+                                                <td>{{insumo.usuario|default_if_none:"----"}}</td>
                                                
 
                                             </tr>

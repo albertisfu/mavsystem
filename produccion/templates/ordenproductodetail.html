@@ -84,8 +84,8 @@
                                             <tbody>
                                                 {% for costo in costoespeciales %}
                                                 <tr>
-                                                    <td class="" class="pull-left">{{costo.concepto}}</td>
-                                                    <td class="" class="pull-left">${{costo.costo|floatformat:2|intcomma}}</td>
+                                                    <td>{{costo.concepto}}</td>
+                                                    <td>${{costo.costo|floatformat:2|intcomma}}</td>
                                                 </tr>
                                                 {% endfor %} {% else %} No hay costos especiales {% endif %}
                                             </tbody>
