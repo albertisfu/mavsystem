@@ -1,131 +1,111 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Resultados de Busqueda de Orden{% endblock %}
 
 {% block content %}
 
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-    <!-- Titulo-->
-        <h2>Resultados de Busqueda</h2>
-   
-    </div>
-    <div class="col-lg-2">
 
-    </div>
 
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Resultados De Busqueda</h2>
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Buscar ordenes</a>
+            </li>
+            <li class="active"> <strong>Resultados</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
 
     <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
-
-   
-
-
-{% if object_list %}
-
-<div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <h2>Ordenes</h2>
+        <div class="row">
+            <div class="col-lg-12">
+<a href="javascript:window.location = document.referrer;">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+            <p></p>
+            <!-- Inicio ibox -->
+                <div class="ibox float-e-margins">
+                    
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h2>Ordenes</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="ibox-content">
+                            <!-- Ibox contenido -->
+                            {% if object_list %}
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Codigo</th>
+                                            <th>Descripción</th>
+                                            <th>Cliente</th>
+                                            <th>Fecha Expedicion</th>
+                                            <th>Fecha Entrega</th>
+                                            <th>Estatus</th>
+                                            <th>Usuario</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for orden in object_list %}
+                                        <tr>
+                                            <td><a href="#">{{orden.nombre}}</a></td>
+                                            <td>{{orden.codigo}} </td>
+                                            <td>{{orden.descripcion|default:"----"}} </td>
+                                            <td>{{orden.cliente}} </td>
+                                            <td>{{orden.fecha_expedicion|date:"d/M/Y"}} </td>
+                                            <td>{{orden.fecha_entrega|date:"d/M/Y"}} </td>
+                                            <td>{{orden.estatus}} </td>
+                                            <td>{{orden.usuario}} </td>
+                                        </tr>
+                                        {% endfor %} 
+</tbody>
+</table>
+                                      {% else %}
+                                        <div class="alert alert-warning payments">
+                                            No hay ordenes.
                                         </div>
-                                        <div class="panel-body">
-<div class="ibox-content">
+                                {% endif %}
 
-                            <table class="table table-hover">
-                                <thead>
-                                 <tr>
-                                    
-                                    
-                                    <th>Nombre</th>
-                                    <th class="tablecolumnhosting">Codigo</th>
-                            
-                                    <th>Descripción</th>
-                                    <th>Cliente</th>
-                                    <th>Fecha Expedicion</th>
-                                    <th>Fecha Entrega</th>
-                                    <th>Estatus</th>
-                                    <th>Usuario</th>
-
-                                </tr>
-                                </thead>
-                                <tbody>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-{% for orden in object_list %}
-    
-        <tr>
-                                    
-                                
-                                   <td><a href="#">{{orden.nombre}}</a></td>
-                                    <td class="tablecolumnhosting">{{orden.codigo}} </td>
-                                    <td>{{orden.descripcion}} </td>
-                                    <td>{{orden.cliente}} </td>
-                                    <td>{{orden.fecha_expedicion}} </td>
-                                    <td>{{orden.fecha_entrega}} </td>
-                                    <td>{{orden.estatus}} </td>
-                                    <td>{{orden.usuario}} </td>
-                                   
-                          
-                              
-                                </tr>
+<!-- paginacion -->
 
-{% endfor %}
-                               
-
-       {% if is_paginated %}
-        <div class="pagination">
+ <div class="paginationbox">
+<div class="pagination">
             <span class="page-links">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
                 {% endif %}
                 <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    Pagina {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.next_page_number }}">siguiente</a>
                 {% endif %}
             </span>
         </div>
-        {% endif %}
+ </div>
 
-{% else %}
-   <div class="alert alert-warning payments">
-                             No hay ordenes.
-                            </div>
-{% endif %}
-
-
-
-  </tbody>
-                            </table>
-                      
-      
-
-  </div>
-                                                              </div>
-
-                                    </div>
-
-
-
-    </div>
             </div>
         </div>
     </div>
     <div class="row">
-
-
-
     </div>
 
-</div>
 
 
-
-</div>
 
     
 {% endblock %}

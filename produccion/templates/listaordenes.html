@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Lista de Ordenes{% endblock %}
 
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
@@ -93,10 +93,10 @@
                                                     <a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a>
                                                 </td>
                                                 <td class="tablecolumnhosting">{{orden.codigo}}</td>
-                                                <td>{{orden.descripcion}}</td>
+                                                <td>{{orden.descripcion|default:"----"}}</td>
                                                 <td>{{orden.cliente}}</td>
-                                                <td>{{orden.fecha_expedicion}}</td>
-                                                <td>{{orden.fecha_entrega}}</td>
+                                                <td>{{orden.fecha_expedicion|date:"d/M/Y"}}</td>
+                                                <td>{{orden.fecha_entrega|date:"d/M/Y"}}</td>
                                                 <td>{{orden.estatus}}</td>
                                                 <td>{{orden.usuario}}</td>
 

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Detalle de la orden: {{orden.codigo}}{% endblock %}
 
 {% block content %}
+{% load humanize %}
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Detalle de la orden</h2>
 
@@ -21,6 +22,13 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
+
+<a href="javascript:window.location = document.referrer;">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+            <p></p>
+        
             <div class="ibox float-e-margins">
 
                 <div class="panel panel-default">
@@ -42,31 +50,31 @@
                                         <dt class="font-15">Cliente:</dt>
                                         <dd class="font-15">{{orden.cliente}}</dd>
                                         <dt class="font-15">Fecha de expedición:</dt>
-                                        <dd class="font-15">{{orden.fecha_expedicion}}</dd>
+                                        <dd class="font-15">{{orden.fecha_expedicion|date:"d/M/Y"}}</dd>
                                         <dt class="font-15">Fecha de entrega:</dt>
-                                        <dd class="font-15">{{orden.fecha_entrega}}</dd>
+                                        <dd class="font-15">{{orden.fecha_entrega|date:"d/M/Y"}}</dd>
 
                                         <dt class="font-15">Metodo entrega:</dt>
                                         <dd class="font-15">{{orden.get_entrega_display}}</dd>
                                         <dt class="font-15">Dirección entrega:</dt>
-                                        <dd class="font-15">{{orden.direccionentrega}}</dd>
+                                        <dd class="font-15">{{orden.direccionentrega|default:"----"}}</dd>
                                         <dt class="font-15">Costo Flete:</dt>
-                                        <dd class="font-15">{{orden.costoflete}}</dd>
+                                        <dd class="font-15">${{orden.costoflete|floatformat:2|intcomma}}</dd>
 
                                         <dt class="font-15">Estatus original:</dt>
                                         <dd class="font-15">{{orden.get_estatus_display}}</dd>
                                         <dt class="font-15">Creada por:</dt>
                                         <dd class="font-15">{{orden.usuario}}</dd>
                                         <dt class="font-15">Costo Orden:</dt>
-                                        <dd class="font-15">{{orden.costo}}</dd>
+                                        <dd class="font-15">${{orden.costo|floatformat:2|intcomma}}</dd>
 
 
                                     </dl>
                                 </div>
                             </div>
                             <div class="align-center">
-                                <a href="{% url "OrdenProducto" orden.pk %}" class="align-center">
-                                    <button type="button" class="btn btn-outline btn-success btn-lg">Agregar Productos</button>
+                                <a href="{% url 'OrdenProducto' orden.pk %}" class="align-center">
+                                    <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
                             </div>
                         </div>
@@ -124,7 +132,7 @@ Pendiente
                                         <tbody>
                                             {% for comentario in comentarios %}
                                             <tr>
-                                                <td class="" class="pull-left">{{comentario.fecha}}</td>
+                                                <td class="" class="pull-left">{{comentario.fecha|date:"d/m/Y - h:i A"}}</td>
                                                 <td class="" class="pull-left">{{comentario.get_estatus_display}}</td>
                                                 <td class="" class="pull-left">{{comentario.comentario}}</td>
                                                 <td class="" class="pull-left">{{comentario.usuario}}</td>

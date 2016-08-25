@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Detalles del Producto: {{producto.nombre}}{% endblock %}
 
 {% block content %}
+{% load humanize %}
 <!-- TITULO -->
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Detalles del Producto</h2>
@@ -23,6 +24,12 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
+    <a href="/administrador/lista_productos">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar a lista de productos
+                </button>
+            </a>
+            <p></p>
+
             <div class="ibox float-e-margins">
 
                 <div class="panel panel-default">
@@ -32,8 +39,8 @@
                     <div class="panel-body">
 
                         <div class="row">
-                            <div class="col-lg-3 align-right">
-                                <img alt="{{producto.name}}" class="detailimagen" src="{{ MEDIA_URL }}{{producto.file}}"style="width: 207px;" ></div>
+                            <div class="col-lg-3 align-center">
+                                <img alt="{{producto.name}}" class="img-md1" src="{{ MEDIA_URL }}{{producto.file}}"style="width: 207px;" ></div>
 
                             <div class="col-lg-5">
 
@@ -48,11 +55,11 @@
                                             <dt class="font-16">Codigo:</dt>
                                             <dd class="font-16">{{producto.codigo}}</dd>
                                             <dt class="font-16">Descripción:</dt>
-                                            <dd class="font-16">{{producto.descripcion}}</dd>
+                                            <dd class="font-16">{{producto.descripcion|default:"----"}}</dd>
                                             <dt class="font-16">Categoría:</dt>
-                                            <dd class="font-16">{{producto.categoria}}</dd>
+                                            <dd class="font-16">{{producto.categoria|default_if_none:"----"}}</dd>
                                             <dt class="font-16">Costo Producto:</dt>
-                                            <dd class="font-16">{{producto.costo}}</dd>
+                                            <dd class="font-16">${{producto.costo|floatformat:2|intcomma}}</dd>
 
                                         </dl>
                                     </div>
@@ -66,12 +73,11 @@
                                         Acciones
                                     </div>
                                     <div class="panel-body align-center">
+<a href="{% url 'ProductoInsumo' producto.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Material</a>
+    <p></p>
 
-                                        <a href="{% url "ProductoInsumo" producto.pk %}">
-                                            <button type="button" class="btn btn-outline btn-success btn-xlg">Agregar Material</button>
-                                            
-                                        </a></br>
-                                         <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Agregar Costo Especial</button>
+
+                                         <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Costo Especial</button>
                                     </div>
                                 </div>
 
@@ -96,7 +102,7 @@
                                             {% for costo in costoespeciales %}
                                             <tr>
                                                 <td class="" class="pull-left">{{costo.concepto}}</td>
-                                                <td class="" class="pull-left">{{costo.costo}}</td>
+                                                <td class="" class="pull-left">${{costo.costo|floatformat:2|intcomma}}</td>
                                               
 
                                             </tr>
@@ -160,8 +166,8 @@
                                                 <td class="" class="pull-left">{{material.insumo.stock}}</td>
                                                 <td class="" class="pull-left">{{material.cantidad}}</td>
                                                 
-                                                <td class="" class="pull-left">{{material.insumo.costounitario}}</td>
-                                                 <td class="" class="pull-left">{{material.costototal}}</td>
+                                                <td class="" class="pull-left">${{material.insumo.costounitario|floatformat:2|intcomma}}</td>
+                                                 <td class="" class="pull-left">${{material.costototal|floatformat:2|intcomma}}</td>
                                                 
                                                 <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="submit"><i class="fa fa-times"></i> Borrar</button></td>
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Agregar Nuevo Producto{% endblock %}
 
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
@@ -33,13 +33,15 @@
               <div class="col-lg-4 align-center">
                 
               <h1><strong>Acciones:</strong></h1>
-                
-<button type="button" data-toggle="modal" data-target="#myModal7"  class="btn btn-xlg btn-info"><i class="fa fa-plus"></i>&nbsp;Agregar nueva categoria</button>
+                <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+                <p></p>
+
+<button type="button" data-toggle="modal" data-target="#myModal7"  class="btn btn-lg m-t-n-xs btn-info button280"><i class="fa fa-plus"></i>&nbsp;Agregar nueva categoria</button>
 
 
 <p>
 </p>
-<button type="submit" name="save" class="btn btn-xlg btn-primary"><i class="fa fa-save"></i>&nbsp;Guardar nuevo producto</button>
+<button type="submit" name="save" class="btn btn-lg m-t-n-xs btn-primary button280"><i class="fa fa-save"></i>&nbsp;Guardar nuevo producto</button>
 
 
 

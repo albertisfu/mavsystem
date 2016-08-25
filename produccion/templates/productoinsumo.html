@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Asignar Material a Producto: {{producto.nombre}}{% endblock %}
 
 {% block content %}
 <script>
@@ -9,7 +9,7 @@ function selectValue(id)
 {
     // open popup window and pass field id
     window.open('/administrador/popinsumo','popuppage',
-      'width=800,toolbar=1,resizable=1,scrollbars=yes,height=400,top=100,left=100');
+      'width=800,toolbar=1,resizable=1,scrollbars=yes,height=600,top=100,left=100');
 }
 
 function updateValue(id, value)
@@ -28,7 +28,7 @@ function updateValue(id, value)
         //console.log(data);
         var html = ''
 
-        html += '<span>: '+data[0].insumo+' codigo:'+data[1].insumosku+'</span>'
+        html += '<br><div style="border: dotted 1px #000000;padding: 5px;width: 50%;"><span><strong>Nombre: </strong> '+data[0].insumo+' <br><strong>Codigo: </strong>'+data[1].insumosku+'</span> </div><br>'
         //console.log(html);
         $('#viewinsumo').html(html); 
 
@@ -41,7 +41,7 @@ function updateValue(id, value)
 
 });
 
-$("#seleccionar").html('Cambiar');
+$("#seleccionar").html('Cambiar insumo');
 
 
 }
@@ -49,14 +49,14 @@ $("#seleccionar").html('Cambiar');
 </script>
 
 <div class="row  border-bottom white-bg dashboard-header">
-    <h2>Asignar Insumo a Producto</h2>
+    <h2>Asignar Material a Producto</h2>
 
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
                 <a href="#">Producción</a>
             </li>
-            <li class="active"> <strong>Asignar insumo</strong>
+            <li class="active"> <strong>Asignar material</strong>
             </li>
         </ol>
     </div>
@@ -72,41 +72,44 @@ $("#seleccionar").html('Cambiar');
                     <div class="panel-heading">
 
                         <h2>
-                            Asignar insumo para: <strong>{{producto.nombre}}-{{producto.codigo}}</strong>
+                            Asignar material para: <strong>{{producto.nombre}}-{{producto.codigo}}</strong>
                         </h2>
                     </div>
                     <div class="row">
                         <div class="col-lg-8">
                             <div class="p-xs">
                                 <div class="insumoformstyle">
+                                <br>
                                     <form id='formulario' method='post' enctype='multipart/form-data'>
                                         {% csrf_token %}
                                         <ul>
                                             <li>
-                                                <label class="control-label">Insumo</label><span id="viewinsumo"></span>
+                                                <label class="control-label">Insumo:</label><span id="viewinsumo"></span>
                                                 <input id="insumo" type="hidden" name="insumo"/>
                                                 <button id="seleccionar" type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
                                             </li>
                                             <li>
-                                                <label class="control-label">Cantidad</label>
+                                                <label class="control-label">Cantidad:</label>
                                                 <input type="number" name="cantidad" />
                                             </li>
                                         </ul>
+                                    <br>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4"></div>
-                        </div>
-
-                        <div class="row p-xs">
-                            <div class="col-lg-12">
-                                <div class="wrapper wrapper-content">
-
-                                    <button type="submit" name="save" class="btn btn-xlg btn-primary pull-right m-t-n-xs">Guardar</button>
-                                </form>
+                            <div class="col-lg-4">
+                                                            <br>
+                        <h3><strong>Acciones:</strong></h3>
+                        <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+<p></p>
+                        <button type="submit" name="save" class="btn btn-lg btn-primary  m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar material</button>
+                            </form>
+                            <p></p>
+<br>
                             </div>
                         </div>
-                    </div>
+
+
 
                 </div>
 

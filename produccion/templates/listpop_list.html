@@ -57,7 +57,7 @@
                                                 <a href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a>
                                             </td>
                                             <td class="tablecolumnhosting">{{insumo.codigo}}</td>
-                                            <td>{{insumo.categoria}}</td>
+                                            <td>{{insumo.categoria|default_if_none:"----"}}</td>
 
                                             <td>
                                                 <img alt="{{insumo.name}}" class="img-sm " src="{{ MEDIA_URL }}{{insumo.file}}" ></td>
@@ -65,7 +65,7 @@
                                             <td>
 
                                                 <a href="#" onClick="sendValue({{insumo.pk}})">
-                                                    <button type="button" class="btn btn-outline btn-success btn-lg">Seleccionar</button>
+                                                    <button type="button" class="btn-success btn-sm">Seleccionar</button>
                                                 </a>
                                             </td>
 

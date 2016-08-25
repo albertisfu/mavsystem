@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Lista de productos{% endblock %}
 
 {% block content %}
+{% load humanize %}
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Lista de productos</h2>
 
@@ -76,7 +77,7 @@
                                     <tr>
 
                                         <th>Nombre</th>
-                                        <th class="tablecolumnhosting">Codigo</th>
+                                        <th>Codigo</th>
                                         <th>Categoría</th>
                                         <th>Descripción</th>
                                         <th>Costo</th>
@@ -91,10 +92,10 @@
                                         <td>
                                             <a href="{% url "ProductoDetail" producto.pk %}">{{producto.nombre}}</a>
                                         </td>
-                                        <td class="tablecolumnhosting">{{producto.codigo}}</td>
-                                        <td>{{producto.categoria}}</td>
-                                        <td>{{producto.descripcion}}</td>
-                                         <td>{{producto.costo}}</td>
+                                        <td>{{producto.codigo}}</td>
+                                        <td>{{producto.categoria|default_if_none:"----"}}</td>
+                                        <td>{{producto.descripcion|default:"----"}}</td>
+                                         <td>${{producto.costo|floatformat:2|intcomma}}</td>
                                         <td>
                                             <img alt="{{producto.name}}" class="img-md" src="{{ MEDIA_URL }}{{producto.file}}"></td>
 

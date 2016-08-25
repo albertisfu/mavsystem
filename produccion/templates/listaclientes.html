@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Lista de Clientes{% endblock %}
 
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
@@ -47,6 +47,7 @@
                         <div class="row">
                            
                         </div>
+                        <p></p>
                         {% if clientes %}
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -64,7 +65,7 @@
 
                                                 <th>Empresa</th>
                                                 <th>Teléfono</th>
-                                                <th>email</th>
+                                                <th>Email</th>
                                             
 
                                             </tr>
@@ -74,11 +75,11 @@
                                             <tr>
 
                                                 <td>
-                                                    <a href="{% url "ClienteDetail" cliente.pk %}">{{cliente.nombrecontacto}}</a>
+                                                    <a href="{% url 'ClienteDetail' cliente.pk %}">{{cliente.nombrecontacto}}</a>
                                                 </td>
-                                                <td class="tablecolumnhosting">{{cliente.empresainstitucion}}</td>
-                                                <td>{{cliente.telefono}}</td>
-                                                <td>{{cliente.email}}</td>
+                                                <td>{{cliente.empresainstitucion|default:"----"}}</td>
+                                                <td>{{cliente.telefono|default:"----"}}</td>
+                                                <td>{{cliente.email|default:"----"}}</td>
                                         
 
                                             </tr>
@@ -89,6 +90,7 @@
                             </div>
                         </div>
                         {% else %}
+                        <p></p>
                         <div class="alert alert-warning payments">No hay Ordenes.</div>
                         {% endif %}
                         
