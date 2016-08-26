@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}Agregar salida para: {{insumo.nombre}}{% endblock %}
 
 {% block content %}
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Salida de Insumos</h2>
 
@@ -35,7 +39,7 @@
                             <div class="p-xs">
                                 <div class="insumoformstyle">
                                 <br>
-                    <form id='formulario' method='post' enctype='multipart/form-data'>
+                    <form id='formulariosalida' method='post' enctype='multipart/form-data'>
                         {% csrf_token %}
                         <ul>{{form.as_p}}</ul>
 <br>
@@ -67,4 +71,37 @@
     </div>
 </div>
 <div class="row"></div>
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariosalida").validate({
+        rules: {
+            cantidad: {
+                required: true,
+                min: 0
+            },
+            comentario: {
+                required: true
+            }
+        },
+        messages: {
+            cantidad: "Cantidad mayor o igual a 0",
+            comentario: "Comentario obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
 {% endblock %}

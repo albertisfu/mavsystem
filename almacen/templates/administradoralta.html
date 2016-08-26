@@ -1,8 +1,13 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}Agregar Nuevo Insumo{% endblock %}
 
 {% block content %}
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
 <!-- Area titulo-->
 <div class="row  border-bottom white-bg dashboard-header">
   <h2>Agregar Nuevo Insumo</h2>
@@ -24,7 +29,7 @@
     <div class="wrapper wrapper-content animated fadeInRight">
       <div class="ibox-content p-xl">
         <div class="insumoformstyle">
-          <form id='formulario' method='post' enctype='multipart/form-data'>
+          <form id='formularioalta' method='post' enctype='multipart/form-data'>
             {% csrf_token %}
             <div class="row">
               <div class="col-lg-8">
@@ -68,7 +73,8 @@
                     </div>
                     <div class="modal-body">
                         <p>Ingrese el nombre de la nueva categoría:</p>
-                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                        <div class="insumoformstyle">
+                        <form id="formulariocat" method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
                             <ul>{{form2.as_p}}</ul>
 
@@ -77,11 +83,73 @@
                             </div>
 
                         </form>
-
+                      </div>
                     </div>
                 </div>
             </div>
         </div>
 
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioalta").validate({
+        rules: {
+            costounitario: {
+                required: true,
+                min: 0
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de insumo obligatorio",
+            codigo : "Codigo de insumo obligatorio",
+            costounitario: "Costo mayor a 0"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariocat").validate({
+        rules: {
+            nombre: {
+              required: true
+            },
+        },
+        messages: {
+            nombre: "Nombre de categoría obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
 
 {% endblock %}

@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}Asignar Material a Producto: {{producto.nombre}}{% endblock %}
 
 {% block content %}
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
 <script>
 
 function selectValue(id)
@@ -80,7 +84,7 @@ $("#seleccionar").html('Cambiar insumo');
                             <div class="p-xs">
                                 <div class="insumoformstyle">
                                 <br>
-                                    <form id='formulario' method='post' enctype='multipart/form-data'>
+                                    <form id='formulariomat' method='post' enctype='multipart/form-data'>
                                         {% csrf_token %}
                                         <ul>
                                             <li>
@@ -117,4 +121,34 @@ $("#seleccionar").html('Cambiar insumo');
         </div>
     </div>
 </div>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariomat").validate({
+        rules: {
+            cantidad: {
+                required: true,
+                min: 0
+            }
+        },
+        messages: {
+           cantidad: "Cantidad mayor o igual a 0",
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
 {% endblock %}

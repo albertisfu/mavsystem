@@ -1,5 +1,9 @@
 {% load staticfiles %}
 <link href="{% static "css/customstyle.css"%}" rel="stylesheet">
+{% block content %}
+<script src="{% static "js/jquery-2.1.1.js" %}"></script>
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
 
 <script>
 
@@ -48,3 +52,42 @@ $.ajax({
                         </form>
 
 </div>
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulario-modal").validate({
+        rules: {
+            costounitario: {
+                required: true,
+                min: 0
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de insumo obligatorio",
+            codigo : "Codigo de insumo obligatorio",
+            costounitario: "Costo mayor a 0"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+{% endblock %}

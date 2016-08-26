@@ -1,12 +1,17 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
-{% block title %}Panel Cliente{% endblock %}
+{% block title %}Agregar Nueva Orden{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
-
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
 
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Agregar Nueva Orden</h2>
@@ -25,7 +30,7 @@
         <div class="wrapper wrapper-content animated fadeInRight">
             <div class="ibox-content p-xl">
                 <div class="insumoformstyle">
-                    <form id='formulario' method='post' enctype='multipart/form-data'>
+                    <form id='formularioord' method='post' enctype='multipart/form-data'>
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-lg-8">
@@ -89,7 +94,8 @@
                     </div>
                     <div class="modal-body">
                         <p>Ingrese los datos del cliente:</p>
-                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                        <div class="insumoformstyle">
+                        <form id='formulariocliente' method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
                             <ul>{{form2.as_p}}</ul>
 
@@ -98,11 +104,96 @@
                             </div>
 
                         </form>
-
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
 
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioord").validate({
+        rules: {
+            descripcion: {
+                required: true
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            },
+            cliente: {
+                required: true
+            },
+            fecha_entrega: {
+                required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de orden obligatorio",
+            codigo : "Codigo de orden obligatorio",
+            descripcion: "Descripción obligatoria",
+            cliente: "Cliente obligatorio",
+            fecha_entrega: "Fecha de entrega obligatoria"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariocliente").validate({
+        rules: {
+            nombrecontacto: {
+              required: true
+            },
+            telefono: {
+              required: true
+            }
+        },
+        messages: {
+            nombrecontacto: "Nombre obligatorio",
+            telefono: "Telefono obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+<script>
+$('#id_cliente').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+
+});
+</script>
 
 {% endblock %}
