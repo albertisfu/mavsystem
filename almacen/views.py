@@ -15,6 +15,22 @@ from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
 
+from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
+from django.utils.decorators import method_decorator #permisos y grupos
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+#Grupos, checar si pertenece a grupo
+
+def group_required(*group_names):
+	def check(user):
+		if user.groups.filter(name__in=group_names).exists() | user.is_superuser:
+			return True
+		else:
+			return False
+	return user_passes_test(check, login_url='/prohibido/')
+
+# ---------------------------------------------------------
 # ---------------------------------------------------------
 # Vista Home
 @login_required
@@ -28,8 +44,10 @@ def administradorHome(request):
 
 
 # ---------------------------------------------------------
+# ---------------------------------------------------------
 # Vista Alta insumos
 @login_required
+@group_required('Administrador', 'Produccion')
 def administradorAlta(request):
 	current_user = request.user
 	template =  get_template("administradoralta.html")
@@ -64,6 +82,9 @@ def administradorAlta(request):
 
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > filtros lista de insumos
 
 class InsumosFilter(django_filters.FilterSet):
 
@@ -78,8 +99,12 @@ class InsumosFilter(django_filters.FilterSet):
 
 				)
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > lista de insumos
 
 @login_required
+@group_required('Administrador', 'Produccion')
 def administradorInsumos(request):
 	current_user = request.user
 	filters = InsumosFilter(request.GET, queryset=Insumo.objects.all()) 
@@ -101,10 +126,18 @@ def administradorInsumos(request):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > lista de insumos - busqueda
 
 class InsumoListView(ListView):
 	model = Insumo
 	template_name = 'insumo_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion'))
+	def dispatch(self, *args, **kwargs):
+		return super(OrdenesSearchListView, self).dispatch(*args, **kwargs)
   
 
 import operator
@@ -130,6 +163,9 @@ class SearchListView(InsumoListView):
 
         return result
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Ver entradas - filtros lista de insumos
 
 class EntradasFilter(django_filters.FilterSet):
 
@@ -143,9 +179,12 @@ class EntradasFilter(django_filters.FilterSet):
 
 				)
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo
 
 @login_required
+@group_required('Administrador', 'Produccion')
 def adminInsumoDetail(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	entradas = Entrada.objects.filter(insumo=insumo)
@@ -172,6 +211,12 @@ def adminInsumoDetail(request, insumo):
     }
 	return HttpResponse(template.render(context, request))
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo - Editar
+
+@login_required
+@group_required('Administrador', 'Produccion')
 def editinsumo(request, pk):
     post = Insumo.objects.get(pk = pk)
     print post
@@ -194,8 +239,12 @@ def editinsumo(request, pk):
         form = editinsumoform(instance=post)
     return render(request, 'editinsumo.html', {'form': form, 'post':post})
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Agregar entrada
 
 @login_required
+@group_required('Administrador', 'Produccion')
 def adminInsumoEntrada(request, insumo):
 	current_user = request.user
 	insumo = get_object_or_404(Insumo, pk = insumo)
@@ -222,8 +271,12 @@ def adminInsumoEntrada(request, insumo):
 
 	return HttpResponse(template.render(context, request))
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Agregar salida
 
 @login_required
+@group_required('Administrador', 'Produccion')
 def adminInsumoSalida(request, insumo):
 	current_user = request.user
 	insumo = get_object_or_404(Insumo, pk = insumo)
@@ -249,7 +302,12 @@ def adminInsumoSalida(request, insumo):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Ver entradas
+
 @login_required
+@group_required('Administrador', 'Produccion')
 def adminEntradas(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	entradas = Entrada.objects.filter(insumo=insumo)
@@ -277,6 +335,9 @@ def adminEntradas(request, insumo):
 
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Ver salidas - filtros lista de insumos
 
 class SalidasFilter(django_filters.FilterSet):
 
@@ -292,8 +353,12 @@ class SalidasFilter(django_filters.FilterSet):
 
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Inventario > Detalle insumo > Ver salidas
 
 @login_required
+@group_required('Administrador', 'Produccion')
 def adminSalidas(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	salidas = Salida.objects.filter(insumo=insumo)

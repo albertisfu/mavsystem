@@ -5,7 +5,6 @@
 {% block content %}
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Lista de entradas</h2>
-
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
@@ -15,75 +14,65 @@
             </li>
         </ol>
     </div>
-
 </div>
+
+
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-
-<a href='javascript:window.location = document.referrer;'>
+            <a href='javascript:window.location = document.referrer;'>
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
             <p></p>
-        
             <div class="ibox float-e-margins">
-
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h2>{{insumo.nombre}}</h2>
                     </div>
                     <div class="panel-body">
-
                         <div class="row">
                             <div class="col-lg-3 align-center">
-                                <img alt="{{insumo.name}}" class="img-md1" src="{{ MEDIA_URL }}{{insumo.file}}" ></div>
-
+                                <img alt="{{insumo.name}}" class="img-md1" src="{{ MEDIA_URL }}{{insumo.file}}"></div>
                             <div class="col-lg-5">
-
                                 <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Detalles de insumo
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Detalles de insumo
                                     </div>
                                     <div class="panel-body">
-
                                         <dl class="dl-horizontal">
-                                
-                                    <dt class="font-16">Codigo:</dt><dd class="font-16"> {{insumo.codigo}}</dd>
-                                    <dt class="font-16">Stock:</dt> <dd class="font-16">{{insumo.stock}}</dd>
-                             
-                                
-
-                                            </dl>
+                                            <dt class="font-16">Codigo:</dt>
+                                            <dd class="font-16"> {{insumo.codigo}}</dd>
+                                            <dt class="font-16">Stock:</dt>
+                                            <dd class="font-16">{{insumo.stock}}</dd>
+                                        </dl>
                                     </div>
                                 </div>
-
                             </div>
-
                             <div class="col-lg-4">
-                                  <div class="panel panel-default">
-                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                        Acciones
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Acciones
                                     </div>
                                     <div class="panel-body align-center">
-
-                                            <a href="{% url 'adminInsumoEntrada' insumo.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Entrada</a>
+                                        <a href="{% url 'adminInsumoEntrada' insumo.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Entrada</a>
+                                    </div>
                                 </div>
-                                </div>
-
                             </div>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
-        {% if entradas %}
-        <div class="col-lg-12">
-            <section id="pagos">
+    </div>
+</div>
 
+
+<!-- col tabla lista entradas -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+
+       
                 <div class="panel panel-default" style="clear: both;">
                     <div class="panel-heading">
                         <h2>Lista de Entradas</h2>
@@ -92,21 +81,23 @@
                     <div class="panel-body">
                         <div class="ibox-content">
 
-                            <div class="row">
-                                <div class="col-lg-12 align-center"><br>
-                                <h3>Filtros</h3>
+ 
+<div class="row">
+    <div class="col-lg-12 align-center">
+        <br>
+        <h3>Filtros</h3>
+        <form action="" method="get" class="formfiltros">
+            <!-- formulario de filtros y orden -->
+            <ul class="elementsinline">
+                {{ filters.form.as_ul}}
+                <input type="submit" class="btn btn-w-m btn-primary" />
+            </ul>
+            <br>
+        </form>
+    </div>
+</div>
 
-                                <form action="" method="get" class="formfiltros">
-                                    <!-- formulario de filtros y orden -->
-                                    <ul class="elementsinline">
-                                        {{ filters.form.as_ul}}
-                                        <input type="submit" class="btn btn-w-m btn-primary"/>
-                                    </ul>
-                                <br>
-                            </form>
-                        </div>
-                    </div>
-
+{% if entradas %}
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -127,21 +118,21 @@
                             </tr>
                             {% endfor %}
 
+ {% else %} 
 
-
-
-                                                                {% else %}
-                                                                No hay pagos
-                                                                {% endif %}
+ <div class="paginationbox"><h2>No hay entradas para este insumo</h2> </div>
+{% endif %}
                         </tbody>
                     </table>
-                </div>
+                
             </div>
-
         </div>
+
+
+
+<!-- paginacion -->
         <div class="paginationbox">
             <div class="pagination">
-                <!-- paginacion-->
                 <span class="step-links">
                     {% if entradas.has_previous %}
                     <a href="?page={{ entradas.previous_page_number }}&o={{sort}}">
@@ -156,11 +147,13 @@
                         </span>
                     </div>
                 </div>
+                </div>
+<!-- fin paginacion -->
 
-            </section>
 
         </div>
+<!-- fin col tabla lista entradas -->
 
-    </div>
+   </div>
 </div>
 {% endblock %}

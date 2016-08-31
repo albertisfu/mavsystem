@@ -79,7 +79,7 @@
 
             </div>
         </div>
-        {% if salidas %}
+        
         <div class="col-lg-12">
             <section id="pagos">
 
@@ -104,6 +104,7 @@
                                 </form>
                             </div>
                         </div>
+                        {% if salidas %}
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -128,11 +129,11 @@
 
 
                                                                 {% else %}
-                                                                No hay pagos
+                                                                 <div class="paginationbox"><h2>No hay salidas para este insumo</h2> </div>
                                                                 {% endif %}
                             </tbody>
                         </table>
-                    </div>
+                    
                 </div>
 
             </div>
@@ -154,7 +155,7 @@
                             </span>
                         </div>
                     </div>
-
+</div>
                 </section>
 
             </div>
