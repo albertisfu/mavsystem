@@ -58,11 +58,11 @@
 
 
                                      <li>
-                        <a href="/administrador/"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
+                        <a href="/"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
                     </li>
 
    <!-- Elemento Catalogo menu lateral-->
-   {% if user.groups.all.0.name == "Administrador" or user.is_superuser %}
+   {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
                     <li id="mainop">
                         <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -72,7 +72,7 @@
                     </li>
 {% endif %}
                         <!-- Elemento Entrada menu lateral-->
-                        {% if user.groups.all.0.name == "Entrada" or  user.is_superuser  %}
+                        {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or  user.is_superuser  %}
                     <li id="mainop2">
                         <a href="#"><i class="fa fa fa-edit"></i> <span class="nav-label">PRODUCCIÓN</span> <span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -82,7 +82,7 @@
                     </li>
 {% endif %}
                         <!-- Elemento cobro menu lateral-->
-                        {% if user.groups.all.0.name == "Cobro" or user.is_superuser  %}
+                        {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser  %}
                     <li id="mainop3">
                         <a href="/cobro/"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">

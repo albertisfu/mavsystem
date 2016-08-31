@@ -137,7 +137,7 @@ class InsumoListView(ListView):
 	@method_decorator(login_required)
 	@method_decorator(group_required('Administrador', 'Produccion'))
 	def dispatch(self, *args, **kwargs):
-		return super(OrdenesSearchListView, self).dispatch(*args, **kwargs)
+		return super(InsumoListView, self).dispatch(*args, **kwargs)
   
 
 import operator

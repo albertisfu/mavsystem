@@ -88,7 +88,7 @@
                                         <tr>
 
                                             <td>
-                                                <a href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a>
+                                                <a target="_blank" href="{% url "adminInsumoDetail" insumo.pk %}">{{insumo.nombre}}</a>
                                             </td>
                                             <td class="tablecolumnhosting">{{insumo.codigo}}</td>
                                             <td>{{insumo.categoria|default_if_none:"----"}}</td>

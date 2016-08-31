@@ -16,7 +16,28 @@ from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
 
+from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
+from django.utils.decorators import method_decorator #permisos y grupos
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+#Grupos, checar si pertenece a grupo
+
+def group_required(*group_names):
+	def check(user):
+		if user.groups.filter(name__in=group_names).exists() | user.is_superuser:
+			return True
+		else:
+			return False
+	return user_passes_test(check, login_url='/prohibido/')
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Alta producto
+
+
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def altaProducto(request):
 	template =  get_template("altaproducto.html")
 	form = altaProductoForm()
@@ -47,7 +68,9 @@ def altaProducto(request):
 	return HttpResponse(template.render(context, request))
 
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Filtro lista productos
 
 class ProductosFilter(django_filters.FilterSet):
 
@@ -58,9 +81,12 @@ class ProductosFilter(django_filters.FilterSet):
         		 }
 
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Lista de producto
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def listaProducto(request):
 	filters = ProductosFilter(request.GET, queryset=Producto.objects.all()) 
 	paginator = Paginator(filters, 10)
@@ -81,8 +107,12 @@ def listaProducto(request):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Detalle de producto
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def ProductoDetail(request, producto):
 	producto = get_object_or_404(Producto, pk = producto) 
 	template =  get_template("productodetail.html")
@@ -120,8 +150,12 @@ def ProductoDetail(request, producto):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Detalle de producto > asignar material
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def ProductoInsumo(request, producto):
 	producto = get_object_or_404(Producto, pk = producto)
 	template =  get_template("productoinsumo.html")
@@ -144,6 +178,9 @@ def ProductoInsumo(request, producto):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Detalle de producto > asignar material > popup filtro
 
 class InsumosFilter(django_filters.FilterSet):
 
@@ -154,7 +191,12 @@ class InsumosFilter(django_filters.FilterSet):
         		 }
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Detalle de producto > asignar material > popup lista
+
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def popInsumo(request):
 	filters = InsumosFilter(request.GET, queryset=Insumo.objects.all()) 
 	paginator = Paginator(filters, 10)
@@ -173,10 +215,18 @@ def popInsumo(request):
 	template =  get_template("popinsumo.html")
 	return HttpResponse(template.render(context, request))
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Detalle de producto > asignar material > popup buscar
 
 class InsumoPopListView(ListView):
 	model = Insumo
 	template_name = 'listpop_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(InsumoPopListView, self).dispatch(*args, **kwargs)
   
 import operator
 from django.db.models import Q
@@ -199,10 +249,13 @@ class SearchPopListView(InsumoPopListView):
         return result
 
 
-
-#Ordenes Views
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Nueva orden
+# /administrador/alta_orden
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def altaOrden(request):
 	current_user = request.user
 	template =  get_template("altaorden.html")
@@ -240,6 +293,9 @@ def altaOrden(request):
 
 	return HttpResponse(template.render(context, request))
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista ordenes - filtros
 
 class OrdenesFilter(django_filters.FilterSet):
 	class Meta:
@@ -255,11 +311,13 @@ class OrdenesFilter(django_filters.FilterSet):
 
 				)
 
-
-
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista ordenes
+# /administrador/lista_ordenes
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def listaOrdenes(request):
 	filters = OrdenesFilter(request.GET, queryset=Orden.objects.all()) 
 	paginator = Paginator(filters, 10)
@@ -280,8 +338,13 @@ def listaOrdenes(request):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden
+# /administrador/orden/pk/
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenDetail(request, orden):
 	current_user = request.user
 	orden = get_object_or_404(Orden, pk = orden) 
@@ -321,9 +384,16 @@ def OrdenDetail(request, orden):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > Agregar producto
+# /administrador/asignar_producto/pk/
+
+
 from django.db.models.signals import post_save
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenProducto(request, orden):
 	orden = get_object_or_404(Orden, pk = orden)
 	template =  get_template("ordenproducto.html")
@@ -364,9 +434,13 @@ def OrdenProducto(request, orden):
 		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > Detalle de producto
+# /administrador/producto_orden/pk/
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenProductoDetail(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
@@ -414,7 +488,13 @@ def OrdenProductoDetail(request, producto):
 	
 	return HttpResponse(template.render(context, request))
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > Detalle de producto > Historial
+# /administrador/producto_orden/pk/
+
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def HistoryCheckInsumo(request, orden, insumo):
 	producto_orden = get_object_or_404(ProductoOrden, pk = orden)
 	insumo_producto =  get_object_or_404(InsumoProducto, pk = insumo)
@@ -444,17 +524,19 @@ def HistoryCheckInsumo(request, orden, insumo):
 
 
 
-
-
-
-
-
-#search
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de ordenes > buscador
 
 
 class OrdenesListView(ListView):
 	model = Orden
 	template_name = 'ordenes_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(OrdenesListView, self).dispatch(*args, **kwargs)
   
 
 import operator
@@ -483,7 +565,9 @@ class SearchOrdenesListView(OrdenesListView):
         return result
 
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > popup producto filtros
 
 class ProductosFilter(django_filters.FilterSet):
 
@@ -493,8 +577,12 @@ class ProductosFilter(django_filters.FilterSet):
         		  'categoria':['exact'],
         		 }
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > popup filtros
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def popProducto(request):
 	filters = ProductosFilter(request.GET, queryset=Producto.objects.all()) 
 	paginator = Paginator(filters, 10)
@@ -514,9 +602,18 @@ def popProducto(request):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > popup producto buscar
+
 class ProductoPopListView(ListView):
 	model = Producto
 	template_name = 'listpop_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(ProductoPopListView, self).dispatch(*args, **kwargs)
   
 import operator
 from django.db.models import Q
@@ -567,11 +664,12 @@ def ajaxProducto(request):
 
 
 
-#Lista cliente
-
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de clientes
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def listaClientes(request):
 	filters = Cliente.objects.all()
 	paginator = Paginator(filters, 10)
@@ -594,13 +692,19 @@ def listaClientes(request):
 
 
 
-
-#search clientes
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de clientes - buscador
 
 
 class ClientesListView(ListView):
 	model = Cliente
 	template_name = 'clientes_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(ClientesListView, self).dispatch(*args, **kwargs)
   
 
 import operator
@@ -629,10 +733,13 @@ class SearchClientesListView(ClientesListView):
         return result
 
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalles de cliente
 
 
 @login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
 def ClienteDetail(request, cliente):
 	cliente = get_object_or_404(Cliente, pk = cliente) 
 	template =  get_template("clientedetail.html")

@@ -3,7 +3,7 @@ from almacen import views as almacen_views
 from views import SearchListView, InsumoListView
 urlpatterns = [
 
-    url(r'^administrador/$', almacen_views.administradorHome, name='administradorHome'), 
+    url(r'^$', almacen_views.administradorHome, name='administradorHome'), 
    	url(r'^administrador/alta$', almacen_views.administradorAlta, name='administradorAlta'), 
    	url(r'^administrador/insumos$', almacen_views.administradorInsumos, name='administradorInsumos'), 
    	url(r'^administrador/lista_insumos$', InsumoListView.as_view(), name='insumo-list'),
@@ -14,5 +14,7 @@ urlpatterns = [
    	url(r'^administrador/entradas/(?P<insumo>[-\w]+)/$', almacen_views.adminEntradas, name='adminEntradas'),
    	url(r'^administrador/salidas/(?P<insumo>[-\w]+)/$', almacen_views.adminSalidas, name='adminSalidas'),  
       url(r'^administrador/edit_insumo/(?P<pk>[0-9]+)/$', almacen_views.editinsumo, name='editinsumo'),
+
+      url(r'', include ('panel.urls')),
    ]
 

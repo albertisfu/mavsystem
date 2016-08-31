@@ -4,6 +4,7 @@
 <script src="{% static "js/jquery-2.1.1.js" %}"></script>
 <script src="{% static "js/jquery.validate.js" %}"></script>
 <script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
 
 <script>
 
@@ -53,6 +54,23 @@ $.ajax({
 
 </div>
 
+<script>
+$(document).ready(function(){
+    // Iniciar autonumeric campos
+   $("#id_costounitario").autoNumeric('init');
+});
+
+    </script>
+
+<script>
+$('#formulario-modal').submit(function() {
+
+    var txt = $('#id_costounitario');
+    txt.val(txt.val().replace(/,/g , ""));
+
+});
+</script>
+
 
 <script>
 // just for the demos, avoids form submit
@@ -66,7 +84,8 @@ jQuery(document).ready(function(){
         rules: {
             costounitario: {
                 required: true,
-                min: 0
+                // min: 0.0,
+                step: false
             },
             nombre: {
               required: true

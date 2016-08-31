@@ -41,6 +41,9 @@ class altaOrdenForm(forms.ModelForm):
             'direccionentrega': ('Dirección Entrega'),
             'costoflete': ('Costo Flete'),
         }
+		widgets = {
+			'costoflete': forms.TextInput(),
+		}
 
 
 
@@ -49,6 +52,9 @@ class CostoEspecialForm(forms.ModelForm):
 	class Meta:
 		model = CostoEspecial
 		fields = ('producto', 'concepto', 'costo')
+		widgets = {
+			'costo': forms.TextInput(),
+		}
       
 
 
