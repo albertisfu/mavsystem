@@ -45,8 +45,6 @@ class insumoaddcat(forms.ModelForm):
 
 
 
-		Insumo
-
 class editinsumoform(forms.ModelForm):
     class Meta:
 		model = Insumo
@@ -59,4 +57,56 @@ class editinsumoform(forms.ModelForm):
 		widgets = {
 			'costounitario': forms.TextInput(),
 		}
+
+class OrdenForm(forms.ModelForm):
+	fecha = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	class Meta:
+		model = OrdenCompra
+		fields = ('proveedor', 'numero', 'orden', 'fecha', 'iva')
+		labels = {
+            'proveedor': ('Proveedor'),
+            'numero': ('Numero de Orden'),
+            'Orden': ('Orden'),
+            'Fecha': ('Fecha'),
+            'IVA': ('IVA'),
+        }
+
+
+
+class ProveeForm(forms.ModelForm):
+	class Meta:
+		model = Proveedor
+		fields = ('nombre', 'id_unico', 'email', 'tel', 'direccion', 'celular')
+	
+
+class addinsumo(forms.ModelForm):
+	class Meta:
+		model = OrdenConcepto
+		fields = ('insumo', 'orden', 'cantidad')
+	
+
+
+class OrdenCompraModificar(forms.ModelForm):
+	fecha = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	class Meta:
+		model = OrdenCompra
+		fields = ('proveedor', 'numero', 'orden', 'fecha', 'iva')
+		labels = {
+            'proveedor': ('Proveedor'),
+            'numero': ('Numero de Orden'),
+            'Orden': ('Orden'),
+            'Fecha': ('Fecha'),
+            'IVA': ('IVA'),
+        }
+
+
+class editinsumocompra(forms.ModelForm):
+	class Meta:
+		model = OrdenConcepto
+		fields = ('insumo', 'orden', 'cantidad')
+	
+
+
+
+
 

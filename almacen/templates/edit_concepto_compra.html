@@ -1,0 +1,119 @@
+{% load staticfiles %}
+
+
+
+
+<script type="text/javascript">
+
+// $('#id_razon_social').selectize({
+//     create: false,
+//     sortField: 'text'
+// });
+
+$('#id_insumo').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    sortField: 'text'
+});
+
+
+
+  $(function() {
+    $( ".datepicker" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+
+
+
+</script>
+
+
+
+
+<p>Editar concepto <strong>{{ post.insumo }}</strong>:</p>
+<div class="doctorformstyle">
+    <form id='formulario-modal_edit_cobro' method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+        <ul>{{formy.as_p}}</ul>
+       
+        <div class="row align-center margin-center">
+            <button class="btn btn-info btn-w-m" name="subir" type="submit" id="{{ post.pk }}" style="width:100%;"> <i class="fa fa-pencil"></i> Editar
+            </button>
+        </div>
+    </form>
+</div>
+
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+    ignore: [],
+});
+
+jQuery(document).ready(function() {
+
+    $("#formulario-modal_edit_cobro").validate({
+        rules: {
+            cantidad: "required",
+
+        },
+        messages: {
+
+            cantidad: "Por favor ingrese una cantidad",
+        },
+        errorElement: "em",
+        errorPlacement: function(error, element) {
+            // Add the `help-block` class to the error element
+            error.addClass("text-center help-block alert alert-danger");
+        },
+
+
+        submitHandler: function(form) {
+
+            var id = $('button[name="subir"]').attr('id');
+            $.ajax({
+                type: "POST",
+                url: "/administrador/editarconceptocobro/" + id + "/",
+                data: $("#formulario-modal_edit_cobro").serialize(),
+                success: function(response) {
+
+                    $('#myModal3').modal('hide');
+
+
+ $('#reload-div').load(document.URL + ' #reload-div');
+
+
+
+
+
+                }
+            });
+
+            return false; // required to block normal submit since you used ajax
+        }
+
+
+
+    });
+
+});
+</script>
+

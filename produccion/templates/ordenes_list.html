@@ -56,7 +56,7 @@
                                     <tbody>
                                         {% for orden in object_list %}
                                         <tr>
-                                            <td><a href="#">{{orden.nombre}}</a></td>
+                                            <td><a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a></td>
                                             <td>{{orden.codigo}} </td>
                                             <td>{{orden.descripcion|default:"----"}} </td>
                                             <td>{{orden.cliente}} </td>

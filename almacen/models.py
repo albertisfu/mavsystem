@@ -66,6 +66,61 @@ class Salida(models.Model):
 	def __unicode__(self):
 		return self.insumo.nombre
 
+
+
+#models orden compra
+from produccion.models import InsumoProducto, Producto, CostoEspecial, ProductoOrden, Orden
+
+
+class Proveedor(models.Model):
+	nombre = models.CharField(max_length=100) #nombre completo
+	id_unico = models.CharField(max_length=30, blank=True, null=True)
+	email = models.EmailField(blank=True, null=True)
+	tel = models.CharField(max_length=20, blank=True, null=True)
+	direccion = models.CharField(max_length=500, blank=True, null=True)
+	celular = models.CharField(max_length=20, blank=True, null=True)
+	def __unicode__(self):
+		return '%s' % (self.nombre)
+
+class OrdenCompra(models.Model):
+	proveedor = models.ForeignKey(Proveedor)
+	numero = models.IntegerField(blank=True, null=True)
+	orden = models.ForeignKey(Orden)
+	fecha = models.DateField(default=timezone.now)
+	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
+	total = models.FloatField(default=0)
+	creada = 1
+	ingreso = 2
+	cancelada = 3
+	estatus_options = (
+	      (creada, 'Creada'),
+	      (ingreso, 'Ingreso'),
+	      (cancelada, 'Cancelada'),
+	  )
+	estatus = models.IntegerField(choices=estatus_options, default=creada)
+	iva = models.BooleanField(default=False)
+	def __unicode__(self):
+		return self.proveedor.nombre
+
+
+class OrdenConcepto(models.Model):
+	insumo = models.ForeignKey(Insumo)
+	orden = models.ForeignKey(Orden)
+	cantidad = models.FloatField()
+	total = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.producto.nombreprod
+
+from django.shortcuts import get_object_or_404
+@receiver(post_save, sender=OrdenConcepto)  
+def multi_concepto(sender, instance, created,  **kwargs):
+	concepto = get_object_or_404(OrdenConcepto, pk = instance.id)
+	total = concepto.cantidad*float(concepto.insumo.costounitario)
+	OrdenConcepto.objects.filter(pk=instance.id).update(total=total)
+
+
+
+
 #signal suma stock
 @receiver(post_save, sender=Entrada)  
 def entrada_insumo(sender, instance, created,  **kwargs):
@@ -98,7 +153,7 @@ def salida_insumo(sender, instance, created,  **kwargs):
   costostock = insumo.costounitario * newstock
   Insumo.objects.filter(pk=salida.insumo.pk).update(stock=newstock, costostock=costostock)
  
-from produccion.models import InsumoProducto, Producto, CostoEspecial, ProductoOrden, Orden
+
 
 @receiver(post_save, sender=Insumo)  
 def nuevo_insumo(sender, instance, created,  **kwargs):

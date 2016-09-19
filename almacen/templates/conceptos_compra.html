@@ -1,0 +1,113 @@
+{% load staticfiles %}
+
+
+{% load humanize %}
+
+<div id="reload-div">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+               
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th>Accion</th>
+                
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for insumo in insumos %}
+            <tr>
+               
+                <td>{{insumo.insumo}}</td>
+                <td>{{insumo.cantidad}}</td>
+                  <td>${{insumo.insumo.costounitario|floatformat:2|intcomma}}</td>
+                  <td>${{insumo.total|floatformat:2|intcomma}}</td>
+
+    {% if orden.estatus == 1 %} <!-- AGRE -->
+ <td>
+                
+                    <button class="btn btn-info btn-w-sm" class="edit_button" type="button" name="edit33" id="{{insumo.pk}}" onClick="openmodal(this.id)" > <i class="fa fa-pencil"></i>
+                        Editar
+                    </button>
+                    &nbsp;
+
+                    <button class="btn btn-w-sm btn-danger" type="button" id="{{insumo.pk}}" onClick="delete1(this.id)"> <i class="fa fa-times"></i>
+                        Borrar
+                    </button>
+                </td>
+
+                
+{% else %}
+ <td>
+ </td>
+{% endif %} <!-- AGRE TER -->
+
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+
+
+
+
+
+
+    function editconcepto(id)
+{
+ //alert('carga');
+        //e.preventDefault();
+        $('#edit-concepto').load("/administrador/editarconceptocobro/"+id+"/");
+        //var oButton = document.getElementsByTagName("button");
+        //oButton[0].setAttribute("id", id);
+       //$("button").attr("id",id);
+
+        //var id = $(this).attr('id');
+      
+        //return false;
+
+}
+
+
+    function openmodal(id)
+{
+       $('#myModal3').modal('show');
+      editconcepto(id)
+
+        //edit(id)
+}
+
+
+
+
+//Ajax borrar concepto y actualizar sin recargar 
+    function delete1(id)
+{
+
+        $.ajax({
+            type: "POST",
+            url: "/administrador/deleteconceptocobro/"+id+"/",
+            data: { id:id, csrfmiddlewaretoken: '{{ csrf_token }}' },
+            success: function(response){
+                alert(response.success);
+                //recargar div
+                $('#reload-div').load(document.URL + ' #reload-div');
+            }
+        });
+        return false;
+    }
+
+
+
+ 
+
+</script>
+

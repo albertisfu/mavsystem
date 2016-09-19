@@ -1,0 +1,124 @@
+{% load staticfiles %}
+
+<script type="text/javascript">
+
+// $('#id_razon_social').selectize({
+//     create: false,
+//     sortField: 'text'
+// });
+
+$('#id_proveedor').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    sortField: 'text'
+});
+
+
+
+  $(function() {
+    $( ".datepicker" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+
+
+
+</script>
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+    ignore: [],
+});
+
+jQuery(document).ready(function() {
+
+    $("#formulario-modal_edit").validate({
+        rules: {
+            proveedor: "required",
+
+        },
+        messages: {
+
+            orden_descripcion: "Por favor seleccione un proveedor",
+        },
+        errorElement: "em",
+        errorPlacement: function(error, element) {
+            // Add the `help-block` class to the error element
+            error.addClass("text-center help-block alert alert-danger");
+        },
+
+
+        submitHandler: function(form) {
+
+            var id = $('button[name="subir"]').attr('id');
+            $.ajax({
+                type: "POST",
+                url: "/administrador/modificar_orden_compra/" + id + "/",
+                data: $("#formulario-modal_edit").serialize(),
+                success: function(response) {
+
+                    $('#myModal2').modal('hide');
+
+                    if (response.success == 1) {
+
+
+  window.location.href = "/administrador/orden_compra_detalle/"+response.ido+"/";
+
+
+  }
+
+
+
+                }
+            });
+
+            return false; // required to block normal submit since you used ajax
+        }
+
+
+
+    });
+
+});
+</script>
+
+
+<p>
+    Modificar orden de entrada: <strong>{{ form.folio.value }}</strong>
+    :
+</p>
+
+<div class="doctorformstyle">
+
+    <form id='formulario-modal_edit' method='post' enctype='multipart/form-data'>
+        {% csrf_token %}
+        <ul>{{ form.as_p }}</ul>
+        <div class="row align-center">
+            <p></p>
+            <button class="btn btn-info btn-w-sm" style="width:100%;" name="subir" type="submit" id="{{ post.pk }}" > <i class="fa fa-pencil"></i>
+                Editar
+            </button>
+        </div>
+
+    </form>
+
+</div>
+

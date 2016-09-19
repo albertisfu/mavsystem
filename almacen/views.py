@@ -385,3 +385,237 @@ def adminSalidas(request, insumo):
 	return HttpResponse(template.render(context, request))
 
 
+
+#Vistas Orden Compra
+
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def AddOrdenCompra(request):
+	current_user = request.user
+	template =  get_template("add_orden_compra.html")
+	form = OrdenForm()
+	#context = {
+	#	'current_user': current_user, 'form': form,
+	#}
+	if 'save' in request.POST:
+		form = OrdenForm(request.POST)
+		if form.is_valid():
+			post = form.save()
+			post.save()
+			return redirect('administradorInsumos')
+
+	form2 = ProveeForm()
+	if 'save1' in request.POST:
+		form2 = ProveeForm(request.POST)
+		
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('AddOrdenCompra'))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	context = {
+		'current_user': current_user, 'form': form, 'form2' : form2,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+
+# Ordenes > Lista ordenes Compra - filtros
+
+class OrdenesCompraFilter(django_filters.FilterSet):
+	class Meta:
+		model = OrdenCompra
+		fields = { #creamos los filtros necesarios 
+        		  'estatus':['exact'],
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha', 'Fecha menor'),
+				    ('fecha', 'Fecha mayor'),
+				    )
+
+		
+
+
+# /administrador/lista_ordenes_compra
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def listaOrdenesCompra(request):
+	filters = OrdenesCompraFilter(request.GET, queryset=OrdenCompra.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("listaordenescompra.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de ordenes > buscador
+
+
+class OrdenesCompraListView(ListView):
+	model = OrdenCompra
+	template_name = 'ordenes_compra_list.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion'))
+	def dispatch(self, *args, **kwargs):
+		return super(OrdenesCompraListView, self).dispatch(*args, **kwargs)
+  
+
+import operator
+from django.db.models import Q
+class SearchOrdenesCompraListView(OrdenesCompraListView):
+    """
+    Display a Blog List page filtered by the search query.
+    """
+    paginate_by = 10
+
+    def get_queryset(self):
+        result = super(SearchOrdenesCompraListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(proveedor__nombre__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(numero__icontains=q) for q in query_list))|
+                reduce(operator.and_,
+                       (Q(orden__codigo__icontains=q) for q in query_list))
+            )
+
+        return result
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Ver a detalle de orden
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def OrdenCompraDetalle(request, pk):
+	#paginate_by = 2 # Elementos por pagina
+	orden = get_object_or_404(OrdenCompra, pk = pk)
+	form2 = addinsumo(initial={'orden':orden})
+	form2.fields['orden'].widget = forms.HiddenInput()
+	if 'save1' in request.POST:
+		form2 = addinsumo(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('OrdenCompraDetalle', args=(orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+	insumos = OrdenConcepto.objects.filter(orden=orden.id)
+
+	if 'cancel' in request.POST: #cancel order
+		orden.estatus = 3
+		orden.save()
+				
+	return render(request, 'orden_compra_detalle.html', {'orden': orden, 'form2':form2, 'insumos':insumos})
+
+
+
+
+#Editar concepto
+@login_required
+@group_required('Administrador', 'Produccion')
+def editarconceptocobro(request, pk):
+    if request.method == 'POST':
+       post = OrdenConcepto.objects.get(pk = pk)
+       formy = editinsumocompra(instance=post)
+       #print request.POST
+       #post.producto = request.POST.get('producto')
+       #post.orden = request.POST.get('orden')
+       #print request.POST.get('cantidad')
+       post.cantidad = float(request.POST.get('cantidad'))
+       post.save()
+       return HttpResponseRedirect(reverse('OrdenCompraDetalle', args=(post.orden.id,)))
+
+       #print 'save'
+                             #payload = {'success': 'Concepto editado'}
+                             #return HttpResponse(json.dumps(payload), content_type='application/json')
+    else:
+        post = OrdenConcepto.objects.get(pk = pk)
+        formy = editinsumocompra(instance=post)
+        formy.fields['orden'].widget = forms.HiddenInput()
+       
+        return render(request, 'edit_concepto_compra.html', {'formy': formy, 'post':post})
+
+
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+import json
+@login_required
+@group_required('Administrador', 'Produccion')
+def deleteconceptocobro(request, pk):    
+    con = OrdenConcepto.objects.get(pk = pk)
+    
+    con.delete()
+    payload = {'success': 'Concepto eliminado'}
+    return HttpResponse(json.dumps(payload), content_type='application/json')
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Modificar orden
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def modificar_orden_compra(request, pk):
+	if request.method == "POST":
+		print 'post'
+		post = get_object_or_404(OrdenCompra, pk=pk)
+
+		postan = get_object_or_404(OrdenCompra, pk=pk)
+		#print post
+		form = OrdenCompraModificar(request.POST, instance=post)
+		#print form
+		if form.is_valid():
+			print 'valid'
+			#post_save.disconnect(orden_uid, sender=OrdenCompra)
+			post = form.save(commit=False)
+            #post.clave = post.clave_doc + '-' + str(pk) + '-' + str(post.rev_id)
+			#ordercount = Alta_orden.objects.filter(preclave=post.preclave).count() + 1
+			#post.clave = post.preclave + str(ordercount)			
+			#post.ordencobro = post.ordencobro
+			#print post.ordencobro
+			post.usuario = request.user
+			post.save()
+			#post_save.connect(orden_uid, sender=Alta_orden)
+            #form.save_m2m() #para guardar los datos del manytomany
+			payload = {'success': 1, 'ido': post.id}
+			return HttpResponse(json.dumps(payload), content_type='application/json')  
+			#return redirect('ver_ordenes_entrada')#cambiar esta redireccion por js por que al ser modal solo carga internamente
+
+
+	else: 
+		post = get_object_or_404(OrdenCompra, pk=pk)
+		form = OrdenCompraModificar(instance=post)
+		form.fields['orden'].widget = forms.HiddenInput()
+		form.fields['fecha'].widget = forms.HiddenInput()
+		form.fields['numero'].widget = forms.HiddenInput()
+		return render(request, 'edit_order_compra.html', {'form': form, 'post':post})
+
+

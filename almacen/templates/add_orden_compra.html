@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Agregar Nuevo Insumo{% endblock %}
+
+{% block content %}
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
+
+
+
+<!-- Area titulo-->
+<div class="row  border-bottom white-bg dashboard-header">
+  <h2>Agregar Nueva Orden de Compra</h2>
+
+  <div class="col-lg-8">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#">Insumos</a>
+      </li>
+      <li class="active"> <strong>Nueva Orden de Compra</strong>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="ibox-content p-xl">
+        <div class="insumoformstyle">
+          <form id='formularioalta' method='post' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-lg-8">
+                <ul>{{form.as_p}}</ul>
+              </div>
+              <div class="col-lg-4 align-center">
+
+              <h3><strong>Acciones:</strong></h3>
+                
+<button type="button" data-toggle="modal" data-target="#myModalx"  class="btn btn-lg m-t-n-xs btn-info button280"><i class="fa fa-plus"></i>&nbsp;Agregar nuevo Proveedor</button>
+
+
+<p>
+</p>
+<button type="submit" name="save" class="btn btn-lg m-t-n-xs btn-primary button280"><i class="fa fa-save"></i>&nbsp;Guardar Nueva Orden</button>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+              
+                
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+        <div class="modal inmodal fade" id="myModalx" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Agregar Proveedor</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ingrese el nuevo Proveedor:</p>
+                        <div class="insumoformstyle">
+                        <form id="formulariocat" method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form2.as_p}}</ul>
+
+                              <div class="row align-center">
+                                <input type='submit' name="save1" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+  <script>
+
+  $(function() {
+    $( ".datepicker" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+  </script>
+
+
+
+<script>
+$('#id_proveedor').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+
+});
+
+$('#id_orden').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+
+});
+
+
+</script>
+
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioalta").validate({
+        rules: {
+            costounitario: {
+                required: true,
+                // min: 0,
+                step: false
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de insumo obligatorio",
+            codigo : "Codigo de insumo obligatorio",
+            costounitario: "Costo mayor a 0"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariocat").validate({
+        rules: {
+            nombre: {
+              required: true
+            },
+        },
+        messages: {
+            nombre: "Nombre de categoría obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+{% endblock %}
