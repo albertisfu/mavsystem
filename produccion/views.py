@@ -394,7 +394,8 @@ def OrdenDetail(request, orden):
 def orden_impresion(request, orden):
 	orden = get_object_or_404(Orden, pk = orden) 
 	productos = ProductoOrden.objects.filter(orden=orden)
-	contexto = {'orden':orden,'productos':productos}
+	mediaurl = getattr(settings, 'MEDIA_URL', None)
+	contexto = {'orden':orden,'productos':productos, 'mediaurl':mediaurl}
 	template = get_template('imprimir_orden.html')
 	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
 	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
