@@ -387,7 +387,7 @@ def OrdenDetail(request, orden):
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Ordenes > Detalle de orden > Vista de impresion
-# /administrador/orden/pk/
+# /administrador/orden/imprimir/pk/
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')

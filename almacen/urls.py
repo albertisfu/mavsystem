@@ -17,7 +17,8 @@ urlpatterns = [
 
       url(r'^administrador/add_orden_compra$', almacen_views.AddOrdenCompra, name='AddOrdenCompra'), 
       url(r'^administrador/lista_ordenes_compra$', almacen_views.listaOrdenesCompra, name='listaOrdenesCompra'),
-      url(r'^administrador/orden_compra_detalle/(?P<pk>[-\w]+)/$', almacen_views.OrdenCompraDetalle, name='OrdenCompraDetalle'), 
+      url(r'^administrador/orden_compra_detalle/(?P<pk>[-\w]+)/$', almacen_views.OrdenCompraDetalle, name='OrdenCompraDetalle'),
+      url(r'^administrador/orden_compra_detalle/imprimir/(?P<pk>[-\w]+)/$', almacen_views.orden_compra_impresion, name='orden_compra_impresion'), 
 
       url(r'^administrador/modificar_orden_compra/(?P<pk>[-\w]+)/$', almacen_views.modificar_orden_compra, name='modificar_orden_compra'), 
        url(r'^administrador/editarconceptocobro/(?P<pk>[-\w]+)/$', almacen_views.editarconceptocobro, name='editarconceptocobro'), 

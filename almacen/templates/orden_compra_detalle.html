@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Detalle de orden {% endblock %}
+{% block title %} Detalle de orden de compra {% endblock %}
 
 {% block content %}
 {% load staticfiles %}
@@ -102,9 +102,9 @@
            <a class="btn btn-success btn-facebook" href="#"> <i class="fa fa-usd"></i>Actualizar Insumos</a>
 
     
-            <button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
+            <a href="{% url 'orden_compra_impresion' orden.pk %}" target="_blank"><button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
 <i class="fa fa-print"></i> Imprimir información
-</button>
+</button></a>
 
   <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
   Cancelar

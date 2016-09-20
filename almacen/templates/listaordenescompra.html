@@ -94,7 +94,7 @@
                                 
                                                 <td>{{orden.fecha}}</td>
                                                 <td>{{orden.get_estatus_display}}</td>
-                                                <td>{{orden.usuario}}</td>
+                                                <td>{{orden.usuario|default_if_none:"----"}}</td>
 
                                             </tr>
                                             {% endfor %}

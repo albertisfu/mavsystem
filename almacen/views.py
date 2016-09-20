@@ -18,6 +18,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
 from django.utils.decorators import method_decorator #permisos y grupos
 
+#impresion
+from weasyprint import HTML, CSS
+from django.conf import settings
+
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 #Grupos, checar si pertenece a grupo
@@ -385,7 +389,8 @@ def adminSalidas(request, insumo):
 	return HttpResponse(template.render(context, request))
 
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
 #Vistas Orden Compra
 
 
@@ -423,7 +428,8 @@ def AddOrdenCompra(request):
 
 	return HttpResponse(template.render(context, request))
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
 # Ordenes > Lista ordenes Compra - filtros
 
 class OrdenesCompraFilter(django_filters.FilterSet):
@@ -439,7 +445,8 @@ class OrdenesCompraFilter(django_filters.FilterSet):
 
 		
 
-
+# ---------------------------------------------------------
+# ---------------------------------------------------------
 # /administrador/lista_ordenes_compra
 
 @login_required
@@ -508,7 +515,7 @@ class SearchOrdenesCompraListView(OrdenesCompraListView):
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Ver a detalle de orden
+# Ver a detalle de orden de compra
 
 @login_required
 @group_required('Administrador', 'Produccion')
@@ -535,9 +542,22 @@ def OrdenCompraDetalle(request, pk):
 				
 	return render(request, 'orden_compra_detalle.html', {'orden': orden, 'form2':form2, 'insumos':insumos})
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Impresion orden de compra
 
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def orden_compra_impresion(request, pk):
+	orden = get_object_or_404(OrdenCompra, pk = pk) 
+	insumos = OrdenConcepto.objects.filter(orden=orden.id)
+	contexto = {'orden':orden,'insumos':insumos}
+	template = get_template('imprimir_orden_compra.html')
+	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
+	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
+	http_response = HttpResponse(rendered_html, content_type='text/html')
+	return http_response 
 
-
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #Editar concepto
 @login_required
 @group_required('Administrador', 'Produccion')
