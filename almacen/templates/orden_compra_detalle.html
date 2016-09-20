@@ -99,16 +99,40 @@
             </button>
           
 
-           <a class="btn btn-success btn-facebook" href="#"> <i class="fa fa-usd"></i>Actualizar Insumos</a>
-
+            <button class="btn btn-success btn-facebook" type="button" id="{{orden.pk}}" onClick="confirmar(this.id)">
+                <i class="fa fa-check-circle-o"></i> Confirmar orden
+            </button>
     
             <a href="{% url 'orden_compra_impresion' orden.pk %}" target="_blank"><button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
 <i class="fa fa-print"></i> Imprimir información
 </button></a>
 
+ <button class="btn btn-info btn-w-m" type="button" id="{{orden.pk}}" onClick="openmodaledit(this.id)">
+                <i class="fa fa-sign-in"></i> Ingresar Insumo
+            </button>
+
+
+
   <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
   Cancelar
 </button>
+
+
+{% elif orden.estatus == 2 %}
+
+          
+
+            <a href="{% url 'orden_compra_impresion' orden.pk %}" target="_blank"><button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
+<i class="fa fa-print"></i> Imprimir información
+</button></a>
+<button class="btn btn-info btn-w-m" type="button" id="{{orden.pk}}" onClick="openmodaledit(this.id)">
+                <i class="fa fa-sign-in"></i> Ingresar Insumo
+            </button>
+
+  <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
+  Cancelar
+</button>
+
 
 
             {% endif %}
@@ -208,7 +232,7 @@ var retVal = confirm("Desea Cancelar la Orden");
                                      csrfmiddlewaretoken: '{{ csrf_token }}' 
                                  },
                                  success: function(response){
-                                  console.log(response);
+                                
                                    location.reload(); 
                  
                            
@@ -225,6 +249,42 @@ var retVal = confirm("Desea Cancelar la Orden");
 
 }
     
+
+
+
+function confirmar(id)
+
+{
+
+var retVal = confirm("Desea Confirmar la Orden");
+               if( retVal == true ){
+                  
+  $.ajax({
+                                 type: "POST",
+                                 url: "/administrador/orden_compra_detalle/"+id+"/",
+                                 data: { 
+                                     'confirmar':id,
+                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
+                                 },
+                                 success: function(response){
+                                  
+                                   location.reload(); 
+                 
+                           
+                                 }
+                             });
+
+
+                  return true;
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+   
+
 
 
 

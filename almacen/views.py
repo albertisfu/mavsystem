@@ -537,8 +537,14 @@ def OrdenCompraDetalle(request, pk):
 	insumos = OrdenConcepto.objects.filter(orden=orden.id)
 
 	if 'cancel' in request.POST: #cancel order
-		orden.estatus = 3
+		orden.estatus = 4
 		orden.save()
+
+	if 'confirmar' in request.POST: #cancel order
+		print 'confirmar'
+		orden.estatus = 2
+		orden.save()
+	print request.POST
 				
 	return render(request, 'orden_compra_detalle.html', {'orden': orden, 'form2':form2, 'insumos':insumos})
 

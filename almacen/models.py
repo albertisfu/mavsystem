@@ -90,10 +90,12 @@ class OrdenCompra(models.Model):
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
 	total = models.FloatField(default=0)
 	creada = 1
-	ingreso = 2
-	cancelada = 3
+	pendiente = 2
+	ingreso = 3
+	cancelada = 4
 	estatus_options = (
 	      (creada, 'Creada'),
+	      (pendiente, 'Pendiente'),
 	      (ingreso, 'Ingreso'),
 	      (cancelada, 'Cancelada'),
 	  )
@@ -108,6 +110,7 @@ class OrdenConcepto(models.Model):
 	orden = models.ForeignKey(Orden)
 	cantidad = models.FloatField()
 	total = models.FloatField(default=0)
+	recibido = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.producto.nombreprod
 
