@@ -1,7 +1,4 @@
 from django.shortcuts import render
-
-# Create your views here.
-# Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
 from django.template.loader import get_template
@@ -18,6 +15,10 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
 from django.utils.decorators import method_decorator #permisos y grupos
+
+#impresion
+from weasyprint import HTML, CSS
+from django.conf import settings
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -382,6 +383,24 @@ def OrdenDetail(request, orden):
 	}
 
 	return HttpResponse(template.render(context, request))
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > Vista de impresion
+# /administrador/orden/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def orden_impresion(request, orden):
+	orden = get_object_or_404(Orden, pk = orden) 
+	productos = ProductoOrden.objects.filter(orden=orden)
+	contexto = {'orden':orden,'productos':productos}
+	template = get_template('imprimir_orden.html')
+	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
+	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
+	http_response = HttpResponse(rendered_html, content_type='text/html')
+	return http_response 
+
 
 
 # ---------------------------------------------------------

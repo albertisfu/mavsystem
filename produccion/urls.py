@@ -24,7 +24,8 @@ urlpatterns = [
 
     url(r'^administrador/alta_orden$', produccion_views.altaOrden, name='altaOrden'), 
     url(r'^administrador/lista_ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
-    url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'), 
+    url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'),
+    url(r'^administrador/orden/imprimir/(?P<orden>[-\w]+)/$', produccion_views.orden_impresion, name='orden_impresion'), 
     url(r'^administrador/asignar_producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenProducto, name='OrdenProducto'),
     url(r'^administrador/producto_orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'), 
     url(r'^administrador/checkinsumos/(?P<orden>[-\w]+)/(?P<insumo>[-\w]+)$', produccion_views.HistoryCheckInsumo, name='HistoryCheckInsumo'),

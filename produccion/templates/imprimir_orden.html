@@ -1,0 +1,334 @@
+<html>
+
+<head>
+    {% load staticfiles %} {% load humanize %}
+    <title>Orden numero: {{ orden.pk }}</title>
+    <style type="text/css">
+    @media print {
+        .printbutton {
+            display: none !important;
+        }
+    }
+    
+    @page {
+        size: 215mm 279mm;
+        margin-left: 0.5cm;
+        margin-top: 0.5cm;
+        margin-bottom: 0.5cm;
+        margin-right: 0.5cm;
+    }
+    
+    .font-10 {
+        font-size: 10px;
+    }
+    
+    .font-14 {
+        font-size: 14px;
+    }
+    
+    .font-16 {
+        font-size: 14px;
+    }
+    
+    .pad1 {
+        padding: 5px;
+    }
+    /* div styles */
+    
+.divTable{
+    display: table;
+    width: 100%;
+}
+.divTableRow {
+    display: table-row;
+}
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+.divTableCell, .divTableHead {
+    /*border: 1px solid #999999;*/
+    display: table-cell;
+    padding: 3px 10px;
+}
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+.divTableBody {
+    display: table-row-group;
+}
+    
+    .size0 {
+        width: 1100px;
+        margin: 0 auto;
+    }
+    
+    .size1 {
+        width: 150px;
+    }
+    
+    .size2 {
+        width: 400px;
+    }
+    
+    .size3 {
+        width: 690px;
+    }
+    
+    .w80 {
+        width: 80px;
+    }
+    
+    .w60 {
+        width: 60px;
+    }
+    
+    .fleft {
+        float: left;
+    }
+    
+    .fright {
+        float: right;
+    }
+    
+    .fontstrong {
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .h1 {
+        height: 55px;
+    }
+    
+    .btn-warning {
+        background-color: #f8ac59;
+        border-color: #f8ac59;
+        color: #FFFFFF;
+    }
+    
+    .btn-danger {
+        background-color: #ed5565;
+        border-color: #ed5565;
+        color: #FFFFFF;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+    
+    a {
+        text-decoration: none;
+    }
+    </style>
+</head>
+
+<body>
+    {% block content %}
+
+    <div style="text-align:center">
+        <a href="javascript:window.print()" target="_blank" class="btn btn-warning printbutton">
+            <i class="fa fa-print"></i> Imprimir información
+        </a>
+
+        <a href="javascript:window.close();" class="btn btn-danger printbutton">Cerrar</a>
+    </div>
+<br>
+<!-- Cabecera -->
+
+<div class="divTable" style="width: 100%;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell" style="width: 20%; text-align:center; vertical-align: middle;">
+<img alt="image" class="text-center" src="{% static "img/logo.png"%}" style="width:80px;"/>
+</div>
+<div class="divTableCell" style="width: 60%; text-align:center; vertical-align: middle;">
+    <span style="font-size:20px;"><strong><i>MAVALPA INTERNACIONAL S DE RL DE CV</i></strong></span>
+    <br>4 PONIENTE NO.
+    <br>RFC
+</div>
+<div class="divTableCell" style="width: 20%; text-align:center; vertical-align: middle;">
+<img alt="image" class="text-center" src="{% static "img/logo.png"%}" style="width:80px;"/>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Cliente -->
+<div class="divTable" style="width: 100%;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell" style="width: 20%; text-align:center; vertical-align: top;">
+
+
+<div class="divTable" style="width: 95%; margin: 0 auto;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Cotización</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.pk}}</div>
+</div>
+</div>
+</div>
+
+<div class="divTable" style="width: 95%; margin: 0 auto;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Fecha de expedición:</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.fecha_expedicion|date:"d/M/Y"}}</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="divTableCell" style="width: 60%; text-align:center; vertical-align: top;">
+    
+<div class="divTable" style="width: 100%;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Nombre de cliente:</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.cliente}}</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Nombre de proyecto:</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">nombre aqui</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="divTableCell" style="width: 20%; text-align:center; vertical-align: top;">
+
+<div class="divTable" style="width: 95%; margin: 0 auto;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Codigo</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.codigo}}</div>
+</div>
+</div>
+</div>
+
+<div class="divTable" style="width: 95%; margin: 0 auto;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Fecha de entrega:</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.fecha_entrega|date:"d/M/Y"}}</div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<br>
+<!-- Productos -->
+{% load ordertag %}
+                {% if productos %}
+
+
+
+
+
+
+<div class="divTable" style="width: 100%; page-break-inside: avoid;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">PA</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">CANTIDAD</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">UNIDAD</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"></div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">PRODUCTO</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COLOR</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COSTO UNITARIO</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COSTO TOTAL</div>
+</div>
+{% for producto in productos %}
+<div class="divTableRow" style="page-break-inside: avoid;">
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{ forloop.counter }}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.cantidad}}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.get_unidad_display}}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;"><img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">Nombre:  {{producto.producto.nombre}} | Descripción: {{producto.producto.descripcion}} | Comentarios: {{producto.comentario|default:"----"}}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.color|default:"----"}}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">${{producto.producto.costo|floatformat:2|intcomma}}</div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">${% get_costo producto.cantidad producto.producto.costo %}</div>
+
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+<!-- Totales -->
+<br>
+<div class="divTable" style="width: 300px; page-break-inside: avoid;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">SUBTOTAL&nbsp;</div>
+  <div class="divTableCell" style="border: 1px solid #999999;">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">IVA</div>
+<div class="divTableCell" style="border: 1px solid #999999;">&nbsp;</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">FLETE</div>
+<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costoflete|floatformat:2|intcomma}}</div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">TOTAL</div>
+<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costo|floatformat:2|intcomma}}</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+                {% endif %}
+
+    {% endblock %}
+</body>
+
+</html>

@@ -76,6 +76,11 @@
                                 <a href="{% url 'OrdenProducto' orden.pk %}" class="align-center">
                                     <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
+
+                                <a href="{% url 'orden_impresion' orden.pk %}" class="align-center">
+                                    <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
+                                </a>
+
                             </div>
                         </div>
 
