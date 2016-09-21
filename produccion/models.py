@@ -16,6 +16,10 @@ from django.db.models import signals
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+#Correo
+from django.core.mail import send_mail
+from django.contrib.auth.models import User, Permission, Group
+
 
 class Cliente(models.Model):
 	nombrecontacto = models.CharField(max_length = 255)
@@ -152,9 +156,52 @@ class CheckInsumoProducto(models.Model):
 		return self.productorden.producto.nombre
 
 
+# ---------------------------------------------------------
+#Crear estatus inicial para orden nueva
+from datetime import datetime
+@receiver(post_save, sender=Orden)  
+def orden_nueva(sender, instance, created,  **kwargs):
+	correocliente = instance.cliente.email
+	usuarios = User.objects.filter(groups__name='prueba1')
+	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
+	print correos
+	print correocliente
+	currentinstanceid = instance.id
+	hoy = datetime.now()
+	ordencreada = Orden.objects.get(pk=currentinstanceid)
+	ComentariosOrden.objects.create(orden=ordencreada,fecha=str(hoy),comentario="Orden creada", estatus=1, usuario=instance.usuario)
+	send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', [correocliente], fail_silently=False)
+	print 'Correo enviado'
 
+# ---------------------------------------------------------
+#Crear estatus inicial para orden nueva
+@receiver(post_save, sender=ComentariosOrden) 
+def orden_status(sender, instance, created, **kwargs):
+	correocliente = instance.orden.cliente.email
+	usuarios = User.objects.filter(groups__name='prueba1')
+	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
+	print correos
+	print correocliente
+	status =  instance.estatus
+	if status == 1:
+		send_mail('Orden pendiente', 'Orden pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		print 'Correo enviado, pendiente'
+	if status == 2:
+		send_mail('Orden confirmada', 'Orden confirmada.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		print 'Correo enviado, confirmada'
+	if status == 3:
+		send_mail('Orden en proceso', 'Orden en proceso.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		print 'Correo enviado, proceso'
+	if status == 4:
+		send_mail('Orden en conflicto', 'Orden en conflicto.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		print 'Correo enviado, conflicto'
+	if status == 5:
+		send_mail('Orden cancelada', 'Orden cancelada.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		print 'Correo enviado, cancelada'
+
+
+# ---------------------------------------------------------
  #Crear Check insumos
-
 @receiver(post_save, sender=ProductoOrden)  
 def producto_orden(sender, instance, created,  **kwargs):
 	currentinstanceid = instance.id
