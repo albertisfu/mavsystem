@@ -170,7 +170,7 @@ def orden_nueva(sender, instance, created,  **kwargs):
 	hoy = datetime.now()
 	ordencreada = Orden.objects.get(pk=currentinstanceid)
 	ComentariosOrden.objects.create(orden=ordencreada,fecha=str(hoy),comentario="Orden creada", estatus=1, usuario=instance.usuario)
-	send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', [correocliente], fail_silently=False)
+	send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
 	print 'Correo enviado'
 
 # ---------------------------------------------------------
