@@ -78,6 +78,22 @@
                                     <h1>Conceptos agregados:</h1> {% if insumos %} {% include 'conceptos_compra.html' %} {% else %} No se han agregado conceptos {% endif %}
                                 </div>
                             </div>
+
+
+
+<button class="btn btn-info btn-w-m" type="button" onClick="submitconceptos()" id="boton-nota"><i class="fa fa-plus"></i>&nbsp;Ingresar Insumos</button>
+
+<p></p>
+<div class="alert alert-danger" id="mensaje1">
+                                Para ingresar un insumo selecciona por lo menos un concepto.
+                            </div>
+
+<div class="alert alert-success" id="mensaje2">
+                                Ya puedes ingresar insumos.
+                            </div>
+
+
+
                         </div>
                     </div>
                 </div>
@@ -86,7 +102,7 @@
        <div class="wrapper wrapper-content">
             <div class="row">
                     <div class="col-md-12">
-            <a href="/entrada/orden_entrada/">
+            <a href="#">
 
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
@@ -107,12 +123,6 @@
 <i class="fa fa-print"></i> Imprimir información
 </button></a>
 
- <button class="btn btn-info btn-w-m" type="button" id="{{orden.pk}}" onClick="openmodaledit(this.id)">
-                <i class="fa fa-sign-in"></i> Ingresar Insumo
-            </button>
-
-
-
   <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
   Cancelar
 </button>
@@ -125,9 +135,6 @@
             <a href="{% url 'orden_compra_impresion' orden.pk %}" target="_blank"><button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
 <i class="fa fa-print"></i> Imprimir información
 </button></a>
-<button class="btn btn-info btn-w-m" type="button" id="{{orden.pk}}" onClick="openmodaledit(this.id)">
-                <i class="fa fa-sign-in"></i> Ingresar Insumo
-            </button>
 
   <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
   Cancelar
@@ -136,6 +143,10 @@
 
 
             {% endif %}
+
+
+
+
 
 
         
@@ -148,6 +159,14 @@
         </div>
     </div>
   </div>
+
+  <form id="formulario-insumos" method="post" enctype="multipart/form-data"  aria-hidden="true">
+                          {% csrf_token %}
+    <input id="id_conceptos" name="conceptos" type="hidden" value="1">
+                        
+                        </form>
+
+
     <!-- modal editar entrada -->
     <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-m">
@@ -217,6 +236,44 @@
 <script>
 
 
+
+
+        $(document).ready(function() {
+            $('#boton-nota').attr('disabled', true);
+            $("#mensaje2").css("display", "none");
+            var conceptos = [];
+
+
+
+$(':checkbox').change(function() {
+        if($(this).is(":checked")) {
+            conceptos.push(this.name)
+            $('#boton-nota').prop('disabled', false);
+            $("#mensaje2").css("display", "block");
+            $("#mensaje1").css("display", "none");
+           $('#id_conceptos').val(conceptos);
+
+
+        }
+
+        if(!$(this).is(':checked')) {
+            $('#boton-nota').attr('disabled', true);
+            $("#mensaje2").css("display", "none");
+            $("#mensaje1").css("display", "block");
+            conceptos.splice( $.inArray(this.name,conceptos) ,1 );
+      
+           $('#id_conceptos').val(conceptos);
+        }
+
+      
+    });
+
+
+});
+
+
+
+
 function cancelo(id)
 
 {
@@ -248,6 +305,26 @@ var retVal = confirm("Desea Cancelar la Orden");
                }
 
 }
+
+
+
+function submitconceptos()
+
+{
+
+var retVal = confirm("Desea Ingresar los conceptos seleccionados");
+               if( retVal == true ){
+                  $('#formulario-insumos').submit();
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+
+
+
     
 
 

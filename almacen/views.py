@@ -545,6 +545,33 @@ def OrdenCompraDetalle(request, pk):
 		orden.estatus = 2
 		orden.save()
 	print request.POST
+
+
+
+	if 'conceptos' in request.POST:
+		data = request.POST.copy()
+		conceptos = request.POST.get('conceptos')
+		if not conceptos:
+			conceptoslist = []
+		else:
+			conceptoslist = conceptos.split(",")
+
+		if len(conceptoslist)>0:
+			conceptos = []
+ 			for concepto in conceptoslist:
+				if concepto != '':
+					concept = get_object_or_404(OrdenConcepto, pk = int(concepto))
+					OrdenConcepto.objects.filter(pk = int(concepto)).update(recibido=True)
+					insumo = Insumo.objects.get(pk=concept.insumo.pk)
+					print insumo
+					print insumo.stock
+					currentstock = insumo.stock
+					print currentstock
+					newstock = currentstock + concept.cantidad
+					print newstock
+					costostock = insumo.costounitario * newstock
+					Insumo.objects.filter(pk=concept.insumo.pk).update(stock=newstock, costostock=costostock)
+                  
 				
 	return render(request, 'orden_compra_detalle.html', {'orden': orden, 'form2':form2, 'insumos':insumos})
 
