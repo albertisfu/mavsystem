@@ -17,8 +17,13 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 #Correo
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.models import User, Permission, Group
+
+#Template correo
+from django.http import HttpResponse
+from django.template import Context
+from django.template.loader import render_to_string, get_template
 
 
 class Cliente(models.Model):
@@ -170,8 +175,17 @@ def orden_nueva(sender, instance, created,  **kwargs):
 	hoy = datetime.now()
 	ordencreada = Orden.objects.get(pk=currentinstanceid)
 	ComentariosOrden.objects.create(orden=ordencreada,fecha=str(hoy),comentario="Orden creada", estatus=1, usuario=instance.usuario)
-	send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
+	#send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
+	subject = "Orden creada"
+	to = correos
+	from_email = 'proyectos@ticsup.com'
+	contexto = {'correos':correos}
+	message = get_template('email/emailordencreada.html').render(contexto)
+	msg = EmailMessage(subject, message, to=to, from_email=from_email)
+	msg.content_subtype = 'html'
+	msg.send()
 	print 'Correo enviado'
+	return HttpResponse('email_two')
 
 # ---------------------------------------------------------
 #Crear estatus inicial para orden nueva
@@ -183,6 +197,11 @@ def orden_status(sender, instance, created, **kwargs):
 	print correos
 	print correocliente
 	status =  instance.estatus
+	subject = "Orden creada"
+	to = correos
+	from_email = 'proyectos@ticsup.com'
+	contexto = {'correos':correos}
+
 	if status == 1:
 		send_mail('Orden pendiente', 'Orden pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, pendiente'
