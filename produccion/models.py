@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
@@ -176,11 +177,11 @@ def orden_nueva(sender, instance, created,  **kwargs):
 	ordencreada = Orden.objects.get(pk=currentinstanceid)
 	ComentariosOrden.objects.create(orden=ordencreada,fecha=str(hoy),comentario="Orden creada", estatus=1, usuario=instance.usuario)
 	#send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
-	subject = "Orden creada"
+	subject = "MAVALPA - Orden número: {} creada!".format(instance.id)
 	to = correos
 	from_email = 'proyectos@ticsup.com'
-	contexto = {'correos':correos}
-	message = get_template('email/emailordencreada.html').render(contexto)
+	contexto = {'correos':correos, 'orden':ordencreada}
+	message = get_template('email/emailtemplate.html').render(contexto)
 	msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	msg.content_subtype = 'html'
 	msg.send()
@@ -192,31 +193,44 @@ def orden_nueva(sender, instance, created,  **kwargs):
 @receiver(post_save, sender=ComentariosOrden) 
 def orden_status(sender, instance, created, **kwargs):
 	correocliente = instance.orden.cliente.email
-	usuarios = User.objects.filter(groups__name='prueba1')
+	usuarios = User.objects.filter(groups__name='prueba1') #cambiar grupo
+	ordencreada = Orden.objects.get(pk=instance.orden.id)
 	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
 	print correos
 	print correocliente
 	status =  instance.estatus
-	subject = "Orden creada"
+	#subject = "Orden creada"
 	to = correos
 	from_email = 'proyectos@ticsup.com'
-	contexto = {'correos':correos}
+	contexto = {'correos':correos, 'orden':ordencreada, 'status':status}
 
 	if status == 1:
-		send_mail('Orden pendiente', 'Orden pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		subject = "MAVALPA - Orden número: {} - Nuevo estado: Pendiente".format(instance.orden.id)
+		#send_mail('Orden pendiente', 'Orden pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, pendiente'
 	if status == 2:
-		send_mail('Orden confirmada', 'Orden confirmada.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		subject = "MAVALPA - Orden número: {} - Nuevo estado: Confirmada".format(instance.orden.id)
+		#send_mail('Orden confirmada', 'Orden confirmada.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, confirmada'
 	if status == 3:
-		send_mail('Orden en proceso', 'Orden en proceso.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		subject = "MAVALPA - Orden número: {} - Nuevo estado: En proceso".format(instance.orden.id)
+		#send_mail('Orden en proceso', 'Orden en proceso.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, proceso'
 	if status == 4:
-		send_mail('Orden en conflicto', 'Orden en conflicto.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		subject = "MAVALPA - Orden número: {} - Nuevo estado: En conflicto".format(instance.orden.id)
+		#send_mail('Orden en conflicto', 'Orden en conflicto.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, conflicto'
 	if status == 5:
-		send_mail('Orden cancelada', 'Orden cancelada.', 'proyectos@ticsup.com', correos, fail_silently=False)
+		subject = "MAVALPA - Orden número: {} - Nuevo estado: Cancelada".format(instance.orden.id)
+		#send_mail('Orden cancelada', 'Orden cancelada.', 'proyectos@ticsup.com', correos, fail_silently=False)
 		print 'Correo enviado, cancelada'
+
+	message = get_template('email/emailtemplatestatus.html').render(contexto)
+	msg = EmailMessage(subject, message, to=to, from_email=from_email)
+	msg.content_subtype = 'html'
+	msg.send()
+	print 'Correo enviado'
+	return HttpResponse('email_two')
 
 
 # ---------------------------------------------------------
