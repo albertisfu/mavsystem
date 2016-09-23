@@ -15,6 +15,8 @@ from django.shortcuts import get_object_or_404, redirect
 
 from django.core.urlresolvers import reverse
 
+from produccion.models import Producto, Orden
+
 from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
 from django.utils.decorators import method_decorator #permisos y grupos
 
@@ -41,8 +43,12 @@ def group_required(*group_names):
 def administradorHome(request):
 	current_user = request.user
 	template =  get_template("administrador.html")
+	insumos = Insumo.objects.all().order_by('-pk')[0:5]
+	productos = Producto.objects.all().order_by('-pk')[0:5]
+	ordenes = Orden.objects.all().order_by('-pk')[0:5]
+
 	context = {
-        'current_user': current_user,
+        'current_user': current_user, 'insumos':insumos, 'productos':productos,'ordenes':ordenes,
     }
 	return HttpResponse(template.render(context, request))
 

@@ -21,8 +21,10 @@ SECRET_KEY = '19iiwe^@l)%9_3)eo+-)##51kig93so%sk+@trnqxtbj=80($#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = False
 
 ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '107.170.192.75']
 
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL='/'
@@ -102,6 +104,18 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'mavsystem',
+#         'USER': 'mavuser',
+#         'PASSWORD': 'KkXH4{1-c$s*',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
