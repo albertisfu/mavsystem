@@ -4,7 +4,7 @@
 
 {% block content %}
 {% load staticfiles %}
-
+{% load humanize %}
 
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
 <link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
@@ -54,11 +54,11 @@
                               <dt>¿Considerar IVA?:</dt>
                              <dd>{{orden.iva}}</dd>
                               <dt>Total:</dt>
-                             <dd>{{total}}</dd>
+                             <dd>${{total|floatformat:2|intcomma}}</dd>
                             <dt>IVA:</dt>
-                             <dd>{{calculoiva}}</dd>
+                             <dd>${{calculoiva|floatformat:2|intcomma}}</dd>
                              <dt>Total con IVA:</dt>
-                             <dd>{{totaliva}}</dd>
+                             <dd>${{totaliva|floatformat:2|intcomma}}</dd>
                         </dl>
                     </div>
                     <div class="col-md-7">
