@@ -49,7 +49,7 @@
                                         </td>
                                         <td class="tablecolumnhosting">{{insumo.codigo}}</td>
                                         <td>{{insumo.categoria|default_if_none:"----"}}</td>
-                                        <td>{{insumo.stock}}</td>
+                                        <td>{% if  insumo.stock <= 0 %}<span style="color:#c70909;">{{insumo.stock}}</span> {% elif  insumo.stock > 0 %}{{insumo.stock}}{% endif %}</td>
                                         <td>${{insumo.costounitario|floatformat:2|intcomma}}</td>
                                         <td>${{insumo.costostock|floatformat:2|intcomma}}</td>
                                         <td>

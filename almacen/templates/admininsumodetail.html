@@ -3,7 +3,21 @@
 {% block title %}Detalles de insumo: {{insumo.nombre}}{% endblock %}
 
 {% block content %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+
+
 {% load humanize %}
+
 
 <script>
 
@@ -76,7 +90,7 @@
                                                 <dt class="font-16">Unidad:</dt>
                                                 <dd class="font-16">{{insumo.get_unidad_display}}</dd>
                                                 <dt class="font-16">Stock:</dt>
-                                                <dd class="font-16">{{insumo.stock}}</dd>
+                                                <dd class="font-16">{% if  insumo.stock <= 0 %}<span style="color:#c70909;">{{insumo.stock}}</span> {% elif  insumo.stock > 0 %}{{insumo.stock}}{% endif %}</dd>
                                                 <dt class="font-16">Costo unitario:</dt>
                                                 <dd class="font-16">${{insumo.costounitario|floatformat:2|intcomma}}</dd>
                                                 <dt class="font-16">Costo Stock:</dt>
@@ -143,6 +157,7 @@
                 </div>
             </div>
         </div>
+
 
 
 {% endblock %}

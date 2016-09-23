@@ -1,42 +1,6 @@
 {% load staticfiles %}
 <link href="{% static "css/customstyle.css"%}" rel="stylesheet">
 {% block content %}
-<script src="{% static "js/jquery-2.1.1.js" %}"></script>
-<script src="{% static "js/jquery.validate.js" %}"></script>
-<script src="{% static "js/additional-methods.js" %}"></script>
-<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
-
-<script>
-
-   function submiter(id)
-{
-
-$.ajax({
-                                 type: "POST",
-                                 url: "/administrador/edit_insumo/"+id+"/",
-                                 data: { 
-                                     'id':id, 
-                                     'nombre':$('#id_nombre').val(), 
-                                     'codigo':$('#id_codigo').val(), 
-                                     'descripcion':$('#id_descripcion').val(), 
-                                     'categoria':$('#id_categoria').val(), 
-                                     'unidad':$('#id_unidad').val(), 
-                                     'costounitario':$('#id_costounitario').val(), 
-                                     'file':$('#id_file').val(), 
-
-                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
-                                 },
-                                 success: function(response){
-                         
-                                     //recargar div
-                                     $('#reload-div').load(document.URL + ' #reload-div');
-                                      $('#myModal2').modal('toggle');
-                                 }
-                             });
-}
-
-
-</script>
 
 <p>Datos de concepto a editar:</p>
                         <div class="insumoformstyle">
@@ -45,7 +9,7 @@ $.ajax({
                             <ul>{{form.as_p}}</ul>
 
                             <div class="row align-center">
-                               <button class="btn btn-info btn-w-m button280" name="button" type="button" id="{{ post.pk }}" onClick="submiter(this.id)" > <i class="fa fa-pencil"></i>
+                               <button class="btn btn-info btn-w-m button280" name="subir" type="submit" id="{{ post.pk }}" > <i class="fa fa-pencil"></i>
                         Editar
                     </button>
                             </div>
@@ -101,12 +65,41 @@ jQuery(document).ready(function(){
         },
 
 submitHandler: function(form) {
-                    form.submit();
+
+
+                    var id = $('button[name="subir"]').attr('id');
+
+                    $.ajax({
+                                 type: "POST",
+                                 url: "/administrador/edit_insumo/"+id+"/",
+                                 data: { 
+                                     'id':id, 
+                                     'nombre':$('#id_nombre').val(), 
+                                     'codigo':$('#id_codigo').val(), 
+                                     'descripcion':$('#id_descripcion').val(), 
+                                     'categoria':$('#id_categoria').val(), 
+                                     'unidad':$('#id_unidad').val(), 
+                                     'costounitario':$('#id_costounitario').val(), 
+                                     'file':$('#id_file').val(), 
+
+                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
+                                 },
+                                 success: function(response){
+                         
+                                     //recargar div
+                                     $('#reload-div').load(document.URL + ' #reload-div');
+                                      $('#myModal2').modal('toggle');
+                                 }
+                             });
+
+
                 }
 
     });
 
 });
 </script>
+
+
 
 {% endblock %}

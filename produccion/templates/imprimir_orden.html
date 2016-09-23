@@ -222,7 +222,7 @@
 <div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Nombre de proyecto:</strong></div>
 </div>
 <div class="divTableRow">
-<div class="divTableCell font-16" style="border: 1px solid #999999;">nombre aqui</div>
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.nombre}}</div>
 </div>
 </div>
 </div>
@@ -300,21 +300,16 @@
 <div class="divTable" style="width: 300px; page-break-inside: avoid;">
 <div class="divTableBody">
 <div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">SUBTOTAL&nbsp;</div>
-  <div class="divTableCell" style="border: 1px solid #999999;">&nbsp;</div>
+<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">TOTAL</div>
+<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costo|floatformat:2|intcomma}}</div>
 </div>
-<div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">IVA</div>
-<div class="divTableCell" style="border: 1px solid #999999;">&nbsp;</div>
-</div>
+
 <div class="divTableRow">
 <div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">FLETE</div>
 <div class="divTableCell" style="border: 1px solid #999999;">${{orden.costoflete|floatformat:2|intcomma}}</div>
 </div>
-<div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">TOTAL</div>
-<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costo|floatformat:2|intcomma}}</div>
-</div>
+
+
 </div>
 </div>
 

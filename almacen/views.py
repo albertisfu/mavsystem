@@ -524,6 +524,8 @@ def OrdenCompraDetalle(request, pk):
 	orden = get_object_or_404(OrdenCompra, pk = pk)
 	form2 = addinsumo(initial={'orden':orden})
 	form2.fields['orden'].widget = forms.HiddenInput()
+
+
 	if 'save1' in request.POST:
 		form2 = addinsumo(request.POST)
 		print request.POST
@@ -535,6 +537,14 @@ def OrdenCompraDetalle(request, pk):
 			print 'error'
 			print form.errors, len(form.errors)
 	insumos = OrdenConcepto.objects.filter(orden=orden.id)
+	total = 0
+	for insumo in insumos:
+		total = total + insumo.total
+
+	totaliva = 0
+	if orden.iva ==True:
+		calculoiva = total*settings.IVA
+		totaliva = calculoiva+total
 
 	if 'cancel' in request.POST: #cancel order
 		orden.estatus = 4
@@ -573,7 +583,7 @@ def OrdenCompraDetalle(request, pk):
 					Insumo.objects.filter(pk=concept.insumo.pk).update(stock=newstock, costostock=costostock)
                   
 				
-	return render(request, 'orden_compra_detalle.html', {'orden': orden, 'form2':form2, 'insumos':insumos})
+	return render(request, 'orden_compra_detalle.html', {'calculoiva':calculoiva,'totaliva':totaliva,'total':total,'orden': orden, 'form2':form2, 'insumos':insumos})
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Impresion orden de compra
@@ -583,7 +593,18 @@ def OrdenCompraDetalle(request, pk):
 def orden_compra_impresion(request, pk):
 	orden = get_object_or_404(OrdenCompra, pk = pk) 
 	insumos = OrdenConcepto.objects.filter(orden=orden.id)
-	contexto = {'orden':orden,'insumos':insumos}
+
+	total = 0
+	for insumo in insumos:
+		total = total + insumo.total
+
+	totaliva = 0
+	if orden.iva ==True:
+		calculoiva = total*settings.IVA
+		totaliva = calculoiva+total
+
+		
+	contexto = {'calculoiva':calculoiva,'totaliva':totaliva,'total':total,'orden':orden,'insumos':insumos}
 	template = get_template('imprimir_orden_compra.html')
 	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
 	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])

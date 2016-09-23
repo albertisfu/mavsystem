@@ -83,12 +83,14 @@ class Orden(models.Model):
 	proceso = 3
 	conflicto = 4
 	cancelada = 5
+	entregada = 6
 	estatus_options = (
 	      (pendiente, 'Pendiente'),
 	      (confirmada, 'Confirmada'),
 	      (proceso, 'Proceso'),
 	      (conflicto, 'Conflicto'),
 	      (cancelada, 'Cancelada'),
+	      (entregada, 'Entregada'),
 	  )
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
