@@ -109,8 +109,8 @@ DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 #         'NAME': 'mavsystem',
-#         'USER': 'mavuser',
-#         'PASSWORD': 'KkXH4{1-c$s*',
+#         'USER': 'xxxxx',
+#         'PASSWORD': 'xxxxx*',
 #         'HOST': 'localhost',
 #         'PORT': '',
 #     }
