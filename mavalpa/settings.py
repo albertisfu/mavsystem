@@ -149,8 +149,8 @@ STATICFILES_DIRS = (
 )
 
 EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'quevon24'
-EMAIL_HOST_PASSWORD = 'quevon22'
+EMAIL_HOST_USER = 'xxxxx'
+EMAIL_HOST_PASSWORD = 'xxxxx'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
