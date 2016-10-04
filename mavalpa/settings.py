@@ -24,7 +24,6 @@ DEBUG = True
 #DEBUG = False
 
 ALLOWED_HOSTS = []
-#ALLOWED_HOSTS = ['localhost', '127.0.0.1', '107.170.192.75', 'plataforma.arydek.com.mx', 'www.plataforma.arydek.com.mx']
 
 LOGIN_URL='/login/'
 LOGIN_REDIRECT_URL='/'
