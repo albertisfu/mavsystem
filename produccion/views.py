@@ -156,7 +156,7 @@ def ProductoDetail(request, producto):
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
-# Detalle de producto > Asignar material
+# Detalle de producto > Asignar Material
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
