@@ -49,6 +49,9 @@ def altaProducto(request):
 			post = form.save()
 			post.save()
 			return redirect('listaProducto')
+		else:
+			print "Error en alta de producto"
+			print form.errors
 
 	form2 = productoaddcat()
 	if 'save1' in request.POST:
@@ -166,16 +169,20 @@ def ProductoInsumo(request, producto):
 		'producto':producto,'form': form,
 	}
 	if 'save' in request.POST:
+		if form.is_valid():
+			form = ProductoInsumoForm(request.POST)
+			cantidad = request.POST['cantidad']
+			print cantidad
+			insumopk = request.POST['insumo']
+			insumo = get_object_or_404(Insumo, pk = insumopk) 
+			print insumo
+			insumoproducto= InsumoProducto.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
+			print 'guardado'
+			return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
+		else:
+			print "Error en el form"
+			print form.errors
 
-		form = ProductoInsumoForm(request.POST)
-		cantidad = request.POST['cantidad']
-		print cantidad
-		insumopk = request.POST['insumo']
-		insumo = get_object_or_404(Insumo, pk = insumopk) 
-		print insumo
-		insumoproducto= InsumoProducto.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
-		print 'guardado'
-		return HttpResponseRedirect(reverse('ProductoDetail', args=(producto.id,)))
 	return HttpResponse(template.render(context, request))
 
 

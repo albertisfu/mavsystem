@@ -5,7 +5,7 @@ from django.db import models
 
 # Create your models here.
 from almacen.models import Insumo
-
+from django.conf import settings
 
 from datetime import datetime, timedelta
 from django.utils import timezone
@@ -102,8 +102,10 @@ class Orden(models.Model):
 	      (flete, 'Flete'),
 	  )
 	entrega = models.IntegerField(choices=entrega_options, default=bodega)
+	fecha_entrega = models.DateField(blank=True, null=True)
 	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
 	costoflete = models.FloatField(default=0)
+	nota = models.TextField(max_length=1000, blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
 
@@ -170,7 +172,7 @@ from datetime import datetime
 @receiver(post_save, sender=Orden)  
 def orden_nueva(sender, instance, created,  **kwargs):
 	correocliente = instance.cliente.email
-	usuarios = User.objects.filter(groups__name='prueba1')
+	usuarios = User.objects.filter(groups__name=settings.GRUPO_EMAIL)
 	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
 	print correos
 	print correocliente
@@ -181,7 +183,7 @@ def orden_nueva(sender, instance, created,  **kwargs):
 	#send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
 	subject = "MAVALPA - Orden número: {} creada!".format(instance.id)
 	to = correos
-	from_email = 'proyectos@ticsup.com'
+	from_email = settings.EMAIL_SALIDA
 	contexto = {'correos':correos, 'orden':ordencreada}
 	message = get_template('email/emailtemplate.html').render(contexto)
 	msg = EmailMessage(subject, message, to=to, from_email=from_email)
@@ -195,7 +197,7 @@ def orden_nueva(sender, instance, created,  **kwargs):
 @receiver(post_save, sender=ComentariosOrden) 
 def orden_status(sender, instance, created, **kwargs):
 	correocliente = instance.orden.cliente.email
-	usuarios = User.objects.filter(groups__name='prueba1') #cambiar grupo
+	usuarios = User.objects.filter(groups__name=settings.GRUPO_EMAIL) #cambiar grupo
 	ordencreada = Orden.objects.get(pk=instance.orden.id)
 	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
 	print correos
@@ -203,7 +205,7 @@ def orden_status(sender, instance, created, **kwargs):
 	status =  instance.estatus
 	#subject = "Orden creada"
 	to = correos
-	from_email = 'proyectos@ticsup.com'
+	from_email = settings.EMAIL_SALIDA
 	contexto = {'correos':correos, 'orden':ordencreada, 'status':status}
 
 	if status == 1:

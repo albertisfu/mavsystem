@@ -149,8 +149,8 @@ STATICFILES_DIRS = (
 )
 
 EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = 'quevon24'
-EMAIL_HOST_PASSWORD = 'quevon22'
+EMAIL_HOST_USER = 'albertisfu'
+EMAIL_HOST_PASSWORD = 'qG2+}FyO^ok('
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -158,3 +158,6 @@ EMAIL_USE_TLS = True
 #IVA
 IVA = 0.16
 
+GRUPO_EMAIL = 'prueba1'
+
+EMAIL_SALIDA = 'proyectos@ticsup.com'
