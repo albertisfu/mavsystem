@@ -41,7 +41,8 @@ urlpatterns = [
 
 
 #clientes
-url(r'^administrador/lista_clientes$', produccion_views.listaClientes, name='listaClientes'), 
+url(r'^administrador/lista_clientes$', produccion_views.listaClientes, name='listaClientes'),
+url(r'^administrador/alta_cliente$', produccion_views.altaCliente, name='altaCliente'),  
 
 #search Clientes
     url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),

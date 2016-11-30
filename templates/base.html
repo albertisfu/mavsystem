@@ -27,16 +27,15 @@
             <div class="sidebar-collapse">
 
 
-  <!-- Inicio elementos menu lateral-->
-                <ul class="nav" id="side-menu">
-                    <li class="nav-header">
-                        <div class="dropdown profile-element"> <span>
+<!-- Inicio elementos menu lateral-->
+<ul class="nav" id="side-menu">
+    <li class="nav-header">
+        <div class="dropdown profile-element"> <span>
                         <img alt="image" class="text-center" src="{% static "img/logo.png"%}" style="width:80px;"/><h2 style="display:inline; font-size:18px;font-weight:700;color:#ffffff;">&nbsp;Mavalpa</h2>
                            
                              </span>
-                             
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">
+            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">
                             
                             {% if user.is_authenticated %}
     {{ user.username }}
@@ -45,63 +44,56 @@
 {% endif %}
 
                             </strong>
-                             </span> <span class="text-muted text-xs block">{{user.groups.all.0}}<b class="caret"></b></span> </span> </a>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                
-                              <!--   <li class="divider"></li> -->
-                                <li><a href="/logout/?next=/login/">Cerrar Sesión</a></li>
-                            </ul>
-                        </div>
-                        <div class="logo-element">
-                            <img alt="image" class="text-center" src="{% static "img/logo.png"%}" style="width:50px;"/>
-                        </div>
-                    </li>
-
-
-                                     <li>
-                        <a href="/"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
-                    </li>
-
-   <!-- Elemento Catalogo menu lateral-->
-   {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
-                    <li id="mainop">
-                        <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li ><a href="/administrador/insumos">Lista insumos</a></li>
-                            <li ><a href="/administrador/alta">Alta insumos</a></li>
-                            <li ><a href="/administrador/add_orden_compra">Alta Orden Compra</a></li>
-                            <li ><a href="/administrador/lista_ordenes_compra">Lista Ordenes Compra</a></li>
-                             
-                        </ul>
-                    </li>
-{% endif %}
-                        <!-- Elemento Entrada menu lateral-->
-                        {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or  user.is_superuser  %}
-                    <li id="mainop2">
-                        <a href="#"><i class="fa fa fa-edit"></i> <span class="nav-label">PRODUCCIÓN</span> <span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                                   <li><a href="/administrador/alta_producto">Alta producto</a></li>
-                            <li><a href="/administrador/lista_productos">Lista de productos</a></li>
-                        </ul>
-                    </li>
-{% endif %}
-                        <!-- Elemento cobro menu lateral-->
-                        {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser  %}
-                    <li id="mainop3">
-                        <a href="/cobro/"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                             <li><a href="/administrador/lista_clientes">Lista de clientes</a></li>
-                            <li><a href="/administrador/alta_orden">Nueva orden</a></li>
-                            <li><a href="/administrador/lista_ordenes">Lista de ordenes</a></li>
-                           
-
-                        </ul>
-                    </li>
-{% endif %}
-
-
-
+                             </span> <span class="text-muted text-xs block">{{user.groups.all.0}}<b class="caret"></b></span> </span>
+            </a>
+            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                <!--   <li class="divider"></li> -->
+                <li><a href="/logout/?next=/login/">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+        <div class="logo-element">
+            <img alt="image" class="text-center" src="{% static " img/logo.png "%}" style="width:50px;" />
+        </div>
+    </li>
+    <li>
+        <a href="{% url 'administradorHome' %}"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
+    </li>
+    <!-- Elemento Catalogo menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
+    <li id="mainop">
+        <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'administradorInsumos' %}">Lista insumos</a></li>
+            <li><a href="{% url 'AddOrdenCompra' %}">Alta insumos</a></li>
+            <li><a href="{% url 'AddOrdenCompra' %}">Alta Orden Compra</a></li>
+            <li><a href="{% url 'listaOrdenesCompra' %}">Lista Ordenes Compra</a></li>
+        </ul>
+    </li>
+    {% endif %}
+    <!-- Elemento Entrada menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
+    <li id="mainop2">
+        <a href="#"><i class="fa fa fa-edit"></i> <span class="nav-label">PRODUCCIÓN</span> <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaProducto' %}">Alta producto</a></li>
+            <li><a href="{% url 'listaProducto' %}">Lista de productos</a></li>
+        </ul>
+    </li>
+    {% endif %}
+    <!-- Elemento cobro menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+    <li id="mainop3">
+        <a href="#"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaCliente' %}">Agregar cliente</a></li>
+            <li><a href="{% url 'listaClientes' %}">Lista de clientes</a></li>
+            <li><a href="{% url 'altaOrden' %}">Nueva orden</a></li>
+            <li><a href="{% url 'listaOrdenes' %}">Lista de ordenes</a></li>
+        </ul>
+    </li>
+    {% endif %}
 </ul>
+
 <!-- Fin elementos menu lateral-->
 
 

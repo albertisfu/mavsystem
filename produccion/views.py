@@ -791,3 +791,27 @@ def ClienteDetail(request, cliente):
 	return HttpResponse(template.render(context, request))
 
 
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Agregar cliente
+# /administrador/alta_cliente
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def altaCliente(request):
+	template =  get_template("agregar_cliente.html")
+	if request.method == 'POST':
+		form = addcliente(request.POST)
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return redirect('listaClientes')
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+	else:
+		form = addcliente()
+
+	context = {'form': form}
+
+	return HttpResponse(template.render(context, request))
