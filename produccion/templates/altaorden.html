@@ -81,6 +81,70 @@
   });
   </script>
 
+    <script>
+
+  $(function() {
+    $( ".datepicker1" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+  </script>
+
+<script type="text/javascript">
+    
+$(document).ready(function() {
+
+if($("#id_entrega").val() == "2"){ // 2 es flete
+$("#id_fecha_entrega").prop("disabled", false);
+$("#id_fecha_entrega_almacen").prop("disabled", true);
+$("#id_direccionentrega").prop("disabled", false);
+$("#id_direccionentrega").val("");
+}
+else{ // 1 en bodega
+$("#id_fecha_entrega").prop("disabled", true);
+$("#id_fecha_entrega_almacen").prop("disabled", false);
+$("#id_direccionentrega").prop("disabled", true);
+$("#id_direccionentrega").val("Entrega en bodega");
+
+}
+
+});
+
+$('#id_entrega').on('change', function(e) {
+
+if($("#id_entrega").val() == "2"){ // 2 es flete
+$("#id_fecha_entrega").prop("disabled", false);
+$("#id_fecha_entrega_almacen").prop("disabled", true);
+$("#id_direccionentrega").prop("disabled", false);
+$("#id_direccionentrega").val("");
+}
+else{ // 1 en bodega
+$("#id_fecha_entrega").prop("disabled", true);
+$("#id_fecha_entrega_almacen").prop("disabled", false);
+$("#id_direccionentrega").prop("disabled", true);
+$("#id_direccionentrega").val("Entrega en bodega");
+}
+
+});
+
+</script>
+
 <!-- modal agregar categoria -->
 
         <div class="modal inmodal fade" id="myModal8" tabindex="-1" role="dialog"  aria-hidden="true">

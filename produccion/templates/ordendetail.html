@@ -52,7 +52,13 @@
                                         <dt class="font-15">Fecha de expedición:</dt>
                                         <dd class="font-15">{{orden.fecha_expedicion|date:"d/M/Y"}}</dd>
                                         <dt class="font-15">Fecha de entrega:</dt>
-                                        <dd class="font-15">{{orden.fecha_entrega|date:"d/M/Y"}}</dd>
+                                        <dd class="font-15">
+                                            {% if orden.fecha_entrega_almacen != NULL %} 
+                                                {{orden.fecha_entrega_almacen|date:"d/M/Y"}} (Almacen) 
+                                                {% else %}
+                                                {{orden.fecha_entrega|date:"d/M/Y"}} (Flete)
+                                                {% endif %} 
+                                        </dd>
 
                                         <dt class="font-15">Metodo entrega:</dt>
                                         <dd class="font-15">{{orden.get_entrega_display}}</dd>
@@ -67,6 +73,8 @@
                                         <dd class="font-15">{{orden.usuario}}</dd>
                                         <dt class="font-15">Costo Orden:</dt>
                                         <dd class="font-15">${{orden.costo|floatformat:2|intcomma}}</dd>
+                                        <dt class="font-15">Notas:</dt>
+                                        <dd class="font-15">{{orden.nota}}</dd>
 
 
                                     </dl>

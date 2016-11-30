@@ -168,9 +168,11 @@ def ProductoInsumo(request, producto):
 	context = {
 		'producto':producto,'form': form,
 	}
-	if 'save' in request.POST:
+	if request.method == 'POST':
+	#if 'save' in request.POST:
+		form = ProductoInsumoForm(request.POST)
 		if form.is_valid():
-			form = ProductoInsumoForm(request.POST)
+			
 			cantidad = request.POST['cantidad']
 			print cantidad
 			insumopk = request.POST['insumo']

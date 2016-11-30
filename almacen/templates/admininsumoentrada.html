@@ -48,9 +48,10 @@
                         <div class="col-lg-4">
                             <br>
                         <h3><strong>Acciones:</strong></h3>
-                        <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+                        <!-- javascript:window.location = document.referrer; -->
+                        <a href='{% url 'adminInsumoDetail' insumo.pk %}' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
 <p></p>
-                        <button type="submit" name="save" class="btn btn-lg btn-primary  m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar nueva entrada</button>
+                        <button type="submit" name='guardar' value='guardar' class="btn btn-lg btn-primary  m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar nueva entrada</button>
                             </form>
                             <p></p>
                         </div>

@@ -77,7 +77,7 @@ class Orden(models.Model):
 	descripcion = models.CharField(max_length = 255)
 	cliente = models.ForeignKey(Cliente)
 	fecha_expedicion = models.DateField(default=timezone.now)
-	fecha_entrega = models.DateField()
+	fecha_entrega = models.DateField(blank=True, null=True)
 	pendiente = 1
 	confirmada = 2
 	proceso = 3
@@ -102,7 +102,7 @@ class Orden(models.Model):
 	      (flete, 'Flete'),
 	  )
 	entrega = models.IntegerField(choices=entrega_options, default=bodega)
-	fecha_entrega = models.DateField(blank=True, null=True)
+	fecha_entrega_almacen = models.DateField(blank=True, null=True)
 	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
 	costoflete = models.FloatField(default=0)
 	nota = models.TextField(max_length=1000, blank=True, null=True)

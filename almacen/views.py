@@ -266,18 +266,20 @@ def adminInsumoEntrada(request, insumo):
 	context = {
 		'insumo':insumo,'form': form,
 	}
-	if 'save' in request.POST:
-		
+	#if 'save' in request.POST:
+	#if 'guardar' in request.POST:
+	if request.method == 'POST':
 		form = EntradaForm(request.POST)
 		cantidad = request.POST['cantidad']
 		print cantidad
 		if form.is_valid():
-			
 			form.save()
 			#post.save() revisar en plataforma, se guarda 2 veces
 			print 'guardado'
 			return HttpResponseRedirect(reverse('adminInsumoDetail', args=(insumo.id,)))
-
+		else:
+			print 'Errores en entrada insumo'
+			print form.errors
 
 	return HttpResponse(template.render(context, request))
 
@@ -298,8 +300,8 @@ def adminInsumoSalida(request, insumo):
 	context = {
 		'insumo':insumo,'form': form,
 	}
-	if 'save' in request.POST:
-		
+	if request.method == 'POST':
+	#if 'save' in request.POST:	
 		form = SalidaForm(request.POST)
 		if form.is_valid():
 			
