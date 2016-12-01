@@ -40,7 +40,7 @@ def group_required(*group_names):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def altaProducto(request):
-	template =  get_template("altaproducto.html")
+	template =  get_template("alta_producto.html")
 	form = altaProductoForm()
 
 	if 'save' in request.POST:
@@ -48,7 +48,8 @@ def altaProducto(request):
 		if form.is_valid():
 			post = form.save()
 			post.save()
-			return redirect('listaProducto')
+			#return redirect('listaProducto')
+			return HttpResponseRedirect(reverse('ProductoDetail', args=(post.id,)))
 		else:
 			print "Error en alta de producto"
 			print form.errors
@@ -103,7 +104,7 @@ def listaProducto(request):
 	except EmptyPage:
         # si la pagina esta fuera de rango, muestra la ultima pagina
 		productos = paginator.page(paginator.num_pages)
-	template =  get_template("listaproductos.html")
+	template =  get_template("lista_productos.html")
 	context = {
 		'productos': productos,'filters': filters,
 	}
@@ -119,7 +120,7 @@ def listaProducto(request):
 @group_required('Administrador', 'Produccion', 'Ventas')
 def ProductoDetail(request, producto):
 	producto = get_object_or_404(Producto, pk = producto) 
-	template =  get_template("productodetail.html")
+	template =  get_template("detalle_producto.html")
 	materials = InsumoProducto.objects.filter(producto=producto)
 	form = CostoEspecialForm(initial={'producto':producto})
 	form.fields['producto'].widget = forms.HiddenInput()
@@ -268,7 +269,7 @@ class SearchPopListView(InsumoPopListView):
 @group_required('Administrador', 'Produccion', 'Ventas')
 def altaOrden(request):
 	current_user = request.user
-	template =  get_template("altaorden.html")
+	template =  get_template("alta_orden.html")
 	form = altaOrdenForm(initial={'usuario':current_user})
 	form.fields['usuario'].widget = forms.HiddenInput()
 	#context = {
@@ -279,8 +280,9 @@ def altaOrden(request):
 		print request.POST
 		if form.is_valid():
 			print 'valid'
-			form.save()
-			return redirect('listaOrdenes')
+			ins = form.save()
+			#return redirect('listaOrdenes')
+			return HttpResponseRedirect(reverse('OrdenDetail', args=(ins.id,)))
 		#else:
 		#	print 'error'
 		#	print form.errors, len(form.errors)
@@ -340,7 +342,7 @@ def listaOrdenes(request):
 	except EmptyPage:
         # si la pagina esta fuera de rango, muestra la ultima pagina
 		ordenes = paginator.page(paginator.num_pages)
-	template =  get_template("listaordenes.html")
+	template =  get_template("lista_ordenes.html")
 	context = {
 		'ordenes': ordenes,'filters': filters,
 	}
@@ -358,7 +360,7 @@ def listaOrdenes(request):
 def OrdenDetail(request, orden):
 	current_user = request.user
 	orden = get_object_or_404(Orden, pk = orden) 
-	template =  get_template("ordendetail.html")
+	template =  get_template("detalle_orden.html")
 	productos = ProductoOrden.objects.filter(orden=orden)
 	form = comentarioOrdenForm(initial={'usuario':current_user, 'orden':orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -425,7 +427,7 @@ from django.db.models.signals import post_save
 @group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenProducto(request, orden):
 	orden = get_object_or_404(Orden, pk = orden)
-	template =  get_template("ordenproducto.html")
+	template =  get_template("asignar_producto_orden.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
@@ -476,7 +478,7 @@ def OrdenProductoDetail(request, producto):
 	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
 	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
 	checkinsumos = CheckInsumoProducto.objects.filter(productorden=producto_orden)
-	template =  get_template("ordenproductodetail.html")
+	template =  get_template("detalle_producto_orden.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
@@ -560,7 +562,7 @@ def HistoryCheckInsumo(request, orden, insumo):
 
 class OrdenesListView(ListView):
 	model = Orden
-	template_name = 'ordenes_list.html'
+	template_name = 'buscar_orden.html'
 
 	@method_decorator(login_required)
 	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
@@ -711,7 +713,7 @@ def listaClientes(request):
 	except EmptyPage:
         # si la pagina esta fuera de rango, muestra la ultima pagina
 		clientes = paginator.page(paginator.num_pages)
-	template =  get_template("listaclientes.html")
+	template =  get_template("lista_clientes.html")
 	context = {
 		'clientes': clientes,'filters': filters,
 	}
@@ -728,7 +730,7 @@ def listaClientes(request):
 
 class ClientesListView(ListView):
 	model = Cliente
-	template_name = 'clientes_list.html'
+	template_name = 'buscar_clientes.html'
 
 	@method_decorator(login_required)
 	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
@@ -771,7 +773,7 @@ class SearchClientesListView(ClientesListView):
 @group_required('Administrador', 'Produccion', 'Ventas')
 def ClienteDetail(request, cliente):
 	cliente = get_object_or_404(Cliente, pk = cliente) 
-	template =  get_template("clientedetail.html")
+	template =  get_template("detalle_cliente.html")
 	ordenes = Orden.objects.filter(cliente=cliente)
 	paginator = Paginator(ordenes, 5)
 	page = request.GET.get('page')
@@ -814,4 +816,245 @@ def altaCliente(request):
 
 	context = {'form': form}
 
+	return HttpResponse(template.render(context, request))
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Nueva corizacion
+# /administrador/alta-cotizacion
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def altaCotizacion(request):
+	current_user = request.user
+	template =  get_template("alta_cotizacion.html")
+	form = altaCotizacionForm(initial={'usuario':current_user})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	#context = {
+	#'form': form,
+	#}
+	if 'save' in request.POST:
+		form = altaCotizacionForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			ins = form.save()
+			#return redirect('listaCotizaciones')
+			return HttpResponseRedirect(reverse('CotizacionDetail', args=(ins.id,)))
+		#else:
+		#	print 'error'
+		#	print form.errors, len(form.errors)
+
+	form2 = addcliente()
+	if 'save1' in request.POST:
+		form2 = addcliente(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('altaCotizacion'))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	context = {
+	'form': form, 'form2' : form2,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista cotizaciones - filtros
+
+class CotizacionesFilter(django_filters.FilterSet):
+	class Meta:
+		model = Cotizacion
+		fields = { #creamos los filtros necesarios 
+        		  'estatus':['exact'],
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha_entrega', 'Fecha de entrega menor'),
+				    ('fecha_entrega', 'Fecha de entrega mayor'),
+				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
+				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
+
+				)
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista cotizaciones
+# /administrador/lista-cotizaciones
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def listaCotizaciones(request):
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("lista_cotizaciones.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion
+# /administrador/cotizacion/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionDetail(request, orden):
+	current_user = request.user
+	orden = get_object_or_404(Cotizacion, pk = orden) 
+	template =  get_template("detalle_cotizacion.html")
+	productos = ProductoCotizacion.objects.filter(orden=orden)
+	form = comentarioCotizacionForm(initial={'usuario':current_user, 'orden':orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['orden'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = comentarioCotizacionForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	comentarios = ComentariosCotizacion.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
+	paginator = Paginator(productos, 5)
+	page = request.GET.get('page')
+	try:
+		productos= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		productos = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		productos = paginator.page(paginator.num_pages)
+
+	context = {
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Agregar producto
+# /administrador/cotizacion/asignar-producto/pk/
+
+
+from django.db.models.signals import post_save
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionProducto(request, orden):
+	orden = get_object_or_404(Cotizacion, pk = orden)
+	template =  get_template("asignar_producto_cotizacion.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	context = {
+		'orden':orden,
+	}
+	if 'save' in request.POST:
+		cantidad = request.POST['cantidad']
+		unidad = request.POST['unidad']
+		color = request.POST['color']
+		comentario = request.POST['comentario']
+
+		print cantidad
+		productopk = request.POST['producto']
+		producto = get_object_or_404(Producto, pk = productopk) 
+		insumos = InsumoProducto.objects.filter(producto=producto)
+		for insumo in insumos:
+			print insumo
+			total_insumos_producto = insumo.cantidad * int(cantidad)
+			print total_insumos_producto
+			if total_insumos_producto <= insumo.insumo.stock:
+				print 'suficiente'
+				newstock = insumo.insumo.stock - total_insumos_producto
+				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
+			else:
+				newstock = insumo.insumo.stock - total_insumos_producto
+				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
+				print 'no alcanza'
+
+		#print producto
+		productoorden= ProductoCotizacion.objects.create(producto=producto, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		print 'guardado'
+		return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Detalle de producto
+# /administrador/cotizacion/productos-cotizacion/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionProductoDetail(request, producto):
+	current_user = request.user
+	producto_orden = get_object_or_404(ProductoCotizacion, pk = producto)
+	orden = get_object_or_404(Cotizacion, pk = producto_orden.orden.id)
+	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
+	checkinsumos = CheckInsumoProductoCotizacion.objects.filter(productorden=producto_orden)
+	template =  get_template("detalle_producto_cotizacion.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+
+	form = estatusProductoInsumoCotizacion(initial={'usuario':current_user, 'productorden':producto_orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['productorden'].widget = forms.HiddenInput()
+	form.fields['insumo'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = estatusProductoInsumoCotizacion(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('CotizacionProductoDetail', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+
+	paginator = Paginator(insumos, 20)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
+
+
+	context = {
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 'costoespeciales':costoespeciales,
+	}
+	
 	return HttpResponse(template.render(context, request))

@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Agregar Nueva Cotización{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Agregar Nueva Cotización</h2>
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Ordenes</a>
+            </li>
+            <li class="active"> <strong>Nueva cotización</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="ibox-content p-xl">
+                <div class="insumoformstyle">
+                    <form id='formularioord' method='post' enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <ul>{{form.as_p}}</ul>
+                            </div>
+                            <div class="col-lg-4 align-center">
+                                <h3><strong>Acciones:</strong></h3>
+                                <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+                                <p></p>
+                                <button type="button" data-toggle="modal" data-target="#myModal8" class="btn btn-lg m-t-n-xs btn-info button280"><i class="fa fa-plus"></i>&nbsp;Agregar nuevo cliente</button>
+                                <p>
+                                </p>
+                                <button type="submit" name="save" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar nueva cotización</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+  <script>
+
+  $(function() {
+    $( ".datepicker" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+  </script>
+
+    <script>
+
+  $(function() {
+    $( ".datepicker1" ).datepicker(
+{
+   closeText: 'Cerrar',
+ prevText: '<Ant',
+ nextText: 'Sig>',
+ currentText: 'Hoy',
+ monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+ monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+ dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+ dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+ dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+ weekHeader: 'Sm',
+ dateFormat: 'yy-mm-dd',
+ firstDay: 1,
+ isRTL: false,
+ showMonthAfterYear: false,
+ yearSuffix: ''
+}
+      );
+  });
+  </script>
+
+<script type="text/javascript">
+    
+$(document).ready(function() {
+
+if($("#id_entrega").val() == "2"){ // 2 es flete
+$("#id_fecha_entrega").prop("disabled", false);
+$("#id_fecha_entrega_almacen").prop("disabled", true);
+$("#id_direccionentrega").prop("disabled", false);
+$("#id_direccionentrega").val("");
+}
+else{ // 1 en bodega
+$("#id_fecha_entrega").prop("disabled", true);
+$("#id_fecha_entrega_almacen").prop("disabled", false);
+$("#id_direccionentrega").prop("disabled", true);
+$("#id_direccionentrega").val("Entrega en bodega");
+
+}
+
+});
+
+$('#id_entrega').on('change', function(e) {
+
+if($("#id_entrega").val() == "2"){ // 2 es flete
+$("#id_fecha_entrega").prop("disabled", false);
+$("#id_fecha_entrega_almacen").prop("disabled", true);
+$("#id_direccionentrega").prop("disabled", false);
+$("#id_direccionentrega").val("");
+}
+else{ // 1 en bodega
+$("#id_fecha_entrega").prop("disabled", true);
+$("#id_fecha_entrega_almacen").prop("disabled", false);
+$("#id_direccionentrega").prop("disabled", true);
+$("#id_direccionentrega").val("Entrega en bodega");
+}
+
+});
+
+</script>
+
+<!-- modal agregar categoria -->
+
+        <div class="modal inmodal fade" id="myModal8" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Agregar nuevo cliente</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ingrese los datos del cliente:</p>
+                        <div class="insumoformstyle">
+                        <form id='formulariocliente' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form2.as_p}}</ul>
+
+                            <div class="row align-center">
+                                <input type='submit' name="save1" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+$(document).ready(function(){
+    // Iniciar autonumeric campos
+   $("#id_costoflete").autoNumeric('init');
+});
+
+    </script>
+
+<script>
+$('#formularioord').submit(function() {
+
+    var txt = $('#id_costoflete');
+    txt.val(txt.val().replace(/,/g , ""));
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioord").validate({
+        rules: {
+            descripcion: {
+                required: true
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            },
+            cliente: {
+                required: true
+            },
+            fecha_entrega: {
+                required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de orden obligatorio",
+            codigo : "Codigo de orden obligatorio",
+            descripcion: "Descripción obligatoria",
+            cliente: "Cliente obligatorio",
+            fecha_entrega: "Fecha de entrega obligatoria"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariocliente").validate({
+        rules: {
+            nombrecontacto: {
+              required: true
+            },
+            telefono: {
+              required: true
+            }
+        },
+        messages: {
+            nombrecontacto: "Nombre obligatorio",
+            telefono: "Telefono obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+<script>
+$('#id_cliente').selectize({
+    create: false,
+    plugins: ['remove_button'],
+    delimiter: ',',
+    persist: false,
+
+});
+</script>
+
+{% endblock %}

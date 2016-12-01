@@ -5,29 +5,27 @@ from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchO
 urlpatterns = [
 
    
-   	url(r'^administrador/alta_producto$', produccion_views.altaProducto, name='altaProducto'), 
-   	url(r'^administrador/lista_productos$', produccion_views.listaProducto, name='listaProducto'), 
+   	url(r'^administrador/producto/alta-producto$', produccion_views.altaProducto, name='altaProducto'), 
+   	url(r'^administrador/producto/lista-productos$', produccion_views.listaProducto, name='listaProducto'), 
    	url(r'^administrador/producto/(?P<producto>[-\w]+)/$', produccion_views.ProductoDetail, name='ProductoDetail'), 
-   	url(r'^administrador/asignar_insumo/(?P<producto>[-\w]+)/$', produccion_views.ProductoInsumo, name='ProductoInsumo'),
+   	url(r'^administrador/producto/asignar-insumo/(?P<producto>[-\w]+)/$', produccion_views.ProductoInsumo, name='ProductoInsumo'),
    	url(r'^administrador/pop_insumolist$', InsumoPopListView.as_view(), name='insumopop_list'),
    	url(r'^administrador/popsearch/$', SearchPopListView.as_view(), name='searchpop_url'),
    	url(r'^administrador/popinsumo$', produccion_views.popInsumo, name='popInsumo'), 
    	#url(r'^administrador/salidas/(?P<insumo>[-\w]+)/', 'almacen.views.adminSalidas', name='adminSalidas'),  
 
-#ajax
+	#ajax
+ 	url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
+ 	url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
 
-  url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
-  url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
 
-
-      #ordenes 
-
-    url(r'^administrador/alta_orden$', produccion_views.altaOrden, name='altaOrden'), 
-    url(r'^administrador/lista_ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
+    #ordenes 
+    url(r'^administrador/orden/alta-orden$', produccion_views.altaOrden, name='altaOrden'), 
+    url(r'^administrador/orden/lista-ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
     url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'),
     url(r'^administrador/orden/imprimir/(?P<orden>[-\w]+)/$', produccion_views.orden_impresion, name='orden_impresion'), 
-    url(r'^administrador/asignar_producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenProducto, name='OrdenProducto'),
-    url(r'^administrador/producto_orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'), 
+    url(r'^administrador/orden/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenProducto, name='OrdenProducto'),
+    url(r'^administrador/orden/producto-orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'), 
     url(r'^administrador/checkinsumos/(?P<orden>[-\w]+)/(?P<insumo>[-\w]+)$', produccion_views.HistoryCheckInsumo, name='HistoryCheckInsumo'),
 
     url(r'^administrador/pop_product_list$', ProductoPopListView.as_view(), name='producto_pop_list'),
@@ -39,12 +37,18 @@ urlpatterns = [
     url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
    	url(r'^administrador/search_orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
 
+    # Cotizaciones
+    url(r'^administrador/cotizacion/alta-cotizacion$', produccion_views.altaCotizacion, name='altaCotizacion'),
+    url(r'^administrador/cotizacion/lista-cotizaciones$', produccion_views.listaCotizaciones, name='listaCotizaciones'), 
+    url(r'^administrador/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetail, name='CotizacionDetail'),
+    url(r'^administrador/cotizacion/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.CotizacionProducto, name='CotizacionProducto'),
+    url(r'^administrador/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetail, name='CotizacionProductoDetail'), 
 
-#clientes
-url(r'^administrador/lista_clientes$', produccion_views.listaClientes, name='listaClientes'),
-url(r'^administrador/alta_cliente$', produccion_views.altaCliente, name='altaCliente'),  
+	#clientes
+	url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),
+	url(r'^administrador/alta-cliente$', produccion_views.altaCliente, name='altaCliente'),  
 
-#search Clientes
+	#search Clientes
     url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),
     url(r'^administrador/search_cliente/$', SearchClientesListView.as_view(), name='search_cliente_url'),
     url(r'^administrador/cliente/(?P<cliente>[-\w]+)/$', produccion_views.ClienteDetail, name='ClienteDetail'), 

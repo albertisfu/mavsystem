@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Producto a Cotización: {{orden.codigo}}{% endblock %}
+
+{% block content %}
+<script>
+
+function selectValue(id)
+{
+    // open popup window and pass field id
+    window.open('/administrador/pop_product','popuppage',
+      'width=800,toolbar=1,resizable=no,scrollbars=yes,height=600,top=100,left=100');
+}
+
+function updateValue(id, value)
+{
+    // this gets called from the popup window and updates the field with a new value
+    document.getElementById(id).value = value;
+
+    $.ajax({
+     crossDomain: true,
+    data : {csrfmiddlewaretoken: '{{ csrf_token }}', 'pk':value},
+    url: '/administrador/producto_ajax',
+    type: 'post',
+     dataType: 'json',
+    success: function(data){
+        //console.log(data);
+        var html = ''
+
+        html += '<br><div style="border: dotted 1px #000000;padding: 5px;width: 50%;"><span><strong>Nombre: </strong> '+data[0].producto+' <br><strong>Codigo: </strong>'+data[1].productosku+'</span></div><br>'
+        //console.log(html);
+        $('#viewproducto').html(html); 
+
+    },
+
+    error: function(data) {
+//console.log("Data not found");
+
+},
+
+});
+
+$("#seleccionar").html('Cambiar');
+
+
+}
+
+</script>
+
+<div class="row  border-bottom white-bg dashboard-header">
+  <h2>Asignar Producto</h2>
+
+  <div class="col-lg-8">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#">Cotizaciones</a>
+      </li>
+      <li class="active"> <strong>Asignar producto</strong>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h2>
+              Asignar insumo para: <strong>{{orden.nombre}}-{{orden.codigo}}</strong>
+            </h2>
+          </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="p-xs">
+                                <div class="insumoformstyle">
+<br>
+          <form id='formulario' method='post' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <ul>
+              <li>
+                <label class="control-label">Producto: &nbsp;</label>
+              <span id="viewproducto"></span>
+                <input id="producto" type="hidden" name="producto"/>
+                <button type="button" id="seleccionar"class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
+              </li>
+              <li>
+                <label class="control-label">Cantidad:</label>
+                <input type="number" name="cantidad" />
+              </li>
+              <li>
+                <label class="control-label">Color:</label>
+                <input type="text" name="color" />
+              </li>
+              <li>
+                <label class="control-label">Comentario:</label>
+                <input type="text" name="comentario" />
+              </li>
+              <li>
+              <label class="control-label">Unidad:</label>
+                <select name="unidad" id="unidad">
+                  <option value="1">Pieza</option>
+                  <option value="2">Metro</option>
+                  <option value="3">Kilo</option>
+                  <option value="4">Litro</option>
+                </select>
+              </li>
+            </ul>
+            <br>
+                           </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                              
+                                                      <br>
+                        <h3><strong>Acciones:</strong></h3>
+                        <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+<p></p>
+                        <button type="submit" name="save" class="btn btn-lg btn-primary  m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar producto</button>
+                            </form>
+                            <p></p>
+<br>
+
+                            </div>
+                        </div>
+
+ 
+
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row"></div>
+{% endblock %}

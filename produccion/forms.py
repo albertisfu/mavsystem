@@ -48,6 +48,28 @@ class altaOrdenForm(forms.ModelForm):
 			'costoflete': forms.TextInput(),
 		}
 
+class altaCotizacionForm(forms.ModelForm):
+	fecha_entrega = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	fecha_entrega_almacen = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker1'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	class Meta:
+		model = Cotizacion
+		fields = ('nombre', 'codigo', 'descripcion', 'cliente','fecha_entrega_almacen', 'usuario', 'entrega', 'direccionentrega', 'fecha_entrega', 'costoflete','nota')
+		labels = {
+            'nombre': ('Nombre de la cotización'),
+            'codigo': ('Codigo Unico'),
+            'descripcion': ('Descripcion'),
+            'cliente': ('Seleccionar Cliente'),
+            'fecha_entrega': ('Fecha de Entrega'),
+            'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
+            'entrega': ('Metodo de Entrega'),
+            'direccionentrega': ('Dirección Entrega'),
+            'costoflete': ('Costo Flete'),
+            'nota': ('Nota'),
+        }
+		widgets = {
+			'costoflete': forms.TextInput(),
+		}
+
 
 
 
@@ -67,11 +89,22 @@ class comentarioOrdenForm(forms.ModelForm):
 		model = ComentariosOrden
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
+class comentarioCotizacionForm(forms.ModelForm):
+	class Meta:
+		model = ComentariosCotizacion
+		fields = ('orden', 'comentario', 'estatus', 'usuario')
+
 
 
 class estatusProductoInsumo(forms.ModelForm):
 	class Meta:
 		model = CheckInsumoProducto
+		fields = ('productorden', 'insumo', 'estatus', 'usuario')
+
+
+class estatusProductoInsumoCotizacion(forms.ModelForm):
+	class Meta:
+		model = CheckInsumoProductoCotizacion
 		fields = ('productorden', 'insumo', 'estatus', 'usuario')
 
 
