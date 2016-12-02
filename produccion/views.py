@@ -873,13 +873,7 @@ class CotizacionesFilter(django_filters.FilterSet):
 		fields = { #creamos los filtros necesarios 
         		  'estatus':['exact'],
         		 }
-		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
-				    ('-fecha_entrega', 'Fecha de entrega menor'),
-				    ('fecha_entrega', 'Fecha de entrega mayor'),
-				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
-				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
 
-				)
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -1058,3 +1052,63 @@ def CotizacionProductoDetail(request, producto):
 	}
 	
 	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Vista de impresion
+# /administrador/cotizacion/imprimir/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def cotizacion_impresion(request, orden):
+	orden = get_object_or_404(Cotizacion, pk = orden) 
+	productos = ProductoCotizacion.objects.filter(orden=orden)
+	mediaurl = getattr(settings, 'MEDIA_URL', None)
+	contexto = {'orden':orden,'productos':productos, 'mediaurl':mediaurl}
+	template = get_template('imprimir_cotizacion.html')
+	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
+	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
+	http_response = HttpResponse(rendered_html, content_type='text/html')
+	return http_response 
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de cotizaciones > buscador
+
+
+class CotizacionesListView(ListView):
+	model = Cotizacion
+	template_name = 'buscar_cotizacion.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(CotizacionesListView, self).dispatch(*args, **kwargs)
+  
+
+import operator
+from django.db.models import Q
+class SearchCotizacionesListView(CotizacionesListView):
+    """
+    Display a Blog List page filtered by the search query.
+    """
+    paginate_by = 10
+
+    def get_queryset(self):
+        result = super(SearchCotizacionesListView, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(nombre__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(codigo__icontains=q) for q in query_list))|
+                reduce(operator.and_,
+                       (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+            )
+
+        return result

@@ -49,21 +49,14 @@ class altaOrdenForm(forms.ModelForm):
 		}
 
 class altaCotizacionForm(forms.ModelForm):
-	fecha_entrega = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
-	fecha_entrega_almacen = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker1'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
 	class Meta:
 		model = Cotizacion
-		fields = ('nombre', 'codigo', 'descripcion', 'cliente','fecha_entrega_almacen', 'usuario', 'entrega', 'direccionentrega', 'fecha_entrega', 'costoflete','nota')
+		fields = ('nombre', 'codigo', 'descripcion', 'cliente', 'usuario','nota')
 		labels = {
             'nombre': ('Nombre de la cotización'),
             'codigo': ('Codigo Unico'),
             'descripcion': ('Descripcion'),
             'cliente': ('Seleccionar Cliente'),
-            'fecha_entrega': ('Fecha de Entrega'),
-            'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
-            'entrega': ('Metodo de Entrega'),
-            'direccionentrega': ('Dirección Entrega'),
-            'costoflete': ('Costo Flete'),
             'nota': ('Nota'),
         }
 		widgets = {

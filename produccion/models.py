@@ -171,7 +171,7 @@ class Cotizacion(models.Model):
 	descripcion = models.CharField(max_length = 255)
 	cliente = models.ForeignKey(Cliente)
 	fecha_expedicion = models.DateField(default=timezone.now)
-	fecha_entrega = models.DateField(blank=True, null=True)
+
 	pendiente = 1
 	confirmada = 2
 	proceso = 3
@@ -189,16 +189,6 @@ class Cotizacion(models.Model):
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
 	costo = models.FloatField(default=0)
-	bodega = 1
-	flete = 2
-	entrega_options = (
-	      (bodega, 'Bodega'),
-	      (flete, 'Flete'),
-	  )
-	entrega = models.IntegerField(choices=entrega_options, default=bodega)
-	fecha_entrega_almacen = models.DateField(blank=True, null=True)
-	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
-	costoflete = models.FloatField(default=0)
 	nota = models.TextField(max_length=1000, blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre

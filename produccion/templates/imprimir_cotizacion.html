@@ -2,7 +2,7 @@
 
 <head>
     {% load staticfiles %} {% load humanize %}
-    <title>Orden numero: {{ orden.pk }}</title>
+    <title>Cotización número: {{ orden.pk }}</title>
     <style type="text/css">
     @media print {
         .printbutton {
@@ -241,16 +241,7 @@
 </div>
 </div>
 
-<div class="divTable" style="width: 95%; margin: 0 auto;">
-<div class="divTableBody">
-<div class="divTableRow">
-<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Fecha de entrega:</strong></div>
-</div>
-<div class="divTableRow">
-<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.fecha_entrega|date:"d/M/Y"}}</div>
-</div>
-</div>
-</div>
+
 
 </div>
 </div>
@@ -275,8 +266,7 @@
 <div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"></div>
 <div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">PRODUCTO</div>
 <div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COLOR</div>
-<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COSTO UNITARIO</div>
-<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;">COSTO TOTAL</div>
+
 </div>
 {% for producto in productos %}
 <div class="divTableRow" style="page-break-inside: avoid;">
@@ -286,8 +276,7 @@
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;"><img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ mediaurl }}{{producto.producto.file}}" width="100" height="100"></div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">Nombre:  {{producto.producto.nombre}} | Descripción: {{producto.producto.descripcion}} | Comentarios: {{producto.comentario|default:"----"}}</div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.color|default:"----"}}</div>
-<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">${{producto.producto.costo|floatformat:2|intcomma}}</div>
-<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">${% get_costo producto.cantidad producto.producto.costo %}</div>
+
 
 </div>
 {% endfor %}
@@ -308,22 +297,7 @@
 </div>
 
 <!-- Totales -->
-<br>
-<div class="divTable" style="width: 300px; page-break-inside: avoid;">
-<div class="divTableBody">
-<div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">TOTAL</div>
-<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costo|floatformat:2|intcomma}}</div>
-</div>
 
-<div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">FLETE</div>
-<div class="divTableCell" style="border: 1px solid #999999;">${{orden.costoflete|floatformat:2|intcomma}}</div>
-</div>
-
-
-</div>
-</div>
 
 
 

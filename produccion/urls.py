@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from produccion import views as produccion_views
-from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView
+from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView, CotizacionesListView, SearchCotizacionesListView
 
 urlpatterns = [
 
@@ -35,14 +35,19 @@ urlpatterns = [
 
     #search Orders
     url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
-   	url(r'^administrador/search_orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
+   	url(r'^administrador/buscar/orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
 
     # Cotizaciones
     url(r'^administrador/cotizacion/alta-cotizacion$', produccion_views.altaCotizacion, name='altaCotizacion'),
     url(r'^administrador/cotizacion/lista-cotizaciones$', produccion_views.listaCotizaciones, name='listaCotizaciones'), 
     url(r'^administrador/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetail, name='CotizacionDetail'),
     url(r'^administrador/cotizacion/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.CotizacionProducto, name='CotizacionProducto'),
-    url(r'^administrador/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetail, name='CotizacionProductoDetail'), 
+    url(r'^administrador/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetail, name='CotizacionProductoDetail'),
+    url(r'^administrador/cotizacion/imprimir/(?P<orden>[-\w]+)/$', produccion_views.cotizacion_impresion, name='cotizacion_impresion'),
+
+    # Buscar cotizaciones
+    url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
+    url(r'^administrador/buscar/cotizacion/$', SearchCotizacionesListView.as_view(), name='search_cotizacion_url'),
 
 	#clientes
 	url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),

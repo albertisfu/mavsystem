@@ -51,28 +51,11 @@
                                         <dd class="font-15">{{orden.cliente}}</dd>
                                         <dt class="font-15">Fecha de expedición:</dt>
                                         <dd class="font-15">{{orden.fecha_expedicion|date:"d/M/Y"}}</dd>
-                                        <dt class="font-15">Fecha de entrega:</dt>
-                                        <dd class="font-15">
-                                            {% if orden.fecha_entrega_almacen != NULL %} 
-                                                {{orden.fecha_entrega_almacen|date:"d/M/Y"}} (Almacen) 
-                                                {% else %}
-                                                {{orden.fecha_entrega|date:"d/M/Y"}} (Flete)
-                                                {% endif %} 
-                                        </dd>
-
-                                        <dt class="font-15">Metodo entrega:</dt>
-                                        <dd class="font-15">{{orden.get_entrega_display}}</dd>
-                                        <dt class="font-15">Dirección entrega:</dt>
-                                        <dd class="font-15">{{orden.direccionentrega|default:"----"}}</dd>
-                                        <dt class="font-15">Costo Flete:</dt>
-                                        <dd class="font-15">${{orden.costoflete|floatformat:2|intcomma}}</dd>
-
+                                
                                         <dt class="font-15">Estatus original:</dt>
                                         <dd class="font-15">{{orden.get_estatus_display}}</dd>
                                         <dt class="font-15">Creada por:</dt>
                                         <dd class="font-15">{{orden.usuario}}</dd>
-                                        <dt class="font-15">Costo Orden:</dt>
-                                        <dd class="font-15">${{orden.costo|floatformat:2|intcomma}}</dd>
                                         <dt class="font-15">Notas:</dt>
                                         <dd class="font-15">{{orden.nota}}</dd>
 
@@ -85,7 +68,7 @@
                                     <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
 
-                                <a href="{% url 'orden_impresion' orden.pk %}" class="align-center" target="_blank">
+                                <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
 
@@ -192,8 +175,7 @@ Pendiente
                                                 <th>Comentario</th>
                                                 <th>Foto</th>
                                                 <th>Cantidad</th>
-                                                <th>Costo Unitario</th>
-                                                <th>Costo Total</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -211,8 +193,7 @@ Pendiente
                                                 <td class="" class="pull-left">
                                                     <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
-                                                    <td class="" class="pull-left">${{producto.producto.costo|floatformat:2|intcomma}}</td>
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.producto.costo %}</td>
+                                                
                                             </tr>
                                             {% endfor %}
                                         </tbody>

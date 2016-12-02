@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Resultados de Busqueda de Orden{% endblock %}
+{% block title %}Resultados de Busqueda de Cotizaciones{% endblock %}
 
 {% block content %}
 
@@ -12,7 +12,7 @@
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
-                <a href="#">Buscar ordenes</a>
+                <a href="#">Buscar cotizaciones</a>
             </li>
             <li class="active"> <strong>Resultados</strong>
             </li>
@@ -24,7 +24,7 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
-<a href="{% url 'listaOrdenes' %}">
+<a href="{% url 'listaCotizaciones' %}">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar a lista
                 </button>
             </a>
@@ -34,7 +34,7 @@
                     
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h2>Ordenes</h2>
+                            <h2>Cotizaciones</h2>
                         </div>
                         <div class="panel-body">
                             <div class="ibox-content">
@@ -48,7 +48,6 @@
                                             <th>Descripción</th>
                                             <th>Cliente</th>
                                             <th>Fecha Expedicion</th>
-                                            <th>Fecha Entrega</th>
                                             <th>Estatus</th>
                                             <th>Usuario</th>
                                         </tr>
@@ -56,18 +55,11 @@
                                     <tbody>
                                         {% for orden in object_list %}
                                         <tr>
-                                            <td><a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a></td>
+                                            <td><a href="{% url "CotizacionDetail" orden.pk %}">{{orden.nombre}}</a></td>
                                             <td>{{orden.codigo}} </td>
                                             <td>{{orden.descripcion|default:"----"}} </td>
                                             <td>{{orden.cliente}} </td>
                                             <td>{{orden.fecha_expedicion|date:"d/M/Y"}} </td>
-                                            <td>
-                                            {% if orden.fecha_entrega_almacen != NULL %} 
-                                                {{orden.fecha_entrega_almacen|date:"d/M/Y"}} (A) 
-                                                {% else %}
-                                                {{orden.fecha_entrega|date:"d/M/Y"}}
-                                                {% endif %} 
-                                            </td>
                                             <td>{{orden.estatus}} </td>
                                             <td>{{orden.usuario}} </td>
                                         </tr>
