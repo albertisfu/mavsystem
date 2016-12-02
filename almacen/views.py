@@ -60,7 +60,7 @@ def administradorHome(request):
 @group_required('Administrador', 'Produccion')
 def administradorAlta(request):
 	current_user = request.user
-	template =  get_template("administradoralta.html")
+	template =  get_template("alta_insumo.html")
 	form = AltaForm()
 	#context = {
 	#	'current_user': current_user, 'form': form,
@@ -70,7 +70,8 @@ def administradorAlta(request):
 		if form.is_valid():
 			post = form.save()
 			post.save()
-			return redirect('administradorInsumos')
+			#return redirect('administradorInsumos')
+			return HttpResponseRedirect(reverse('adminInsumoDetail', args=(post.id,)))
 
 	form2 = insumoaddcat()
 	if 'save1' in request.POST:
@@ -128,7 +129,7 @@ def administradorInsumos(request):
 	except EmptyPage:
         # si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
-	template =  get_template("administradorinsumos.html")
+	template =  get_template("lista_insumos.html")
 	context = {
 		'current_user': current_user,'insumos': insumos,'filters': filters,
 	}
@@ -142,7 +143,7 @@ def administradorInsumos(request):
 
 class InsumoListView(ListView):
 	model = Insumo
-	template_name = 'insumo_list.html'
+	template_name = 'buscar_insumo.html'
 
 	@method_decorator(login_required)
 	@method_decorator(group_required('Administrador', 'Produccion'))
@@ -199,7 +200,7 @@ def adminInsumoDetail(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	entradas = Entrada.objects.filter(insumo=insumo)
 	salidas = Salida.objects.filter(insumo=insumo)
-	template =  get_template("admininsumodetail.html")
+	template =  get_template("detalle_insumo.html")
 	sort = request.GET.get('o') #orden del query filter
 	if sort == None: #si no hay orden en URL se refiere a -fecha 
 		sort = '-fecha'
@@ -247,7 +248,7 @@ def editinsumo(request, pk):
                              #return HttpResponse(json.dumps(payload), content_type='application/json')
     else:
         form = editinsumoform(instance=post)
-    return render(request, 'editinsumo.html', {'form': form, 'post':post})
+    return render(request, 'editar_insumo.html', {'form': form, 'post':post})
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -258,7 +259,7 @@ def editinsumo(request, pk):
 def adminInsumoEntrada(request, insumo):
 	current_user = request.user
 	insumo = get_object_or_404(Insumo, pk = insumo)
-	template =  get_template("admininsumoentrada.html")
+	template =  get_template("entrada_insumo.html")
 	form = EntradaForm(initial={'insumo':insumo, 'usuario':current_user})
 	form.fields['insumo'].widget = forms.HiddenInput()
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -292,7 +293,7 @@ def adminInsumoEntrada(request, insumo):
 def adminInsumoSalida(request, insumo):
 	current_user = request.user
 	insumo = get_object_or_404(Insumo, pk = insumo)
-	template =  get_template("admininsumosalida.html")
+	template =  get_template("salida_insumo.html")
 	form = SalidaForm(initial={'insumo':insumo, 'usuario':current_user})
 	form.fields['insumo'].widget = forms.HiddenInput()
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -323,7 +324,7 @@ def adminInsumoSalida(request, insumo):
 def adminEntradas(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	entradas = Entrada.objects.filter(insumo=insumo)
-	template =  get_template("adminlistaentradas.html")
+	template =  get_template("insumo_lista_entradas.html")
 	sort = request.GET.get('o') #orden del query filter
 	if sort == None: #si no hay orden en URL se refiere a -fecha 
 		sort = '-fecha'
@@ -374,7 +375,7 @@ class SalidasFilter(django_filters.FilterSet):
 def adminSalidas(request, insumo):
 	insumo = get_object_or_404(Insumo, pk = insumo) 
 	salidas = Salida.objects.filter(insumo=insumo)
-	template =  get_template("adminlistasalidas.html")
+	template =  get_template("insumo_lista_salidas.html")
 	sort = request.GET.get('o') #orden del query filter
 	if sort == None: #si no hay orden en URL se refiere a -fecha 
 		sort = '-fecha'
@@ -406,7 +407,7 @@ def adminSalidas(request, insumo):
 @group_required('Administrador', 'Produccion')
 def AddOrdenCompra(request):
 	current_user = request.user
-	template =  get_template("add_orden_compra.html")
+	template =  get_template("alta_orden_compra.html")
 	form = OrdenForm()
 	#context = {
 	#	'current_user': current_user, 'form': form,
@@ -471,7 +472,7 @@ def listaOrdenesCompra(request):
 	except EmptyPage:
         # si la pagina esta fuera de rango, muestra la ultima pagina
 		ordenes = paginator.page(paginator.num_pages)
-	template =  get_template("listaordenescompra.html")
+	template =  get_template("lista_ordenes_compra.html")
 	context = {
 		'ordenes': ordenes,'filters': filters,
 	}
@@ -488,7 +489,7 @@ def listaOrdenesCompra(request):
 
 class OrdenesCompraListView(ListView):
 	model = OrdenCompra
-	template_name = 'ordenes_compra_list.html'
+	template_name = 'buscar_ordenes_compra.html'
 
 	@method_decorator(login_required)
 	@method_decorator(group_required('Administrador', 'Produccion'))
@@ -591,7 +592,7 @@ def OrdenCompraDetalle(request, pk):
 					Insumo.objects.filter(pk=concept.insumo.pk).update(stock=newstock, costostock=costostock)
                   
 				
-	return render(request, 'orden_compra_detalle.html', {'calculoiva':calculoiva,'totaliva':totaliva,'total':total,'orden': orden, 'form2':form2, 'insumos':insumos})
+	return render(request, 'detalle_orden_compra.html', {'calculoiva':calculoiva,'totaliva':totaliva,'total':total,'orden': orden, 'form2':form2, 'insumos':insumos})
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Impresion orden de compra
@@ -643,7 +644,7 @@ def editarconceptocobro(request, pk):
         formy = editinsumocompra(instance=post)
         formy.fields['orden'].widget = forms.HiddenInput()
        
-        return render(request, 'edit_concepto_compra.html', {'formy': formy, 'post':post})
+        return render(request, 'editar_concepto_compra.html', {'formy': formy, 'post':post})
 
 
 
@@ -698,6 +699,6 @@ def modificar_orden_compra(request, pk):
 		form.fields['orden'].widget = forms.HiddenInput()
 		form.fields['fecha'].widget = forms.HiddenInput()
 		form.fields['numero'].widget = forms.HiddenInput()
-		return render(request, 'edit_order_compra.html', {'form': form, 'post':post})
+		return render(request, 'editar_order_compra.html', {'form': form, 'post':post})
 
 

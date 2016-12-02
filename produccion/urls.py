@@ -4,7 +4,6 @@ from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchO
 
 urlpatterns = [
 
-   
    	url(r'^administrador/producto/alta-producto$', produccion_views.altaProducto, name='altaProducto'), 
    	url(r'^administrador/producto/lista-productos$', produccion_views.listaProducto, name='listaProducto'), 
    	url(r'^administrador/producto/(?P<producto>[-\w]+)/$', produccion_views.ProductoDetail, name='ProductoDetail'), 
@@ -14,12 +13,11 @@ urlpatterns = [
    	url(r'^administrador/popinsumo$', produccion_views.popInsumo, name='popInsumo'), 
    	#url(r'^administrador/salidas/(?P<insumo>[-\w]+)/', 'almacen.views.adminSalidas', name='adminSalidas'),  
 
-	#ajax
- 	url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
- 	url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
+		#ajax
+	 	url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
+	 	url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
 
-
-    #ordenes 
+    # ordenes 
     url(r'^administrador/orden/alta-orden$', produccion_views.altaOrden, name='altaOrden'), 
     url(r'^administrador/orden/lista-ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
     url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'),
@@ -33,7 +31,7 @@ urlpatterns = [
     url(r'^administrador/pop_product$', produccion_views.popProducto, name='popProduct'), 
 
 
-    #search Orders
+    # search Orders
     url(r'^administrador/ordenes_lista$', OrdenesListView.as_view(), name='search-orders'),
    	url(r'^administrador/buscar/orden/$', SearchOrdenesListView.as_view(), name='search_orden_url'),
 
@@ -49,11 +47,11 @@ urlpatterns = [
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
     url(r'^administrador/buscar/cotizacion/$', SearchCotizacionesListView.as_view(), name='search_cotizacion_url'),
 
-	#clientes
-	url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),
-	url(r'^administrador/alta-cliente$', produccion_views.altaCliente, name='altaCliente'),  
+		#clientes
+		url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),
+		url(r'^administrador/alta-cliente$', produccion_views.altaCliente, name='altaCliente'),  
 
-	#search Clientes
+		#search Clientes
     url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),
     url(r'^administrador/search_cliente/$', SearchClientesListView.as_view(), name='search_cliente_url'),
     url(r'^administrador/cliente/(?P<cliente>[-\w]+)/$', produccion_views.ClienteDetail, name='ClienteDetail'), 

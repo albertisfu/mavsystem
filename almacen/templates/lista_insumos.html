@@ -21,11 +21,11 @@
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
                         <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="/administrador/alta"> <i class="fa fa-plus"></i> Agregar nuevo insumo
+                            <a class="btn btn-success btn-facebook" href="{% url 'administradorAlta' %}"> <i class="fa fa-plus"></i> Agregar nuevo insumo
                             </a>
                         </div>
                         <div class="col-lg-4 pull-right">
-                            <form id="searchform" action="{% url 'search_url' %}" method="get" accept-charset="utf-8" class="align-right searchform">
+                            <form id="searchform" action="{% url 'search_insumo' %}" method="get" accept-charset="utf-8" class="align-right searchform">
                                 <div class="input-group">
                                     <input class="searchfield form-control input-lg" id="searchbox" name="q" type="text" placeholder="Buscar">
                             </form>
