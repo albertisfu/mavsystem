@@ -1321,6 +1321,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 	insumos = InsumoProductoMod.objects.filter(producto=producto)
 	checkinsumos = CheckInsumoProductoAlmacen.objects.filter(productorden=producto_orden)
 	template =  get_template("detalle_producto_orden_almacen.html")
+	pk = producto
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
@@ -1371,7 +1372,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form1':form1, 'form':form, 'costoespeciales':costoespeciales,
+		'pk':pk,'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form1':form1, 'form':form, 'costoespeciales':costoespeciales,
 	}
 	
 	return HttpResponse(template.render(context, request))
@@ -1419,9 +1420,9 @@ def ProductoInsumoAlmacen(request, productoalmacen):
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
-def EliminarProductoInsumoAlmacen(request, insumo):
+def EliminarProductoInsumoAlmacen(request, insumo, producto):
 
-	insumos = InsumoProductoMod.objects.get(pk=insumo)
+	insumos = InsumoProductoMod.objects.get(insumo=insumo, producto=producto)
 
 	producto = insumos.producto.pk
 	insumos.delete()

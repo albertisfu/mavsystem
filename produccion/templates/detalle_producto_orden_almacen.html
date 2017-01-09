@@ -104,6 +104,7 @@
                                                 <tr>
                                                     <th>Concepto</th>
                                                     <th>Costo</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -111,6 +112,7 @@
                                                 <tr>
                                                     <td>{{costo.concepto}}</td>
                                                     <td>${{costo.costo|floatformat:2|intcomma}}</td>
+                                                    <td><a href="#" class="btn btn-sm btn-primary" title="Editar"><i class="fa fa-pencil"></i></a>&nbsp;<a href="#" class="btn btn-sm btn-danger" title="Eliminar"><i class="fa fa-times"></i> </a></td>
                                                 </tr>
                                                 {% endfor %} {% else %} No hay costos especiales {% endif %}
                                             </tbody>
@@ -164,7 +166,7 @@
                                                 <td class="" class="pull-left">${{material.insumo.costounitario|floatformat:2|intcomma}}</td>
                                                  <td class="" class="pull-left">${{material.costototal|floatformat:2|intcomma}}</td>
                                                 
-                                                <td class="" class="pull-left"><a href="{% url 'EliminarProductoInsumoAlmacen' material.pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
+                                                <td class="" class="pull-left"><a href="#" class="btn btn-w-m btn-primary"><i class="fa fa-pencil"></i> Editar</a>&nbsp;<a href="{% url 'EliminarProductoInsumoAlmacen' material.insumo.pk pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
 
                                             </tr>
                                             {% endfor %}
