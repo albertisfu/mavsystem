@@ -50,6 +50,10 @@ urlpatterns = [
     url(r'^administrador/almacen/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenAlmacenProducto, name='OrdenAlmacenProducto'),
     url(r'^administrador/almacen/producto-orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenAlmacenProductoDetail, name='OrdenAlmacenProductoDetail'),
 
+    # Almacen producto personalizado
+
+    url(r'^administrador/almacen/producto/asignar-insumo/(?P<productoalmacen>[-\w]+)/$', produccion_views.ProductoInsumoAlmacen, name='ProductoInsumoAlmacen'),
+
     # Buscar cotizaciones
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
     url(r'^administrador/buscar/cotizacion/$', SearchCotizacionesListView.as_view(), name='search_cotizacion_url'),

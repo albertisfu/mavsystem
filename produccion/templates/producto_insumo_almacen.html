@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Asignar Material a Producto: {{producto.nombre}}{% endblock %}
+
+{% block content %}
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
+<script>
+
+function selectValue(id)
+{
+    // open popup window and pass field id
+    window.open('/administrador/popinsumo','popuppage',
+      'width=800,toolbar=1,resizable=1,scrollbars=yes,height=600,top=100,left=100');
+}
+
+function updateValue(id, value)
+{
+    // this gets called from the popup window and updates the field with a new value
+    document.getElementById(id).value = value;
+
+
+    $.ajax({
+     crossDomain: true,
+    data : {csrfmiddlewaretoken: '{{ csrf_token }}', 'pk':value},
+    url: '/administrador/insumo_ajax',
+    type: 'post',
+     dataType: 'json',
+    success: function(data){
+        //console.log(data);
+        var html = ''
+
+        html += '<br><div style="border: dotted 1px #000000;padding: 5px;width: 50%;"><span><strong>Nombre: </strong> '+data[0].insumo+' <br><strong>Codigo: </strong>'+data[1].insumosku+'</span> </div><br>'
+        //console.log(html);
+        $('#viewinsumo').html(html); 
+
+    },
+
+    error: function(data) {
+//console.log("Data not found");
+
+},
+
+});
+
+$("#seleccionar").html('Cambiar insumo');
+
+
+}
+
+</script>
+
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Asignar Material a Producto</h2>
+
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Almacen</a>
+            </li>
+            <li class="active"> <strong>Asignar material</strong>
+            </li>
+        </ol>
+    </div>
+
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+
+                        <h2>
+                            Asignar material para: <strong>{{producto.nombre}}-{{producto.codigo}}</strong>
+                        </h2>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="p-xs">
+                                <div class="insumoformstyle">
+                                <br>
+                                    <form id='formulariomat' method='post' enctype='multipart/form-data'>
+                                        {% csrf_token %}
+                                        <ul>
+                                            <li>
+                                                <label class="control-label">Insumo:</label><span id="viewinsumo"></span>
+                                                <input id="insumo" type="hidden" name="insumo"/>
+                                                <button id="seleccionar" type="button" class="btn btn-primary" onClick="selectValue()">Seleccionar</button>
+                                            </li>
+                                            <li>
+                                                <label class="control-label">Cantidad:</label>
+                                                <input type="number" name="cantidad" />
+
+                                                <input id="id_producto" name="producto" type="hidden" value="{{form.producto.value}}">
+                                            </li>
+                                        </ul>
+                                    <br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                                            <br>
+                        <h3><strong>Acciones:</strong></h3>
+                        <a href='javascript:window.location = document.referrer;' class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+<p></p>
+                        <button type="submit" name="save" class="btn btn-lg btn-primary  m-t-n-xs button280"><i class="fa fa-save"></i>&nbsp;Guardar material</button>
+                            </form>
+                            <p></p>
+<br>
+                            </div>
+                        </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariomat").validate({
+        rules: {
+            cantidad: {
+                required: true,
+                min: 0
+            }
+        },
+        messages: {
+           cantidad: "Cantidad mayor o igual a 0",
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+{% endblock %}

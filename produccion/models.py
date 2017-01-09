@@ -359,6 +359,14 @@ class CheckInsumoProductoAlmacen(models.Model):
 	def __unicode__(self):
 		return self.productorden.producto.nombre
 
+
+class CostoEspecialAlmacen(models.Model):
+	producto = models.ForeignKey(ProductoAlmacenMod)
+	concepto = models.CharField(max_length = 255)
+	costo = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.producto.nombre
+
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # ---------------------------------------------------------

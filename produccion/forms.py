@@ -24,7 +24,10 @@ class ProductoInsumoForm(forms.ModelForm):
 		model = InsumoProducto
 		fields = ('insumo', 'producto', 'cantidad')
 
-
+class ProductoInsumoAlmacenForm(forms.ModelForm):
+	class Meta:
+		model = InsumoProductoMod
+		fields = ('insumo', 'producto', 'cantidad')
 
 
 class altaOrdenForm(forms.ModelForm):
@@ -100,6 +103,13 @@ class CostoEspecialForm(forms.ModelForm):
 			'costo': forms.TextInput(),
 		}
       
+class CostoEspecialAlmacenForm(forms.ModelForm):
+	class Meta:
+		model = CostoEspecialAlmacen
+		fields = ('producto', 'concepto', 'costo')
+		widgets = {
+			'costo': forms.TextInput(),
+		}
 
 
 

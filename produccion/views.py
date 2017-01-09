@@ -1318,13 +1318,27 @@ def OrdenAlmacenProductoDetail(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = producto)
 	orden = get_object_or_404(OrdenAlmacen, pk = producto_orden.orden.id)
-	insumos = InsumoProductoMod.objects.filter(producto=producto_orden.producto)
+	insumos = InsumoProductoMod.objects.filter(producto=producto)
 	checkinsumos = CheckInsumoProductoAlmacen.objects.filter(productorden=producto_orden)
 	template =  get_template("detalle_producto_orden_almacen.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
-	#costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+	form1 = CostoEspecialAlmacenForm(initial={'producto':producto_orden.producto})
+	form1.fields['producto'].widget = forms.HiddenInput()
+	if 'save' in request.POST:
+		form1 = CostoEspecialAlmacenForm(request.POST)
+		print request.POST
+		if form1.is_valid():
+			print 'valid'
+			form1.save()
+			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form1.errors, len(form1.errors)
+
+
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto_orden.producto)[:15]
 
 	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -1337,12 +1351,13 @@ def OrdenAlmacenProductoDetail(request, producto):
 		if form.is_valid():
 			print 'valid'
 			form.save()
-			return HttpResponseRedirect(reverse('OrdenProductoDetail', args=(producto_orden.id,)))
+			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto_orden.id,)))
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
 
-
+	print 'insumos'
+	print insumos
 	paginator = Paginator(insumos, 20)
 	page = request.GET.get('page')
 	try:
@@ -1356,7 +1371,42 @@ def OrdenAlmacenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form1':form1, 'form':form, 'costoespeciales':costoespeciales,
 	}
 	
+	return HttpResponse(template.render(context, request))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Asignar Material
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def ProductoInsumoAlmacen(request, productoalmacen):
+	producto = get_object_or_404(ProductoAlmacenMod, pk = productoalmacen)
+	template =  get_template("producto_insumo_almacen.html")
+	form = ProductoInsumoAlmacenForm(initial={'producto':producto})
+	form.fields['producto'].widget = forms.HiddenInput()
+	context = {
+		'producto':producto,'form': form,
+	}
+	if request.method == 'POST':
+	#if 'save' in request.POST:
+		form = ProductoInsumoAlmacenForm(request.POST)
+		if form.is_valid():
+			
+			cantidad = request.POST['cantidad']
+			print cantidad
+			insumopk = request.POST['insumo']
+			insumo = get_object_or_404(Insumo, pk = insumopk) 
+			print insumo
+			insumoproducto= InsumoProductoMod.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
+			print 'guardado'
+			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto.id,)))
+		else:
+			print "Error en el form"
+			print form.errors
+
 	return HttpResponse(template.render(context, request))

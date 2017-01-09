@@ -42,23 +42,45 @@ def get_costo(cantidad, unitario):
 def get_obj_a(insumo, orden):
 	print insumo
 	print orden
-	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
-	insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	try:
+		producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
+	except:
+		producto_orden = None
+	try:
+		insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	except:
+		insumo_producto = None
 	print producto_orden
 	print insumo_producto
-	obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
-	estatus = obj.estatus
+	try:
+		obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
+	except:
+		obj = None
+		estatus = ''
+	else:
+		estatus = obj.estatus
 	print estatus
 	return estatus
 
 
 @register.simple_tag
 def get_fecha_a(insumo, orden):
-	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
-	insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	try:
+		producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
+	except:
+		producto_orden = None
+	try:
+		insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	except:
+		insumo_producto = None
 	print producto_orden
 	print insumo_producto
-	obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
-	fecha = obj.fecha
+	try:
+		obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
+	except:
+		obj = None
+		fecha = ''
+	else:
+		fecha = obj.fecha
 	print fecha
 	return fecha
