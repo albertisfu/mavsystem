@@ -28,7 +28,7 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-        <a href="javascript:window.location = document.referrer;">
+        <a href="{% url 'OrdenAlmacenDetail' producto_orden.orden.pk %}">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
