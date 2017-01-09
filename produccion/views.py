@@ -156,6 +156,58 @@ def ProductoDetail(request, producto):
 	return HttpResponse(template.render(context, request))
 
 
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Editar Producto
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EditarProducto(request, pk):
+
+
+	post = get_object_or_404(Producto, pk=pk)
+
+	if 'save' in request.POST:
+		form = altaProductoForm(request.POST, request.FILES, instance=post)
+		if form.is_valid():
+			post = form.save()
+			post.save()
+			#return redirect('listaProducto')
+			return HttpResponseRedirect(reverse('ProductoDetail', args=(pk,)))
+		else:
+			print "Error en edición de producto"
+			print form.errors
+	else:
+		form = altaProductoForm(instance=post)
+
+	form2 = productoaddcat()
+	if 'save1' in request.POST:
+		form2 = productoaddcat(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('EditarProducto', args=(pk,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+	else:
+		form2 = productoaddcat()
+	
+	# post = get_object_or_404(ProductoAlmacenMod, pk=pk)
+ #        if request.method == "POST":
+ #            form = ProductoMod(request.POST, instance=post)
+ #            if form.is_valid():
+ #                post = form.save(commit=False)
+ #                post.author = request.user
+ #                post.save()
+ #                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(productos,)))
+ #        else:
+ #            form = ProductoMod(instance=post)
+        return render(request, 'editar_producto.html', {'form': form, 'form2':form2, 'prod':post.pk})
+
+
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Detalle de producto > Asignar Material
@@ -1283,6 +1335,11 @@ def OrdenAlmacenProducto(request, orden):
 		producto = get_object_or_404(Producto, pk = productopk) # sacar producto original y despues crear producto personalizado
 		productomod = ProductoAlmacenMod.objects.create(orden=orden, producto=producto, nombre=producto.nombre, codigo=producto.codigo, descripcion=producto.descripcion, categoria=producto.categoria, costo=producto.costo, precio_venta=producto.precio_venta, file=producto.file) 
 		insumos = InsumoProducto.objects.filter(producto=producto)
+		costos_especiales = CostoEspecial.objects.filter(producto=producto)
+
+		for costo in costos_especiales:
+			costomod = CostoEspecialAlmacen.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
+
 		for insumo in insumos:
 			# crear insumo para producto duplicado
 			insumomod = InsumoProductoMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
@@ -1340,7 +1397,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 			print form1.errors, len(form1.errors)
 
 
-	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto_orden.pk)[:15]
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto_orden.producto)[:15]
 
 	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -1459,7 +1516,7 @@ def EditarProductoInsumoAlmacen(request, pk):
 @group_required('Administrador', 'Produccion', 'Ventas')
 def EliminarCostoEspecialAlmacen(request, pk, producto):
 	try:
-		insumos = CostoEspecialAlmacen.objects.get(pk=pk, producto=producto)
+		insumos = CostoEspecialAlmacen.objects.get(pk=pk)
 	except:
 		#return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
 		raise Http404 

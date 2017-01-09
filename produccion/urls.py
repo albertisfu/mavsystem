@@ -6,7 +6,8 @@ urlpatterns = [
 
    	url(r'^administrador/producto/alta-producto$', produccion_views.altaProducto, name='altaProducto'), 
    	url(r'^administrador/producto/lista-productos$', produccion_views.listaProducto, name='listaProducto'), 
-   	url(r'^administrador/producto/(?P<producto>[-\w]+)/$', produccion_views.ProductoDetail, name='ProductoDetail'), 
+   	url(r'^administrador/producto/(?P<producto>[-\w]+)/$', produccion_views.ProductoDetail, name='ProductoDetail'),
+    url(r'^administrador/producto/editar-producto/(?P<pk>[-\w]+)/$', produccion_views.EditarProducto, name='EditarProducto'), 
    	url(r'^administrador/producto/asignar-insumo/(?P<producto>[-\w]+)/$', produccion_views.ProductoInsumo, name='ProductoInsumo'),
    	url(r'^administrador/pop_insumolist$', InsumoPopListView.as_view(), name='insumopop_list'),
    	url(r'^administrador/popsearch/$', SearchPopListView.as_view(), name='searchpop_url'),
