@@ -85,7 +85,7 @@
                                         Acciones
                                     </div>
                                     <div class="panel-body align-center">
-<a href="#" class="btn btn-lg btn-success m-t-n-xs button280"><i class="fa fa-pencil"></i>&nbsp;Editar Producto</a>
+<a href="{% url 'EditarProductoAlmacen' pk producto_orden.producto.pk %}" class="btn btn-lg btn-success m-t-n-xs button280"><i class="fa fa-pencil"></i>&nbsp;Editar Producto</a>
 <p></p>
 <a href="{% url 'ProductoInsumoAlmacen' producto_orden.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Material</a>
     <p></p>

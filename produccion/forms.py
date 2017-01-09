@@ -187,3 +187,20 @@ class InsumoMod(forms.ModelForm):
 			'insumo': ('Insumo'),
 			'cantidad': ('Cantidad'),
 		}
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# Form Modificar producto almacen
+
+class ProductoMod(forms.ModelForm):	  
+	class Meta:
+		model = ProductoAlmacenMod
+		fields = ('nombre','codigo', 'descripcion', 'costo', 'precio_venta', 'categoria')
+		labels = {
+			'nombre': ('Nombre'),
+			'codigo': ('Codigo'),
+			'descripcion': ('Descripción'),
+			'costo': ('Costo'),
+			'precio_venta': ('Precio Venta'),
+			'categoria': ('Categoria'),
+		}

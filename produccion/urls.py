@@ -56,6 +56,7 @@ urlpatterns = [
     url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/eliminar-insumo/(?P<pk>[-\w]+)$', produccion_views.EliminarProductoInsumoAlmacen, name='EliminarProductoInsumoAlmacen'),
     url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/eliminar-especial/(?P<pk>[-\w]+)/$', produccion_views.EliminarCostoEspecialAlmacen, name='EliminarCostoEspecialAlmacen'),
     url(r'^administrador/almacen/producto/editar-insumo/(?P<pk>[-\w]+)/$', produccion_views.EditarProductoInsumoAlmacen, name='EditarProductoInsumoAlmacen'),
+    url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/editar-insumo/(?P<pk>[-\w]+)/$', produccion_views.EditarProductoAlmacen, name='EditarProductoAlmacen'),
 
     # Buscar cotizaciones
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),

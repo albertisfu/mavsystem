@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
@@ -1466,3 +1467,54 @@ def EliminarCostoEspecialAlmacen(request, pk, producto):
 		insumos.delete()
 		print 'insumo eliminado'
 		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Editar Producto
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EditarProductoAlmacen(request, pk, producto):
+
+
+	post = get_object_or_404(ProductoAlmacenMod, pk=pk)
+
+	if 'save' in request.POST:
+		form = ProductoMod(request.POST, request.FILES, instance=post)
+		if form.is_valid():
+			post = form.save()
+			post.save()
+			#return redirect('listaProducto')
+			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		else:
+			print "Error en edición de producto"
+			print form.errors
+	else:
+		form = ProductoMod(instance=post)
+
+	form2 = productoaddcat()
+	if 'save1' in request.POST:
+		form2 = productoaddcat(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('EditarProductoAlmacen', args=(producto,pk)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+	else:
+		form2 = productoaddcat()
+	
+	# post = get_object_or_404(ProductoAlmacenMod, pk=pk)
+ #        if request.method == "POST":
+ #            form = ProductoMod(request.POST, instance=post)
+ #            if form.is_valid():
+ #                post = form.save(commit=False)
+ #                post.author = request.user
+ #                post.save()
+ #                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(productos,)))
+ #        else:
+ #            form = ProductoMod(instance=post)
+        return render(request, 'editar_almacen_producto.html', {'form': form, 'form2':form2, 'prod':producto})

@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Agregar Nuevo Producto{% endblock %}
+
+{% block content %}
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+
+
+<div class="row  border-bottom white-bg dashboard-header">
+  <h2>Editar Producto</h2>
+
+  <div class="col-lg-8">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#">Almacen</a>
+      </li>
+      <li class="active"> <strong>Editar producto</strong>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="ibox-content p-xl">
+        <div class="insumoformstyle">
+
+          <form id='formularioprod' method='post' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-lg-8">
+                <ul>{{form.as_p}}</ul>
+              </div>
+              <div class="col-lg-4 align-center">
+                
+              <h1><strong>Acciones:</strong></h1>
+                <a href="{% url 'OrdenAlmacenProductoDetail' prod %}" class="btn btn-lg btn-danger m-t-n-xs button280"><i class="fa fa-times"></i>&nbsp;Cancelar</a>
+                <p></p>
+
+<button type="button" data-toggle="modal" data-target="#myModal7"  class="btn btn-lg m-t-n-xs btn-info button280"><i class="fa fa-plus"></i>&nbsp;Agregar nueva categoria</button>
+
+
+<p>
+</p>
+<button type="submit" name="save" class="btn btn-lg m-t-n-xs btn-primary button280"><i class="fa fa-save"></i>&nbsp;Guardar cambios</button>
+
+
+
+              </div>
+            </div>
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- modal agregar categoria -->
+
+        <div class="modal inmodal fade" id="myModal7" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Agregar categoría</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Ingrese el nombre de la nueva categoría:</p>
+                        <div class="insumoformstyle">
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form2.as_p}}</ul>
+
+                              <div class="row align-center">
+                                <input type='submit' name="save1" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioprod").validate({
+        rules: {
+            descripcion: {
+                required: true
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            },
+            file: {
+              required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de insumo obligatorio",
+            codigo : "Codigo de insumo obligatorio",
+            descripcion: "Descripción obligatoria",
+            file: "Imagen obligatoria"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulario").validate({
+        rules: {
+            nombre: {
+              required: true
+            },
+        },
+        messages: {
+            nombre: "Nombre de categoría obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+
+{% endblock %}
