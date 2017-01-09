@@ -125,7 +125,7 @@ class comentarioCotizacionForm(forms.ModelForm):
 
 class comentarioOrdenAlmacenForm(forms.ModelForm):
 	class Meta:
-		model = ComentariosOrden
+		model = ComentariosOrdenAlmacen
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
 class estatusProductoInsumo(forms.ModelForm):

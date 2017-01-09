@@ -924,7 +924,7 @@ def CotizacionDetail(request, orden):
 		if form.is_valid():
 			print 'valid'
 			form.save()
-			return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
+			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
