@@ -82,8 +82,8 @@ class ProductosFilter(django_filters.FilterSet):
 	class Meta:
 		model = Producto
 		fields = { #creamos los filtros necesarios 
-        		  'categoria':['exact'],
-        		 }
+				  'categoria':['exact'],
+				 }
 
 
 # ---------------------------------------------------------
@@ -99,10 +99,10 @@ def listaProducto(request):
 	try:
 		productos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		productos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		productos = paginator.page(paginator.num_pages)
 	template =  get_template("lista_productos.html")
 	context = {
@@ -142,16 +142,16 @@ def ProductoDetail(request, producto):
 	try:
 		materiales= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		materiales = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		materiales = paginator.page(paginator.num_pages)
 
 
 	context = {
-        'producto': producto, 'materiales': materiales, 'form':form, 'costoespeciales':costoespeciales,
-    }
+		'producto': producto, 'materiales': materiales, 'form':form, 'costoespeciales':costoespeciales,
+	}
 	return HttpResponse(template.render(context, request))
 
 
@@ -198,8 +198,8 @@ class InsumosFilter(django_filters.FilterSet):
 	class Meta:
 		model = Insumo
 		fields = { #creamos los filtros necesarios 
-        		  'categoria':['exact'],
-        		 }
+				  'categoria':['exact'],
+				 }
 
 
 # ---------------------------------------------------------
@@ -215,10 +215,10 @@ def popInsumo(request):
 	try:
 		insumos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		insumos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
 
 	context = {'insumos': insumos,'filters': filters,
@@ -242,22 +242,22 @@ class InsumoPopListView(ListView):
 import operator
 from django.db.models import Q
 class SearchPopListView(InsumoPopListView):
-    paginate_by = 5
+	paginate_by = 5
 
-    def get_queryset(self):
-        result = super(SearchPopListView, self).get_queryset()
+	def get_queryset(self):
+		result = super(SearchPopListView, self).get_queryset()
 
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(nombre__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(codigo__icontains=q) for q in query_list))
-            )
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombre__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(codigo__icontains=q) for q in query_list))
+			)
 
-        return result
+		return result
 
 
 # ---------------------------------------------------------
@@ -313,13 +313,13 @@ class OrdenesFilter(django_filters.FilterSet):
 	class Meta:
 		model = Orden
 		fields = { #creamos los filtros necesarios 
-        		  'estatus':['exact'],
-        		 }
+				  'estatus':['exact'],
+				 }
 		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
-				    ('-fecha_entrega', 'Fecha de entrega menor'),
-				    ('fecha_entrega', 'Fecha de entrega mayor'),
-				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
-				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
+					('-fecha_entrega', 'Fecha de entrega menor'),
+					('fecha_entrega', 'Fecha de entrega mayor'),
+					('-fecha_expedicion', 'Fecha de expedicion menor'),
+					('fecha_expedicion', 'Fecha de expedicion mayor'),
 
 				)
 
@@ -337,10 +337,10 @@ def listaOrdenes(request):
 	try:
 		ordenes= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		ordenes = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		ordenes = paginator.page(paginator.num_pages)
 	template =  get_template("lista_ordenes.html")
 	context = {
@@ -506,10 +506,10 @@ def OrdenProductoDetail(request, producto):
 	try:
 		insumos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		insumos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
 
 
@@ -541,10 +541,10 @@ def HistoryCheckInsumo(request, orden, insumo):
 	try:
 		insumos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		insumos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
 
 
@@ -573,27 +573,27 @@ class OrdenesListView(ListView):
 import operator
 from django.db.models import Q
 class SearchOrdenesListView(OrdenesListView):
-    """
-    Display a Blog List page filtered by the search query.
-    """
-    paginate_by = 10
+	"""
+	Display a Blog List page filtered by the search query.
+	"""
+	paginate_by = 10
 
-    def get_queryset(self):
-        result = super(SearchOrdenesListView, self).get_queryset()
+	def get_queryset(self):
+		result = super(SearchOrdenesListView, self).get_queryset()
 
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(nombre__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(codigo__icontains=q) for q in query_list))|
-                reduce(operator.and_,
-                       (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
-            )
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombre__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(codigo__icontains=q) for q in query_list))|
+				reduce(operator.and_,
+					   (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+			)
 
-        return result
+		return result
 
 
 # ---------------------------------------------------------
@@ -605,8 +605,8 @@ class ProductosFilter(django_filters.FilterSet):
 	class Meta:
 		model = Producto
 		fields = { #creamos los filtros necesarios 
-        		  'categoria':['exact'],
-        		 }
+				  'categoria':['exact'],
+				 }
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -621,10 +621,10 @@ def popProducto(request):
 	try:
 		productos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		productos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		productos = paginator.page(paginator.num_pages)
 
 	context = {'productos': productos,'filters': filters,
@@ -649,22 +649,22 @@ class ProductoPopListView(ListView):
 import operator
 from django.db.models import Q
 class SearchProductoPopListView(ProductoPopListView):
-    paginate_by = 5
+	paginate_by = 5
 
-    def get_queryset(self):
-        result = super(SearchProductoPopListView, self).get_queryset()
+	def get_queryset(self):
+		result = super(SearchProductoPopListView, self).get_queryset()
 
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(nombre__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(codigo__icontains=q) for q in query_list))
-            )
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombre__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(codigo__icontains=q) for q in query_list))
+			)
 
-        return result
+		return result
 
 from django.views.decorators.csrf import csrf_exempt
 from json import dumps
@@ -678,7 +678,7 @@ def ajaxInsumo(request):
 		insumocodigo = insumo.codigo
 		data = [{'insumo':insumonombre}, {'insumosku':insumocodigo}] 
 		#print data
-        return HttpResponse(dumps(data))
+		return HttpResponse(dumps(data))
 
 
 @csrf_exempt
@@ -691,7 +691,7 @@ def ajaxProducto(request):
 		productocodigo = producto.codigo
 		data = [{'producto':productonombre}, {'productosku':productocodigo}] 
 		#print data
-        return HttpResponse(dumps(data))
+		return HttpResponse(dumps(data))
 
 
 
@@ -708,10 +708,10 @@ def listaClientes(request):
 	try:
 		clientes= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		clientes = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		clientes = paginator.page(paginator.num_pages)
 	template =  get_template("lista_clientes.html")
 	context = {
@@ -741,27 +741,27 @@ class ClientesListView(ListView):
 import operator
 from django.db.models import Q
 class SearchClientesListView(ClientesListView):
-    """
-    Display a Blog List page filtered by the search query.
-    """
-    paginate_by = 10
+	"""
+	Display a Blog List page filtered by the search query.
+	"""
+	paginate_by = 10
 
-    def get_queryset(self):
-        result = super(SearchClientesListView, self).get_queryset()
+	def get_queryset(self):
+		result = super(SearchClientesListView, self).get_queryset()
 
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(nombrecontacto__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(empresainstitucion__icontains=q) for q in query_list))|
-                reduce(operator.and_,
-                       (Q(email__icontains=q) for q in query_list))
-            )
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombrecontacto__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(empresainstitucion__icontains=q) for q in query_list))|
+				reduce(operator.and_,
+					   (Q(email__icontains=q) for q in query_list))
+			)
 
-        return result
+		return result
 
 
 # ---------------------------------------------------------
@@ -871,8 +871,8 @@ class CotizacionesFilter(django_filters.FilterSet):
 	class Meta:
 		model = Cotizacion
 		fields = { #creamos los filtros necesarios 
-        		  'estatus':['exact'],
-        		 }
+				  'estatus':['exact'],
+				 }
 
 
 # ---------------------------------------------------------
@@ -889,10 +889,10 @@ def listaCotizaciones(request):
 	try:
 		ordenes= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		ordenes = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		ordenes = paginator.page(paginator.num_pages)
 	template =  get_template("lista_cotizaciones.html")
 	context = {
@@ -1040,10 +1040,10 @@ def CotizacionProductoDetail(request, producto):
 	try:
 		insumos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		insumos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
 
 
@@ -1091,27 +1091,27 @@ class CotizacionesListView(ListView):
 import operator
 from django.db.models import Q
 class SearchCotizacionesListView(CotizacionesListView):
-    """
-    Display a Blog List page filtered by the search query.
-    """
-    paginate_by = 10
+	"""
+	Display a Blog List page filtered by the search query.
+	"""
+	paginate_by = 10
 
-    def get_queryset(self):
-        result = super(SearchCotizacionesListView, self).get_queryset()
+	def get_queryset(self):
+		result = super(SearchCotizacionesListView, self).get_queryset()
 
-        query = self.request.GET.get('q')
-        if query:
-            query_list = query.split()
-            result = result.filter(
-                reduce(operator.and_,
-                       (Q(nombre__icontains=q) for q in query_list)) |
-                reduce(operator.and_,
-                       (Q(codigo__icontains=q) for q in query_list))|
-                reduce(operator.and_,
-                       (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
-            )
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombre__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(codigo__icontains=q) for q in query_list))|
+				reduce(operator.and_,
+					   (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+			)
 
-        return result
+		return result
 
 
 # ---------------------------------------------------------
@@ -1169,13 +1169,13 @@ class OrdenesAlmacenFilter(django_filters.FilterSet):
 	class Meta:
 		model = OrdenAlmacen
 		fields = { #creamos los filtros necesarios 
-        		  'estatus':['exact'],
-        		 }
+				  'estatus':['exact'],
+				 }
 		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
-				    ('-fecha_entrega', 'Fecha de entrega menor'),
-				    ('fecha_entrega', 'Fecha de entrega mayor'),
-				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
-				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
+					('-fecha_entrega', 'Fecha de entrega menor'),
+					('fecha_entrega', 'Fecha de entrega mayor'),
+					('-fecha_expedicion', 'Fecha de expedicion menor'),
+					('fecha_expedicion', 'Fecha de expedicion mayor'),
 
 				)
 
@@ -1194,10 +1194,10 @@ def listaOrdenesAlmacen(request):
 	try:
 		ordenes= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		ordenes = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		ordenes = paginator.page(paginator.num_pages)
 	template =  get_template("lista_ordenes_almacen.html")
 	context = {
@@ -1364,10 +1364,10 @@ def OrdenAlmacenProductoDetail(request, producto):
 	try:
 		insumos= paginator.page(page)
 	except PageNotAnInteger:
-        # Si la pagina no es un entero muestra la primera pagina
+		# Si la pagina no es un entero muestra la primera pagina
 		insumos = paginator.page(1)
 	except EmptyPage:
-        # si la pagina esta fuera de rango, muestra la ultima pagina
+		# si la pagina esta fuera de rango, muestra la ultima pagina
 		insumos = paginator.page(paginator.num_pages)
 
 
@@ -1413,22 +1413,42 @@ def ProductoInsumoAlmacen(request, productoalmacen):
 	return HttpResponse(template.render(context, request))
 
 
-
+from django.http import Http404  
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Almacen > Detalle de producto > Eliminar Material
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
-def EliminarProductoInsumoAlmacen(request, insumo, producto):
+def EliminarProductoInsumoAlmacen(request, pk):
 	try:
-		insumos = InsumoProductoMod.objects.get(insumo=insumo, producto=producto)
+		insumos = get_object_or_404(InsumoProductoMod, pk=pk)
 	except:
-		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		raise Http404 
 	else:
+		producto = insumo.producto.pk
 		insumos.delete()
 		print 'insumo eliminado'
 		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Editar Material
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EditarProductoInsumoAlmacen(request, pk):
+	
+	post = get_object_or_404(InsumoProductoMod, pk=pk)
+        if request.method == "POST":
+            form = InsumoMod(request.POST, instance=post)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.author = request.user
+                post.save()
+                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(post.producto.pk,)))
+        else:
+            form = InsumoMod(instance=post)
+        return render(request, 'editar_almacen_insumo.html', {'form': form})
 
 
 # ---------------------------------------------------------

@@ -12,11 +12,11 @@ class altaProductoForm(forms.ModelForm):
 		model = Producto
 		fields = ('nombre', 'codigo', 'descripcion', 'precio_venta', 'categoria', 'file')
 		labels = {
-            'nombre': ('Nombre del producto'),
-            'codigo': ('Codigo Unico'),
-            'descripcion': ('Descripción'),
-            'precio_venta': ('Precio Venta'),
-        }
+			'nombre': ('Nombre del producto'),
+			'codigo': ('Codigo Unico'),
+			'descripcion': ('Descripción'),
+			'precio_venta': ('Precio Venta'),
+		}
 
 
 class ProductoInsumoForm(forms.ModelForm):
@@ -37,17 +37,17 @@ class altaOrdenForm(forms.ModelForm):
 		model = Orden
 		fields = ('nombre', 'codigo', 'descripcion', 'cliente','fecha_entrega_almacen', 'usuario', 'entrega', 'direccionentrega', 'fecha_entrega', 'costoflete','nota')
 		labels = {
-            'nombre': ('Nombre de la orden'),
-            'codigo': ('Codigo Unico'),
-            'descripcion': ('Descripcion'),
-            'cliente': ('Seleccionar Cliente'),
-            'fecha_entrega': ('Fecha de Entrega'),
-            'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
-            'entrega': ('Metodo de Entrega'),
-            'direccionentrega': ('Dirección Entrega'),
-            'costoflete': ('Costo Flete'),
-            'nota': ('Nota'),
-        }
+			'nombre': ('Nombre de la orden'),
+			'codigo': ('Codigo Unico'),
+			'descripcion': ('Descripcion'),
+			'cliente': ('Seleccionar Cliente'),
+			'fecha_entrega': ('Fecha de Entrega'),
+			'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
+			'entrega': ('Metodo de Entrega'),
+			'direccionentrega': ('Dirección Entrega'),
+			'costoflete': ('Costo Flete'),
+			'nota': ('Nota'),
+		}
 		widgets = {
 			'costoflete': forms.TextInput(),
 		}
@@ -61,17 +61,17 @@ class altaOrdenAlmacenForm(forms.ModelForm):
 		model = OrdenAlmacen
 		fields = ('nombre', 'codigo', 'descripcion', 'cliente','fecha_entrega_almacen', 'usuario', 'entrega', 'direccionentrega', 'fecha_entrega', 'costoflete','nota')
 		labels = {
-            'nombre': ('Nombre de la orden'),
-            'codigo': ('Codigo Unico'),
-            'descripcion': ('Descripcion'),
-            'cliente': ('Seleccionar Cliente'),
-            'fecha_entrega': ('Fecha de Entrega'),
-            'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
-            'entrega': ('Metodo de Entrega'),
-            'direccionentrega': ('Dirección Entrega'),
-            'costoflete': ('Costo Flete'),
-            'nota': ('Nota'),
-        }
+			'nombre': ('Nombre de la orden'),
+			'codigo': ('Codigo Unico'),
+			'descripcion': ('Descripcion'),
+			'cliente': ('Seleccionar Cliente'),
+			'fecha_entrega': ('Fecha de Entrega'),
+			'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
+			'entrega': ('Metodo de Entrega'),
+			'direccionentrega': ('Dirección Entrega'),
+			'costoflete': ('Costo Flete'),
+			'nota': ('Nota'),
+		}
 		widgets = {
 			'costoflete': forms.TextInput(),
 		}
@@ -82,12 +82,12 @@ class altaCotizacionForm(forms.ModelForm):
 		model = Cotizacion
 		fields = ('nombre', 'codigo', 'descripcion', 'cliente', 'usuario','nota')
 		labels = {
-            'nombre': ('Nombre de la cotización'),
-            'codigo': ('Codigo Unico'),
-            'descripcion': ('Descripcion'),
-            'cliente': ('Seleccionar Cliente'),
-            'nota': ('Nota'),
-        }
+			'nombre': ('Nombre de la cotización'),
+			'codigo': ('Codigo Unico'),
+			'descripcion': ('Descripcion'),
+			'cliente': ('Seleccionar Cliente'),
+			'nota': ('Nota'),
+		}
 		widgets = {
 			'costoflete': forms.TextInput(),
 		}
@@ -102,7 +102,7 @@ class CostoEspecialForm(forms.ModelForm):
 		widgets = {
 			'costo': forms.TextInput(),
 		}
-      
+	  
 class CostoEspecialAlmacenForm(forms.ModelForm):
 	class Meta:
 		model = CostoEspecialAlmacen
@@ -161,4 +161,29 @@ class addcliente(forms.ModelForm):
 			'telefono': ('Telefono'),
 			'direccion': ('Dirección'),
 			'email': ('Email'),
+		}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# Form Modificar insumo almacen
+
+class InsumoMod(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(InsumoMod, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.id:
+		  self.fields['insumo'].disabled = True
+
+	def clean_foo_field(self):
+		instance = getattr(self, 'instance', None)
+		if instance and instance.id:
+		  return instance.insumo
+		else:
+		  return self.cleaned_data['insumo']
+	  
+	class Meta:
+		model = InsumoProductoMod
+		fields = ('insumo','cantidad')
+		labels = {
+			'insumo': ('Insumo'),
+			'cantidad': ('Cantidad'),
 		}

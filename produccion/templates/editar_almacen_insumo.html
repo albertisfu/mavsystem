@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Editar Insumo{% endblock %}
+
+{% block content %}
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+
+<!-- Area titulo-->
+<div class="row  border-bottom white-bg dashboard-header">
+  <h2>Editar Insumo</h2>
+
+  <div class="col-lg-8">
+    <ol class="breadcrumb">
+      <li>
+        <a href="#">Almacen</a>
+      </li>
+      <li class="active"> <strong>Editar insumo</strong>
+      </li>
+    </ol>
+  </div>
+
+</div>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="wrapper wrapper-content animated fadeInRight">
+      <div class="ibox-content p-xl">
+        <div class="insumoformstyle">
+          <form id='formularioalta' method='post' enctype='multipart/form-data'>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-lg-8">
+                <ul>{{form.as_p}}</ul>
+              </div>
+              <div class="col-lg-4 align-center">
+
+              <h3><strong>Acciones:</strong></h3>
+                
+<a href="javascript:window.location = document.referrer;">
+                <button class="btn btn-lg btn-danger button280" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+
+<p>
+</p>
+<button type="submit" name="save" class="btn btn-lg m-t-n-xs btn-primary button280"><i class="fa fa-save"></i>&nbsp;Guardar cambios</button>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+              
+                
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+$(document).ready(function(){
+    // Iniciar autonumeric campos
+   $("#id_costounitario").autoNumeric('init');
+});
+
+    </script>
+
+<script>
+$('#formulariocat').submit(function() {
+
+    var txt = $('#id_costounitario');
+    txt.val(txt.val().replace(/,/g , ""));
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formularioalta").validate({
+        rules: {
+            costounitario: {
+                required: true,
+                // min: 0,
+                step: false
+            },
+            nombre: {
+              required: true
+            },
+            codigo: {
+              required: true
+            }
+        },
+        messages: {
+            nombre: "Nombre de insumo obligatorio",
+            codigo : "Codigo de insumo obligatorio",
+            costounitario: "Costo mayor a 0"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+    $("#formulariocat").validate({
+        rules: {
+            nombre: {
+              required: true
+            },
+        },
+        messages: {
+            nombre: "Nombre de categoría obligatorio"
+        },
+
+submitHandler: function(form) {
+                    form.submit();
+                }
+
+    });
+
+});
+</script>
+
+{% endblock %}
