@@ -159,7 +159,7 @@
                                                 <td class="" class="pull-left">${{material.insumo.costounitario|floatformat:2|intcomma}}</td>
                                                  <td class="" class="pull-left">${{material.costototal|floatformat:2|intcomma}}</td>
                                                 
-                                                <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="submit"><i class="fa fa-times"></i> Borrar</button></td>
+                                                <td class="" class="pull-left"><a href="{% url 'EliminarProductoInsumoAlmacen' material.pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
 
                                             </tr>
                                             {% endfor %}

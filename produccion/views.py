@@ -1410,3 +1410,21 @@ def ProductoInsumoAlmacen(request, productoalmacen):
 			print form.errors
 
 	return HttpResponse(template.render(context, request))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Eliminar Material
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EliminarProductoInsumoAlmacen(request, insumo):
+
+	insumos = InsumoProductoMod.objects.get(pk=insumo)
+
+	producto = insumos.producto.pk
+	insumos.delete()
+	print 'insumo eliminado'
+
+	return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))

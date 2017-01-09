@@ -53,6 +53,7 @@ urlpatterns = [
     # Almacen producto personalizado
 
     url(r'^administrador/almacen/producto/asignar-insumo/(?P<productoalmacen>[-\w]+)/$', produccion_views.ProductoInsumoAlmacen, name='ProductoInsumoAlmacen'),
+    url(r'^administrador/almacen/producto/eliminar-insumo/(?P<insumo>[-\w]+)/$', produccion_views.EliminarProductoInsumoAlmacen, name='EliminarProductoInsumoAlmacen'),
 
     # Buscar cotizaciones
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
