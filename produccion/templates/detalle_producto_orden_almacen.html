@@ -114,7 +114,7 @@
                                                 <tr>
                                                     <td>{{costo.concepto}}</td>
                                                     <td>${{costo.costo|floatformat:2|intcomma}}</td>
-                                                    <td><a href="#" class="btn btn-sm btn-success" title="Editar"><i class="fa fa-pencil"></i></a>&nbsp;<a href="{% url 'EliminarCostoEspecialAlmacen' costo.pk pk %}" class="btn btn-sm btn-danger" title="Eliminar"><i class="fa fa-times"></i> </a></td>
+                                                    <td><a href="{% url 'EliminarCostoEspecialAlmacen' costo.pk pk %}" class="btn btn-sm btn-danger" title="Eliminar"><i class="fa fa-times"></i> </a></td>
                                                 </tr>
                                                 {% endfor %} {% else %} No hay costos especiales {% endif %}
                                             </tbody>
