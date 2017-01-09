@@ -1420,13 +1420,13 @@ from django.http import Http404
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
-def EliminarProductoInsumoAlmacen(request, pk):
+def EliminarProductoInsumoAlmacen(request, pk, producto):
 	try:
-		insumos = get_object_or_404(InsumoProductoMod, pk=pk)
+		insumos = InsumoProductoMod.objects.get(pk=pk, producto=producto)
 	except:
 		raise Http404 
 	else:
-		producto = insumo.producto.pk
+		
 		insumos.delete()
 		print 'insumo eliminado'
 		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
@@ -1460,7 +1460,8 @@ def EliminarCostoEspecialAlmacen(request, pk, producto):
 	try:
 		insumos = CostoEspecialAlmacen.objects.get(pk=pk, producto=producto)
 	except:
-		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		#return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		raise Http404 
 	else:
 		insumos.delete()
 		print 'insumo eliminado'
