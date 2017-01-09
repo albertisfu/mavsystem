@@ -9,7 +9,7 @@
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
-                <a href="#">Ordenes</a>
+                <a href="#">Almacen</a>
             </li>
             <li class="active"> <strong>Lista de ordenes</strong>
             </li>
@@ -28,7 +28,7 @@
                     <!-- BOTON Y BARRA DE BUSQUEDA-->
                     <div class="row">
                         <div class="col-lg-4">
-                            <a class="btn btn-success btn-facebook" href="{% url 'altaOrden' %}"> <i class="fa fa-plus"></i>
+                            <a class="btn btn-success btn-facebook" href="{% url 'altaOrdenAlmacen' %}"> <i class="fa fa-plus"></i>
                                 Agregar nueva orden
                             </a>
                         </div>
@@ -90,7 +90,7 @@
                                             <tr>
 
                                                 <td>
-                                                    <a href="{% url "OrdenDetail" orden.pk %}">{{orden.nombre}}</a>
+                                                    <a href="{% url 'OrdenAlmacenDetail' orden.pk %}">{{orden.nombre}}</a>
                                                 </td>
                                                 <td class="tablecolumnhosting">{{orden.codigo}}</td>
                                                 <td>{{orden.descripcion|default:"----"}}</td>

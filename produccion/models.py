@@ -47,6 +47,7 @@ class Producto(models.Model):
 	descripcion = models.CharField(max_length = 255)
 	categoria = models.ForeignKey(Categoria, blank=True, null=True)
 	costo = models.FloatField(default=0)
+	precio_venta = models.FloatField(default=0)
 	file = models.FileField(upload_to="static/files", verbose_name="Imagen", blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
@@ -245,6 +246,123 @@ class CheckInsumoProductoCotizacion(models.Model):
 		return self.productorden.producto.nombre
 
 
+# ------------------------------------------
+# Orden Almacen
+
+class OrdenAlmacen(models.Model):
+	nombre = models.CharField(max_length = 255)
+	codigo = models.CharField(max_length = 100)
+	descripcion = models.CharField(max_length = 255)
+	cliente = models.ForeignKey(Cliente)
+	fecha_expedicion = models.DateField(default=timezone.now)
+	fecha_entrega = models.DateField(blank=True, null=True)
+	pendiente = 1
+	confirmada = 2
+	proceso = 3
+	conflicto = 4
+	cancelada = 5
+	entregada = 6
+	estatus_options = (
+	      (pendiente, 'Pendiente'),
+	      (confirmada, 'Confirmada'),
+	      (proceso, 'Proceso'),
+	      (conflicto, 'Conflicto'),
+	      (cancelada, 'Cancelada'),
+	      (entregada, 'Entregada'),
+	  )
+	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
+	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
+	costo = models.FloatField(default=0)
+	bodega = 1
+	flete = 2
+	entrega_options = (
+	      (bodega, 'Bodega'),
+	      (flete, 'Flete'),
+	  )
+	entrega = models.IntegerField(choices=entrega_options, default=bodega)
+	fecha_entrega_almacen = models.DateField(blank=True, null=True)
+	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
+	costoflete = models.FloatField(default=0)
+	nota = models.TextField(max_length=1000, blank=True, null=True)
+	def __unicode__(self):
+		return self.nombre
+
+class ProductoAlmacenMod(models.Model):
+	producto = models.ForeignKey(Producto) # producto modificado relacionado con el original
+	orden = models.ForeignKey(OrdenAlmacen)
+	nombre = models.CharField(max_length = 255)
+	codigo = models.CharField(max_length = 100)
+	descripcion = models.CharField(max_length = 255)
+	categoria = models.ForeignKey(Categoria, blank=True, null=True)
+	costo = models.FloatField(default=0)
+	precio_venta = models.FloatField(default=0)
+	file = models.FileField(upload_to="static/files", verbose_name="Imagen", blank=True, null=True)
+	def __unicode__(self):
+		return self.nombre
+
+class InsumoProductoMod(models.Model):
+	insumo = models.ForeignKey(Insumo)
+	producto = models.ForeignKey(ProductoAlmacenMod)
+	cantidad = models.FloatField()
+	costototal = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.insumo.nombre
+
+class ProductoOrdenAlmacen(models.Model):
+	producto = models.ForeignKey(ProductoAlmacenMod)
+	orden = models.ForeignKey(OrdenAlmacen)
+	cantidad = models.FloatField()
+	color = models.CharField(max_length = 100, blank=True, null=True)
+	comentario = models.CharField(max_length = 1000, blank=True, null=True)
+	pieza = 1
+	metro = 2
+	kilo = 3
+	litro = 4
+	unidad_options = (
+	      (pieza, 'Pieza'),
+	      (metro, 'Metro'),
+	      (kilo, 'Kilo'),
+	      (litro, 'Litro'),
+	  )
+	unidad = models.IntegerField(choices=unidad_options, default=pieza)
+	#costo = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.producto.nombre
+
+class ComentariosOrdenAlmacen(models.Model):
+	orden = models.ForeignKey(OrdenAlmacen)
+	fecha = models.DateTimeField(default=timezone.now)
+	comentario = models.CharField(max_length = 500, blank=True, null=True)
+	pendiente = 1
+	confirmada = 2
+	proceso = 3
+	conflicto = 4
+	cancelada = 5
+	estatus_options = (
+	      (pendiente, 'Pendiente'),
+	      (confirmada, 'Confirmada'),
+	      (proceso, 'Proceso'),
+	      (conflicto, 'Conflicto'),
+	      (cancelada, 'Cancelada'),
+	  )
+	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
+	usuario = models.ForeignKey(User)
+	def __unicode__(self):
+		return self.orden.nombre
+
+class CheckInsumoProductoAlmacen(models.Model):
+	productorden = models.ForeignKey(ProductoOrdenAlmacen)
+	insumo = models.ForeignKey(InsumoProductoMod)
+	fecha = models.DateTimeField(default=timezone.now)
+	estatus = models.CharField(max_length = 140)
+	usuario = models.ForeignKey(User, blank=True, null=True)
+	def __unicode__(self):
+		return self.productorden.producto.nombre
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# ---------------------------------------------------------
 # ---------------------------------------------------------
 #Crear estatus inicial para orden nueva
 from datetime import datetime
@@ -298,6 +416,34 @@ def cotizacion_nueva(sender, instance, created,  **kwargs):
 	msg.send()
 	print 'Correo enviado'
 	return HttpResponse('email_two')
+
+
+# ---------------------------------------------------------
+#Crear estatus inicial para cotizacion nueva
+from datetime import datetime
+@receiver(post_save, sender=OrdenAlmacen)  
+def ordenAlmacen_nueva(sender, instance, created,  **kwargs):
+	# correocliente = instance.cliente.email
+	# usuarios = User.objects.filter(groups__name=settings.GRUPO_EMAIL)
+	# correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
+	# print correos
+	# print correocliente
+	currentinstanceid = instance.id
+	hoy = datetime.now()
+	ordencreada = OrdenAlmacen.objects.get(pk=currentinstanceid)
+	ComentariosOrdenAlmacen.objects.create(orden=ordencreada,fecha=str(hoy),comentario="Orden almacen creada", estatus=1, usuario=instance.usuario)
+	#send_mail('Orden creada', 'Se creo la orden, esta en estado pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
+	# subject = "MAVALPA - Cotización número: {} creada!".format(instance.id)
+	# to = correos
+	# from_email = settings.EMAIL_SALIDA
+	# contexto = {'correos':correos, 'orden':ordencreada}
+	# message = get_template('email/emailtemplate.html').render(contexto)
+	# msg = EmailMessage(subject, message, to=to, from_email=from_email)
+	# msg.content_subtype = 'html'
+	# msg.send()
+	#print 'Correo enviado'
+	return HttpResponse('email_two')
+
 
 # ---------------------------------------------------------
 # Email cambio estatus orden
@@ -467,7 +613,25 @@ def producto_cotizacion(sender, instance, created,  **kwargs):
 
 	Cotizacion.objects.filter(pk=productoorden.orden.id).update(costo=costo)
 
+# ---------------------------------------------------------
+# Almacen
+@receiver(post_save, sender=ProductoOrdenAlmacen)  
+def producto_ordenAlmacen(sender, instance, created,  **kwargs):
+	currentinstanceid = instance.id
+	productoorden = ProductoOrdenAlmacen.objects.get(pk=currentinstanceid)
+	print productoorden
+	#producto = Producto.objects.get(pk=productoorden.producto.pk)
+	insumos = InsumoProductoMod.objects.filter(producto=productoorden.producto)
+	print insumos
+	for insumo in insumos:
+		CheckInsumoProductoAlmacen.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
 
+	productos = ProductoOrdenAlmacen.objects.filter(orden=productoorden.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Orden.objects.filter(pk=productoorden.orden.id).update(costo=costo)
 
 
 

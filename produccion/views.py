@@ -1112,3 +1112,251 @@ class SearchCotizacionesListView(CotizacionesListView):
             )
 
         return result
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Nueva orden
+
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def altaOrdenAlmacen(request):
+	current_user = request.user
+	template =  get_template("alta_orden_almacen.html")
+	form = altaOrdenAlmacenForm(initial={'usuario':current_user})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	#context = {
+	#'form': form,
+	#}
+	if 'save' in request.POST:
+		form = altaOrdenAlmacenForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			ins = form.save()
+			#return redirect('listaOrdenes')
+			return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(ins.id,)))
+		#else:
+		#	print 'error'
+		#	print form.errors, len(form.errors)
+
+	form2 = addcliente()
+	if 'save1' in request.POST:
+		form2 = addcliente(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('altaOrdenAlmacen'))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	context = {
+	'form': form, 'form2' : form2,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Lista ordenes - filtros
+
+class OrdenesAlmacenFilter(django_filters.FilterSet):
+	class Meta:
+		model = OrdenAlmacen
+		fields = { #creamos los filtros necesarios 
+        		  'estatus':['exact'],
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha_entrega', 'Fecha de entrega menor'),
+				    ('fecha_entrega', 'Fecha de entrega mayor'),
+				    ('-fecha_expedicion', 'Fecha de expedicion menor'),
+				    ('fecha_expedicion', 'Fecha de expedicion mayor'),
+
+				)
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Lista ordenes
+
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def listaOrdenesAlmacen(request):
+	filters = OrdenesAlmacenFilter(request.GET, queryset=OrdenAlmacen.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("lista_ordenes_almacen.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de orden
+
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def OrdenAlmacenDetail(request, orden):
+	current_user = request.user
+	orden = get_object_or_404(OrdenAlmacen, pk = orden) 
+	template =  get_template("detalle_orden_almacen.html")
+	productos = ProductoOrdenAlmacen.objects.filter(orden=orden)
+	form = comentarioOrdenAlmacenForm(initial={'usuario':current_user, 'orden':orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['orden'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = comentarioOrdenAlmacenForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	comentarios = ComentariosOrdenAlmacen.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
+	paginator = Paginator(productos, 5)
+	page = request.GET.get('page')
+	try:
+		productos= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		productos = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		productos = paginator.page(paginator.num_pages)
+
+	context = {
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de orden > Agregar producto
+# /administrador/asignar_producto/pk/
+
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def OrdenAlmacenProducto(request, orden):
+	orden = get_object_or_404(OrdenAlmacen, pk = orden)
+	template =  get_template("asignar_producto_orden_almacen.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	context = {
+		'orden':orden,
+	}
+	if 'save' in request.POST:
+		cantidad = request.POST['cantidad']
+		unidad = request.POST['unidad']
+		color = request.POST['color']
+		comentario = request.POST['comentario']
+
+		print cantidad
+		productopk = request.POST['producto']
+		producto = get_object_or_404(Producto, pk = productopk) # sacar producto original y despues crear producto personalizado
+		productomod = ProductoAlmacenMod.objects.create(orden=orden, producto=producto, nombre=producto.nombre, codigo=producto.codigo, descripcion=producto.descripcion, categoria=producto.categoria, costo=producto.costo, precio_venta=producto.precio_venta, file=producto.file) 
+		insumos = InsumoProducto.objects.filter(producto=producto)
+		for insumo in insumos:
+			# crear insumo para producto duplicado
+			insumomod = InsumoProductoMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
+			print insumomod
+			# total_insumos_producto = insumo.cantidad * int(cantidad)
+			# print total_insumos_producto
+			# if total_insumos_producto <= insumo.insumo.stock:
+			# 	print 'suficiente'
+			# 	newstock = insumo.insumo.stock - total_insumos_producto
+			# 	Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+			# 	post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
+			# else:
+			# 	newstock = insumo.insumo.stock - total_insumos_producto
+			# 	Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
+			# 	post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
+			# 	print 'no alcanza'
+
+		#print producto
+		productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		print 'guardado'
+		return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(orden.id,)))
+	return HttpResponse(template.render(context, request))
+
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de orden > Detalle de producto
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def OrdenAlmacenProductoDetail(request, producto):
+	current_user = request.user
+	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = producto)
+	orden = get_object_or_404(OrdenAlmacen, pk = producto_orden.orden.id)
+	insumos = InsumoProductoMod.objects.filter(producto=producto_orden.producto)
+	checkinsumos = CheckInsumoProductoAlmacen.objects.filter(productorden=producto_orden)
+	template =  get_template("detalle_producto_orden_almacen.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	#costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+
+	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['productorden'].widget = forms.HiddenInput()
+	form.fields['insumo'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = estatusProductoInsumo(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('OrdenProductoDetail', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+
+	paginator = Paginator(insumos, 20)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
+
+
+	context = {
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 
+	}
+	
+	return HttpResponse(template.render(context, request))

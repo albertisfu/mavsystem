@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from produccion import views as produccion_views
-from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView, CotizacionesListView, SearchCotizacionesListView
+from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView, CotizacionesListView, SearchCotizacionesListView, listaOrdenesAlmacen
 
 urlpatterns = [
 
@@ -13,17 +13,17 @@ urlpatterns = [
    	url(r'^administrador/popinsumo$', produccion_views.popInsumo, name='popInsumo'), 
    	#url(r'^administrador/salidas/(?P<insumo>[-\w]+)/', 'almacen.views.adminSalidas', name='adminSalidas'),  
 
-		#ajax
+		# ajax
 	 	url(r'^administrador/insumo_ajax$', produccion_views.ajaxInsumo, name='ajaxInsumo'), 
 	 	url(r'^administrador/producto_ajax$', produccion_views.ajaxProducto, name='ajaxProducto'), 
 
     # ordenes 
     url(r'^administrador/orden/alta-orden$', produccion_views.altaOrden, name='altaOrden'), 
     url(r'^administrador/orden/lista-ordenes$', produccion_views.listaOrdenes, name='listaOrdenes'), 
-    url(r'^administrador/orden/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'),
+    url(r'^administrador/orden/detalle/(?P<orden>[-\w]+)/$', produccion_views.OrdenDetail, name='OrdenDetail'),
     url(r'^administrador/orden/imprimir/(?P<orden>[-\w]+)/$', produccion_views.orden_impresion, name='orden_impresion'), 
     url(r'^administrador/orden/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenProducto, name='OrdenProducto'),
-    url(r'^administrador/orden/producto-orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'), 
+    url(r'^administrador/orden/producto-orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenProductoDetail, name='OrdenProductoDetail'),
     url(r'^administrador/checkinsumos/(?P<orden>[-\w]+)/(?P<insumo>[-\w]+)$', produccion_views.HistoryCheckInsumo, name='HistoryCheckInsumo'),
 
     url(r'^administrador/pop_product_list$', ProductoPopListView.as_view(), name='producto_pop_list'),
@@ -43,15 +43,22 @@ urlpatterns = [
     url(r'^administrador/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetail, name='CotizacionProductoDetail'),
     url(r'^administrador/cotizacion/imprimir/(?P<orden>[-\w]+)/$', produccion_views.cotizacion_impresion, name='cotizacion_impresion'),
 
+    # Almacen
+    url(r'^administrador/almacen/alta-orden$', produccion_views.altaOrdenAlmacen, name='altaOrdenAlmacen'),
+    url(r'^administrador/almacen/lista-ordenes$', produccion_views.listaOrdenesAlmacen, name='listaOrdenesAlmacen'),
+    url(r'^administrador/almacen/detalle/(?P<orden>[-\w]+)/$', produccion_views.OrdenAlmacenDetail, name='OrdenAlmacenDetail'), 
+    url(r'^administrador/almacen/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.OrdenAlmacenProducto, name='OrdenAlmacenProducto'),
+    url(r'^administrador/almacen/producto-orden/(?P<producto>[-\w]+)/$', produccion_views.OrdenAlmacenProductoDetail, name='OrdenAlmacenProductoDetail'),
+
     # Buscar cotizaciones
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
     url(r'^administrador/buscar/cotizacion/$', SearchCotizacionesListView.as_view(), name='search_cotizacion_url'),
 
-		#clientes
+		# clientes
 		url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),
 		url(r'^administrador/alta-cliente$', produccion_views.altaCliente, name='altaCliente'),  
 
-		#search Clientes
+		# search Clientes
     url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),
     url(r'^administrador/search_cliente/$', SearchClientesListView.as_view(), name='search_cliente_url'),
     url(r'^administrador/cliente/(?P<cliente>[-\w]+)/$', produccion_views.ClienteDetail, name='ClienteDetail'), 

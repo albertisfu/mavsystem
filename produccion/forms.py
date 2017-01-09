@@ -10,11 +10,12 @@ DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 class altaProductoForm(forms.ModelForm):
 	class Meta:
 		model = Producto
-		fields = ('nombre', 'codigo', 'descripcion', 'categoria', 'file')
+		fields = ('nombre', 'codigo', 'descripcion', 'precio_venta', 'categoria', 'file')
 		labels = {
             'nombre': ('Nombre del producto'),
             'codigo': ('Codigo Unico'),
-            'descripcion': ('Descripcion'),
+            'descripcion': ('Descripción'),
+            'precio_venta': ('Precio Venta'),
         }
 
 
@@ -47,6 +48,31 @@ class altaOrdenForm(forms.ModelForm):
 		widgets = {
 			'costoflete': forms.TextInput(),
 		}
+
+
+
+class altaOrdenAlmacenForm(forms.ModelForm):
+	fecha_entrega = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	fecha_entrega_almacen = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker1'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
+	class Meta:
+		model = OrdenAlmacen
+		fields = ('nombre', 'codigo', 'descripcion', 'cliente','fecha_entrega_almacen', 'usuario', 'entrega', 'direccionentrega', 'fecha_entrega', 'costoflete','nota')
+		labels = {
+            'nombre': ('Nombre de la orden'),
+            'codigo': ('Codigo Unico'),
+            'descripcion': ('Descripcion'),
+            'cliente': ('Seleccionar Cliente'),
+            'fecha_entrega': ('Fecha de Entrega'),
+            'fecha_entrega_almacen': ('Fecha de Entrega en almacen'),
+            'entrega': ('Metodo de Entrega'),
+            'direccionentrega': ('Dirección Entrega'),
+            'costoflete': ('Costo Flete'),
+            'nota': ('Nota'),
+        }
+		widgets = {
+			'costoflete': forms.TextInput(),
+		}
+
 
 class altaCotizacionForm(forms.ModelForm):
 	class Meta:
@@ -87,7 +113,10 @@ class comentarioCotizacionForm(forms.ModelForm):
 		model = ComentariosCotizacion
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
-
+class comentarioOrdenAlmacenForm(forms.ModelForm):
+	class Meta:
+		model = ComentariosOrden
+		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
 class estatusProductoInsumo(forms.ModelForm):
 	class Meta:

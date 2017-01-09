@@ -36,3 +36,29 @@ def get_costo(cantidad, unitario):
 	total = float(cantidad)*float(unitario)
 	print total
 	return total
+
+
+@register.simple_tag
+def get_obj_a(insumo, orden):
+	print insumo
+	print orden
+	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
+	insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	print producto_orden
+	print insumo_producto
+	obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
+	estatus = obj.estatus
+	print estatus
+	return estatus
+
+
+@register.simple_tag
+def get_fecha_a(insumo, orden):
+	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = orden)
+	insumo_producto =  get_object_or_404(InsumoProductoMod, pk = insumo)
+	print producto_orden
+	print insumo_producto
+	obj = CheckInsumoProductoAlmacen.objects.filter(insumo=insumo_producto, productorden=producto_orden).latest('fecha')
+	fecha = obj.fecha
+	print fecha
+	return fecha

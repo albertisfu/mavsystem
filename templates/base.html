@@ -80,20 +80,54 @@
         </ul>
     </li>
     {% endif %}
+
+        <!-- Elemento cobro menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+    <li id="mainop4">
+        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CLIENTES</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaCliente' %}">Agregar cliente</a></li>
+            <li><a href="{% url 'listaClientes' %}">Lista de clientes</a></li>
+        </ul>
+    </li>
+    {% endif %}
+
     <!-- Elemento cobro menu lateral-->
     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
     <li id="mainop3">
         <a href="#"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
-            <li><a href="{% url 'altaCliente' %}">Agregar cliente</a></li>
-            <li><a href="{% url 'listaClientes' %}">Lista de clientes</a></li>
             <li><a href="{% url 'altaOrden' %}">Nueva orden</a></li>
             <li><a href="{% url 'listaOrdenes' %}">Lista de ordenes</a></li>
+        </ul>
+    </li>
+    {% endif %}
+
+
+    <!-- Elemento cobro menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+    <li id="mainop6">
+        <a href="#"><i class="fa fa-cube"></i> <span class="nav-label">ALMACEN</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaOrdenAlmacen' %}">Nueva orden</a></li>
+            <li><a href="{% url 'listaOrdenesAlmacen' %}">Lista de ordenes</a></li>
+        </ul>
+    </li>
+    {% endif %}
+
+
+
+    <!-- Elemento cobro menu lateral-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+    <li id="mainop5">
+        <a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">COTIZACIONES</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
             <li><a href="{% url 'altaCotizacion' %}">Nueva cotización</a></li>
             <li><a href="{% url 'listaCotizaciones' %}">Lista de cotizaciones</a></li>
         </ul>
     </li>
     {% endif %}
+
 </ul>
 
 <!-- Fin elementos menu lateral-->
@@ -214,6 +248,44 @@ jQuery(function($) {
      );
     });
 
+jQuery(function($) {
+     var path = window.location.href; 
+     $('#mainop4 ul a').each(function() {
+      if (this.href === path) {
+       $(this).closest('li').addClass('active');
+       $('#mainop4 ul').addClass('collapse in');
+       $('#mainop4').addClass('active');
+      }
+
+     }
+     );
+    });
+
+    jQuery(function($) {
+     var path = window.location.href; 
+     $('#mainop5 ul a').each(function() {
+      if (this.href === path) {
+       $(this).closest('li').addClass('active');
+       $('#mainop5 ul').addClass('collapse in');
+       $('#mainop5').addClass('active');
+      }
+
+     }
+     );
+    });
+
+jQuery(function($) {
+     var path = window.location.href; 
+     $('#mainop6 ul a').each(function() {
+      if (this.href === path) {
+       $(this).closest('li').addClass('active');
+       $('#mainop6 ul').addClass('collapse in');
+       $('#mainop6').addClass('active');
+      }
+
+     }
+     );
+    });
 
 </script>
 
