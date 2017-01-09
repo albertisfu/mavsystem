@@ -1325,7 +1325,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
-	form1 = CostoEspecialAlmacenForm(initial={'producto':producto_orden.producto})
+	form1 = CostoEspecialAlmacenForm(initial={'producto':producto_orden.pk})
 	form1.fields['producto'].widget = forms.HiddenInput()
 	if 'save' in request.POST:
 		form1 = CostoEspecialAlmacenForm(request.POST)
@@ -1339,7 +1339,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 			print form1.errors, len(form1.errors)
 
 
-	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto_orden.producto)[:15]
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto_orden.pk)[:15]
 
 	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -1421,11 +1421,27 @@ def ProductoInsumoAlmacen(request, productoalmacen):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def EliminarProductoInsumoAlmacen(request, insumo, producto):
+	try:
+		insumos = InsumoProductoMod.objects.get(insumo=insumo, producto=producto)
+	except:
+		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+	else:
+		insumos.delete()
+		print 'insumo eliminado'
+		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
 
-	insumos = InsumoProductoMod.objects.get(insumo=insumo, producto=producto)
 
-	producto = insumos.producto.pk
-	insumos.delete()
-	print 'insumo eliminado'
-
-	return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Eliminar Costo Especial
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EliminarCostoEspecialAlmacen(request, pk, producto):
+	try:
+		insumos = CostoEspecialAlmacen.objects.get(pk=pk, producto=producto)
+	except:
+		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+	else:
+		insumos.delete()
+		print 'insumo eliminado'
+		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
