@@ -6,7 +6,6 @@
 {% load humanize %}
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Detalle de la cotizacion</h2>
-
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
@@ -16,21 +15,16 @@
             </li>
         </ol>
     </div>
-
 </div>
-
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-
-<a href="javascript:window.location = document.referrer;">
+            <a href="javascript:window.location = document.referrer;">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
             <p></p>
-
             <div class="ibox float-e-margins">
-
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h2>{{orden.nombre}}</h2>
@@ -38,51 +32,34 @@
                     <div class="panel-body">
                         <div class="col-md-4">
                             <div class="panel panel-default">
-                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                    Información de orden
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i> Información de orden
                                 </div>
                                 <div class="panel-body">
-
                                     <dl class="dl-horizontal">
-
                                         <dt class="font-15">Codigo:</dt>
                                         <dd class="font-15">{{orden.codigo}}</dd>
                                         <dt class="font-15">Cliente:</dt>
                                         <dd class="font-15">{{orden.cliente}}</dd>
                                         <dt class="font-15">Fecha de expedición:</dt>
                                         <dd class="font-15">{{orden.fecha_expedicion|date:"d/M/Y"}}</dd>
-                                
                                         <dt class="font-15">Estatus original:</dt>
                                         <dd class="font-15">{{orden.get_estatus_display}}</dd>
                                         <dt class="font-15">Creada por:</dt>
                                         <dd class="font-15">{{orden.usuario}}</dd>
-                                        <dt class="font-15">Notas:</dt>
-                                        <dd class="font-15">{{orden.nota}}</dd>
-
-
                                     </dl>
                                 </div>
                             </div>
                             <div class="align-center">
-                                <a href="{% url 'CotizacionProducto' orden.pk %}" class="align-center">
-                                    <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
-                                </a>
-
                                 <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
-
                             </div>
                         </div>
-
                         <div class="col-md-3">
-
                             <div class="panel panel-default">
-                                <div class="panel-heading"> <i class="fa fa-info-circle"></i>
-                                    Estatus
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i> Estatus
                                 </div>
                                 <div class="panel-body">
-
                                     <span>
                                         <!--     {{orden.get_estatus_display}} -->
                                         Ultimo estatus: 
@@ -100,18 +77,14 @@ Pendiente
                                     <br>
                                     <br>
                                     <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cambiar Estatus</button>
-
                                 </div>
                             </div>
-
                         </div>
-
                         <!-- col-md-5 -->
                         <div class="col-md-5">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <i class="fa fa-info-circle"></i>
-                                    Historial de estatus
+                                    <i class="fa fa-info-circle"></i> Historial de estatus
                                 </div>
                                 <div class="panel-body">
                                     {% if comentarios %}
@@ -122,7 +95,6 @@ Pendiente
                                                 <th>Estatus</th>
                                                 <th>Comentario</th>
                                                 <th>Usuario</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -132,111 +104,41 @@ Pendiente
                                                 <td class="" class="pull-left">{{comentario.get_estatus_display}}</td>
                                                 <td class="" class="pull-left">{{comentario.comentario}}</td>
                                                 <td class="" class="pull-left">{{comentario.usuario}}</td>
-
                                             </tr>
-                                            {% endfor %}
-
-                                                                {% else %}
-                                                                No hay comentarios
-                                                                {% endif %}
+                                            {% endfor %} {% else %} No hay comentarios {% endif %}
                                         </tbody>
                                     </table>
-
                                 </div>
                             </div>
-
                         </div>
-                        <!-- col-md-5 --> </div>
+                        <!-- col-md-5 -->
+                    </div>
                 </div>
-
                 {% load ordertag %}
-                {% if productos %}
-                <!-- col-lg-12 -->
-                <div class="col-lg-12">
-                    <section id="pagos">
+            </div>
+            <!-- col-lg-12 -->
+        </div>
+    </div>
 
-                        <div class="panel panel-default" style="clear: both;">
-                            <div class="panel-heading">
-                                <h2>Productos de la orden</h2>
-                            </div>
-
-                            <div class="panel-body">
-                                <div class="ibox-content">
-
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Codigo</th>
-                                                <th>Nombre</th>
-                                                <th>Unidad</th>
-                                                <th>Descripción</th>
-                                            
-                                                <th>Color</th>
-                                                <th>Comentario</th>
-                                                <th>Foto</th>
-                                                <th>Cantidad</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for producto in productos %}
-                                            <tr>
-                                                <td class="" class="pull-left">{{producto.producto.codigo}}</td>
-                                                <td class="" class="pull-left">
-                                                    <a href="{% url "CotizacionProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a>
-                                                </td>
-                                                <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
-                                                <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
-                                                
-                                                <td class="" class="pull-left">{{producto.color|default:"----"}}</td>
-                                                <td class="" class="pull-left">{{producto.comentario|default:"----"}}</td>
-                                                <td class="" class="pull-left">
-                                                    <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
-                                                    <td class="" class="pull-left">{{producto.cantidad}}</td>
-                                                
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+<div class="row">
+<div class="col-md-12">
+<div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i> Descripción de cotización
+                                </div>
+                                <div class="panel-body">
+                                    {{orden.descripcion|linebreaks}}
                                 </div>
                             </div>
 </div>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning payments">No hay productos.</div>
-                        {% endif %}
+</div>
 
-                        {% if is_paginated %}
-                        <div class="paginationbox">
-                            <div class="pagination">
-                                <!-- paginacion-->
-                                <span class="step-links">
-                                    {% if productos.has_previous %}
-                                    <a href="?page={{ productos.previous_page_number }}">
-                                        << Anterior</a>
-                                            {% endif %}
-                                            <span class="current">
-                                                Pagina {{ productos.number }} de {{ productos.paginator.num_pages }}.
-                                            </span>
-                                            {% if productos.has_next %}
-                                            <a href="?page={{ productos.next_page_number }}">Siguiente>></a>
-                                            {% endif %}
-                                        </span>
-                                    </div>
-                                </div>
 
-                            </div>
-                            <!-- col-lg-12 -->{% endif %}</div>
+</div>
 
-                    </div>
-                </section>
-
-            </div>
-        </div>
 
         <!-- MODAL -->
         <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
-            <div class="modal-dialog modal-sm">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">

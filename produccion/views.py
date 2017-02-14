@@ -881,22 +881,18 @@ def altaCliente(request):
 def altaCotizacion(request):
 	current_user = request.user
 	template =  get_template("alta_cotizacion.html")
-	form = altaCotizacionForm(initial={'usuario':current_user})
-	form.fields['usuario'].widget = forms.HiddenInput()
-	#context = {
-	#'form': form,
-	#}
+
 	if 'save' in request.POST:
 		form = altaCotizacionForm(request.POST)
 		print request.POST
 		if form.is_valid():
+			ins = form.save(commit=False)
 			print 'valid'
-			ins = form.save()
-			#return redirect('listaCotizaciones')
+			ins.usuario = request.user
+			ins.save()
 			return HttpResponseRedirect(reverse('CotizacionDetail', args=(ins.id,)))
-		#else:
-		#	print 'error'
-		#	print form.errors, len(form.errors)
+	else:
+		form = altaCotizacionForm()
 
 	form2 = addcliente()
 	if 'save1' in request.POST:
@@ -909,6 +905,8 @@ def altaCotizacion(request):
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
+	else:
+		form2 = addcliente()
 
 	context = {
 	'form': form, 'form2' : form2,

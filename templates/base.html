@@ -58,7 +58,32 @@
     <li>
         <a href="{% url 'administradorHome' %}"><i class="fa fa-th-large"></i> <span class="nav-label">INICIO</span> </a>
     </li>
-    <!-- Elemento Catalogo menu lateral-->
+
+        <!-- Clientes-->
+    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
+    <li id="mainop4">
+        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CLIENTES</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaCliente' %}">Agregar cliente</a></li>
+            <li><a href="{% url 'listaClientes' %}">Lista de clientes</a></li>
+        </ul>
+    </li>
+    {% endif %}
+
+<!-- Ventas-->
+        {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
+    <li id="mainop3">
+        <a href="#"><i class="fa fa-usd"></i> <span class="nav-label">VENTAS</span> <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+            <li><a href="{% url 'altaCotizacion' %}">Nueva cotización</a></li>
+            <li><a href="{% url 'listaCotizaciones' %}">Lista de cotizaciones</a></li>
+            <li><a href="{% url 'altaOrden' %}">Nueva orden de venta</a></li>
+            <li><a href="{% url 'listaOrdenes' %}">Lista de ordenes venta</a></li>
+        </ul>
+    </li>
+    {% endif %}
+
+    <!-- VENTAS-->
     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
     <li id="mainop">
         <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
@@ -70,6 +95,7 @@
         </ul>
     </li>
     {% endif %}
+
     <!-- Elemento Entrada menu lateral-->
     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
     <li id="mainop2">
@@ -81,27 +107,7 @@
     </li>
     {% endif %}
 
-        <!-- Elemento cobro menu lateral-->
-    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
-    <li id="mainop4">
-        <a href="#"><i class="fa fa-user"></i> <span class="nav-label">CLIENTES</span><span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-            <li><a href="{% url 'altaCliente' %}">Agregar cliente</a></li>
-            <li><a href="{% url 'listaClientes' %}">Lista de clientes</a></li>
-        </ul>
-    </li>
-    {% endif %}
 
-    <!-- Elemento cobro menu lateral-->
-    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
-    <li id="mainop3">
-        <a href="#"><i class="fa fa-usd"></i> <span class="nav-label">ORDENES</span><span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-            <li><a href="{% url 'altaOrden' %}">Nueva orden</a></li>
-            <li><a href="{% url 'listaOrdenes' %}">Lista de ordenes</a></li>
-        </ul>
-    </li>
-    {% endif %}
 
 
     <!-- Elemento cobro menu lateral-->
@@ -115,18 +121,6 @@
     </li>
     {% endif %}
 
-
-
-    <!-- Elemento cobro menu lateral-->
-    {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
-    <li id="mainop5">
-        <a href="#"><i class="fa fa-calculator"></i> <span class="nav-label">COTIZACIONES</span><span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
-            <li><a href="{% url 'altaCotizacion' %}">Nueva cotización</a></li>
-            <li><a href="{% url 'listaCotizaciones' %}">Lista de cotizaciones</a></li>
-        </ul>
-    </li>
-    {% endif %}
 
 </ul>
 

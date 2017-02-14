@@ -80,13 +80,12 @@ class altaOrdenAlmacenForm(forms.ModelForm):
 class altaCotizacionForm(forms.ModelForm):
 	class Meta:
 		model = Cotizacion
-		fields = ('nombre', 'codigo', 'descripcion', 'cliente', 'usuario','nota')
+		fields = ('nombre', 'codigo', 'descripcion', 'cliente')
 		labels = {
 			'nombre': ('Nombre de la cotización'),
 			'codigo': ('Codigo Unico'),
 			'descripcion': ('Descripcion'),
 			'cliente': ('Seleccionar Cliente'),
-			'nota': ('Nota'),
 		}
 		widgets = {
 			'costoflete': forms.TextInput(),
