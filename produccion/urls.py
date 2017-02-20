@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from produccion import views as produccion_views
-from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView, CotizacionesListView, SearchCotizacionesListView, listaOrdenesAlmacen
+from views import SearchPopListView, InsumoPopListView, OrdenesListView, SearchOrdenesListView, ProductoPopListView, SearchProductoPopListView, SearchClientesListView, ClientesListView, CotizacionesListView, SearchCotizacionesListView, listaOrdenesAlmacen, CotizacionesListViewProduccion, SearchCotizacionesListViewProduccion
 
 urlpatterns = [
 
@@ -71,6 +71,18 @@ urlpatterns = [
     url(r'^administrador/clientes_lista$', ClientesListView.as_view(), name='search-clientes'),
     url(r'^administrador/search_cliente/$', SearchClientesListView.as_view(), name='search_cliente_url'),
     url(r'^administrador/cliente/(?P<cliente>[-\w]+)/$', produccion_views.ClienteDetail, name='ClienteDetail'), 
+
+    #URLS PRoduccion/Cotizacion.
+    # Cotizaciones
+    url(r'^produccion/cotizacion/lista-cotizaciones$', produccion_views.listaCotizacionesProduccion, name='listaCotizacionesProduccion'), 
+    url(r'^produccion/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetailProduccion, name='CotizacionDetailProduccion'),
+    url(r'^produccion/cotizacion/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.CotizacionProductoProduccion, name='CotizacionProductoProduccion'),
+    url(r'^produccion/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetailProduccion, name='CotizacionProductoDetailProduccion'),
+    url(r'^produccion/cotizacion/imprimir/(?P<orden>[-\w]+)/$', produccion_views.cotizacion_impresion_produccion, name='cotizacion_impresion_produccion'),
+
+    # Buscar cotizaciones
+    url(r'^produccion/cotizaciones_lista$', CotizacionesListViewProduccion.as_view(), name='search-orders-produccion'),
+    url(r'^produccion/buscar/cotizacion/$', SearchCotizacionesListViewProduccion.as_view(), name='search_cotizacion_url_produccion'),
 
 
    ]

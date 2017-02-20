@@ -133,12 +133,6 @@ class estatusProductoInsumo(forms.ModelForm):
 		fields = ('productorden', 'insumo', 'estatus', 'usuario')
 
 
-class estatusProductoInsumoCotizacion(forms.ModelForm):
-	class Meta:
-		model = CheckInsumoProductoCotizacion
-		fields = ('productorden', 'insumo', 'estatus', 'usuario')
-
-
 
 #modal agregar categoria en producto nuevo
 class productoaddcat(forms.ModelForm):

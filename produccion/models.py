@@ -174,28 +174,53 @@ class Cotizacion(models.Model):
 	fecha_expedicion = models.DateField(default=timezone.now)
 
 	pendiente = 1
-	confirmada = 2
-	proceso = 3
-	conflicto = 4
-	cancelada = 5
-	entregada = 6
+	completada = 2
+	cancelada = 3
 	estatus_options = (
 	      (pendiente, 'Pendiente'),
-	      (confirmada, 'Confirmada'),
-	      (proceso, 'Proceso'),
-	      (conflicto, 'Conflicto'),
+	      (completada, 'Completada'),
 	      (cancelada, 'Cancelada'),
-	      (entregada, 'Entregada'),
 	  )
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
-	#costo = models.FloatField(default=0)
+	costo = models.FloatField(default=0)
 	#nota = models.TextField(max_length=1000, blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
 
+
+class ProductoCotizacionMod(models.Model):
+	producto = models.ForeignKey(Producto) # producto modificado relacionado con el original
+	orden = models.ForeignKey(Cotizacion)
+	nombre = models.CharField(max_length = 255)
+	codigo = models.CharField(max_length = 100)
+	descripcion = models.CharField(max_length = 255)
+	categoria = models.ForeignKey(Categoria, blank=True, null=True)
+	costo = models.FloatField(default=0)
+	precio_venta = models.FloatField(default=0)
+	file = models.FileField(upload_to="static/files", verbose_name="Imagen", blank=True, null=True)
+	def __unicode__(self):
+		return self.nombre
+
+class InsumoCotizacionMod(models.Model):
+	insumo = models.ForeignKey(Insumo)
+	producto = models.ForeignKey(ProductoCotizacionMod)
+	cantidad = models.FloatField()
+	costototal = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.insumo.nombre
+
+
+class CostoEspecialCotizacion(models.Model):
+	producto = models.ForeignKey(ProductoCotizacionMod)
+	concepto = models.CharField(max_length = 255)
+	costo = models.FloatField(default=0)
+	def __unicode__(self):
+		return self.producto.nombre
+
+
 class ProductoCotizacion(models.Model):
-	producto = models.ForeignKey(Producto)
+	producto = models.ForeignKey(ProductoCotizacionMod)
 	orden = models.ForeignKey(Cotizacion)
 	cantidad = models.FloatField()
 	color = models.CharField(max_length = 100, blank=True, null=True)
@@ -215,36 +240,23 @@ class ProductoCotizacion(models.Model):
 	def __unicode__(self):
 		return self.producto.nombre
 
+
 class ComentariosCotizacion(models.Model):
 	orden = models.ForeignKey(Cotizacion)
 	fecha = models.DateTimeField(default=timezone.now)
 	comentario = models.CharField(max_length = 500, blank=True, null=True)
 	pendiente = 1
-	confirmada = 2
-	proceso = 3
-	conflicto = 4
-	cancelada = 5
+	completada = 2
+	cancelada = 3
 	estatus_options = (
 	      (pendiente, 'Pendiente'),
-	      (confirmada, 'Confirmada'),
-	      (proceso, 'Proceso'),
-	      (conflicto, 'Conflicto'),
+	      (completada, 'Completada'),
 	      (cancelada, 'Cancelada'),
 	  )
 	estatus = models.IntegerField(choices=estatus_options, default=pendiente)
 	usuario = models.ForeignKey(User)
 	def __unicode__(self):
 		return self.orden.nombre
-
-class CheckInsumoProductoCotizacion(models.Model):
-	productorden = models.ForeignKey(ProductoCotizacion)
-	insumo = models.ForeignKey(InsumoProducto)
-	fecha = models.DateTimeField(default=timezone.now)
-	estatus = models.CharField(max_length = 140)
-	usuario = models.ForeignKey(User, blank=True, null=True)
-	def __unicode__(self):
-		return self.productorden.producto.nombre
-
 
 # ------------------------------------------
 # Orden Almacen
@@ -503,43 +515,42 @@ def orden_status(sender, instance, created, **kwargs):
 def cotizacion_status(sender, instance, created, **kwargs):
 	correocliente = instance.orden.cliente.email
 	usuarios = User.objects.filter(groups__name=settings.GRUPO_EMAIL) #cambiar grupo
-	ordencreada = Cotizacion.objects.get(pk=instance.orden.id)
+	#ordencreada = Cotizacion.objects.get(pk=instance.orden.id)
 	correos = list(i for i in usuarios.values_list('email', flat=True) if bool(i))
-	print correos
-	print correocliente
 	status =  instance.estatus
+	Cotizacion.objects.filter(pk=instance.orden.id).update(estatus = status)
 	#subject = "Orden creada"
-	to = correos
-	from_email = settings.EMAIL_SALIDA
-	contexto = {'correos':correos, 'orden':ordencreada, 'status':status}
+	#to = correos
+	#from_email = settings.EMAIL_SALIDA
+	#contexto = {'correos':correos, 'orden':ordencreada, 'status':status}
 
-	if status == 1:
-		subject = "MAVALPA - Cotización número: {} - Nuevo estado: Pendiente".format(instance.orden.id)
+	#if status == 1:
+	#	subject = "MAVALPA - Cotización número: {} - Nuevo estado: Pendiente".format(instance.orden.id)
 		#send_mail('Orden pendiente', 'Orden pendiente.', 'proyectos@ticsup.com', correos, fail_silently=False)
-		print 'Correo enviado, pendiente'
-	if status == 2:
-		subject = "MAVALPA - Cotización número: {} - Nuevo estado: Confirmada".format(instance.orden.id)
+	#	print 'Correo enviado, pendiente'
+	#if status == 2:
+	#	subject = "MAVALPA - Cotización número: {} - Nuevo estado: Confirmada".format(instance.orden.id)
 		#send_mail('Orden confirmada', 'Orden confirmada.', 'proyectos@ticsup.com', correos, fail_silently=False)
-		print 'Correo enviado, confirmada'
-	if status == 3:
-		subject = "MAVALPA - Cotización número: {} - Nuevo estado: En proceso".format(instance.orden.id)
+	#	print 'Correo enviado, confirmada'
+	#if status == 3:
+	#	subject = "MAVALPA - Cotización número: {} - Nuevo estado: En proceso".format(instance.orden.id)
 		#send_mail('Orden en proceso', 'Orden en proceso.', 'proyectos@ticsup.com', correos, fail_silently=False)
-		print 'Correo enviado, proceso'
-	if status == 4:
-		subject = "MAVALPA - Cotización número: {} - Nuevo estado: En conflicto".format(instance.orden.id)
+	#	print 'Correo enviado, proceso'
+	#if status == 4:
+	#	subject = "MAVALPA - Cotización número: {} - Nuevo estado: En conflicto".format(instance.orden.id)
 		#send_mail('Orden en conflicto', 'Orden en conflicto.', 'proyectos@ticsup.com', correos, fail_silently=False)
-		print 'Correo enviado, conflicto'
-	if status == 5:
-		subject = "MAVALPA - Cotización número: {} - Nuevo estado: Cancelada".format(instance.orden.id)
+	#	print 'Correo enviado, conflicto'
+	#if status == 5:
+	#	subject = "MAVALPA - Cotización número: {} - Nuevo estado: Cancelada".format(instance.orden.id)
 		#send_mail('Orden cancelada', 'Orden cancelada.', 'proyectos@ticsup.com', correos, fail_silently=False)
-		print 'Correo enviado, cancelada'
+	#	print 'Correo enviado, cancelada'
 
-	message = get_template('email/emailtemplatestatus.html').render(contexto)
-	msg = EmailMessage(subject, message, to=to, from_email=from_email)
-	msg.content_subtype = 'html'
-	msg.send()
-	print 'Correo enviado'
-	return HttpResponse('email_two')
+	#message = get_template('email/emailtemplatestatus.html').render(contexto)
+	#msg = EmailMessage(subject, message, to=to, from_email=from_email)
+	#msg.content_subtype = 'html'
+	#msg.send()
+	#print 'Correo enviado'
+	#return HttpResponse('email_two')
 
 
 # ---------------------------------------------------------
@@ -611,9 +622,6 @@ def producto_cotizacion(sender, instance, created,  **kwargs):
 	#producto = Producto.objects.get(pk=productoorden.producto.pk)
 	insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
 	print insumos
-	for insumo in insumos:
-		CheckInsumoProductoCotizacion.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
-
 	productos = ProductoCotizacion.objects.filter(orden=productoorden.orden)
 	costo=0
 	for producto in productos:

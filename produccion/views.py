@@ -312,6 +312,250 @@ class SearchPopListView(InsumoPopListView):
 
 		return result
 
+#Cotizaciones Produccion ***************-------------*****
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista cotizaciones - filtros
+
+class CotizacionesFilter(django_filters.FilterSet):
+	class Meta:
+		model = Cotizacion
+		fields = { #creamos los filtros necesarios 
+				  'estatus':['exact'],
+				 }
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista cotizaciones
+# /administrador/lista-cotizaciones
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def listaCotizacionesProduccion(request):
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("lista_cotizaciones_produccion.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion
+# /administrador/cotizacion/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionDetailProduccion(request, orden):
+	current_user = request.user
+	orden = get_object_or_404(Cotizacion, pk = orden) 
+	template =  get_template("detalle_cotizacion_produccion.html")
+	productos = ProductoCotizacion.objects.filter(orden=orden)
+	estatus = 3 #cancelada
+	form = comentarioCotizacionForm(initial={'usuario':current_user, 'orden':orden, 'estatus':estatus})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['orden'].widget = forms.HiddenInput()
+	form.fields['estatus'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = comentarioCotizacionForm(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+	comentarios = ComentariosCotizacion.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
+	paginator = Paginator(productos, 5)
+	page = request.GET.get('page')
+	try:
+		productos= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		productos = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		productos = paginator.page(paginator.num_pages)
+
+	context = {
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
+	}
+
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Agregar producto
+# /administrador/cotizacion/asignar-producto/pk/
+
+
+from django.db.models.signals import post_save
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionProductoProduccion(request, orden):
+	orden = get_object_or_404(Cotizacion, pk = orden)
+	template =  get_template("asignar_producto_cotizacion.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	context = {
+		'orden':orden,
+	}
+	if 'save' in request.POST:
+		cantidad = request.POST['cantidad']
+		unidad = request.POST['unidad']
+		color = request.POST['color']
+		comentario = request.POST['comentario']
+
+		print cantidad
+		productopk = request.POST['producto']
+		producto = get_object_or_404(Producto, pk = productopk) 
+		productomod = ProductoCotizacionMod.objects.create(orden=orden, producto=producto, nombre=producto.nombre, codigo=producto.codigo, descripcion=producto.descripcion, categoria=producto.categoria, costo=producto.costo, precio_venta=producto.precio_venta, file=producto.file) 
+		insumos = InsumoProducto.objects.filter(producto=producto)
+
+		costos_especiales = CostoEspecial.objects.filter(producto=producto)
+
+		for costo in costos_especiales:
+			costomod = CostoEspecialCotizacion.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
+
+		for insumo in insumos:
+			# crear insumo para producto duplicado
+			insumomod = InsumoCotizacionMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
+			print insumomod
+
+
+		#print producto
+		productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		print 'guardado'
+		return HttpResponseRedirect(reverse('CotizacionDetailProduccion', args=(orden.id,)))
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Detalle de producto
+# /administrador/cotizacion/productos-cotizacion/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def CotizacionProductoDetailProduccion(request, producto):
+	current_user = request.user
+	producto_orden = get_object_or_404(ProductoCotizacion, pk = producto)
+	orden = get_object_or_404(Cotizacion, pk = producto_orden.orden.id)
+	template =  get_template("detalle_producto_cotizacion.html")
+	#form = OrdenProductoForm(initial={'orden':orden})
+	#form.fields['orden'].widget = forms.HiddenInput()
+
+	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+
+	form = estatusProductoInsumoCotizacion(initial={'usuario':current_user, 'productorden':producto_orden})
+	form.fields['usuario'].widget = forms.HiddenInput()
+	form.fields['productorden'].widget = forms.HiddenInput()
+	form.fields['insumo'].widget = forms.HiddenInput()
+
+	if 'save' in request.POST:
+		form = estatusProductoInsumoCotizacion(request.POST)
+		print request.POST
+		if form.is_valid():
+			print 'valid'
+			form.save()
+			return HttpResponseRedirect(reverse('CotizacionProductoDetail', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+
+
+
+	context = {
+		'orden':orden, 'producto_orden':producto_orden, 'form':form, 'costoespeciales':costoespeciales,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Detalle de cotizacion > Vista de impresion
+# /administrador/cotizacion/imprimir/pk/
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def cotizacion_impresion_produccion(request, orden):
+	orden = get_object_or_404(Cotizacion, pk = orden) 
+	productos = ProductoCotizacion.objects.filter(orden=orden)
+	mediaurl = getattr(settings, 'MEDIA_URL', None)
+	contexto = {'orden':orden,'productos':productos, 'mediaurl':mediaurl}
+	template = get_template('imprimir_cotizacion.html')
+	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
+	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
+	http_response = HttpResponse(rendered_html, content_type='text/html')
+	return http_response 
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Ordenes > Lista de cotizaciones > buscador
+
+
+class CotizacionesListViewProduccion(ListView):
+	model = Cotizacion
+	template_name = 'buscar_cotizacion_produccion.html'
+
+	@method_decorator(login_required)
+	@method_decorator(group_required('Administrador', 'Produccion', 'Ventas'))
+	def dispatch(self, *args, **kwargs):
+		return super(CotizacionesListViewProduccion, self).dispatch(*args, **kwargs)
+  
+
+import operator
+from django.db.models import Q
+class SearchCotizacionesListViewProduccion(CotizacionesListViewProduccion):
+	"""
+	Display a Blog List page filtered by the search query.
+	"""
+	paginate_by = 10
+
+	def get_queryset(self):
+		result = super(SearchCotizacionesListViewProduccion, self).get_queryset()
+
+		query = self.request.GET.get('q')
+		if query:
+			query_list = query.split()
+			result = result.filter(
+				reduce(operator.and_,
+					   (Q(nombre__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+					   (Q(codigo__icontains=q) for q in query_list))|
+				reduce(operator.and_,
+					   (Q(cliente__nombrecontacto__icontains=q) for q in query_list))
+			)
+
+		return result
+
+
+
+#********------------Termina Cotizacion Produccion ***********
+
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -965,9 +1209,11 @@ def CotizacionDetail(request, orden):
 	orden = get_object_or_404(Cotizacion, pk = orden) 
 	template =  get_template("detalle_cotizacion.html")
 	productos = ProductoCotizacion.objects.filter(orden=orden)
-	form = comentarioCotizacionForm(initial={'usuario':current_user, 'orden':orden})
+	estatus = 3 #cancelada
+	form = comentarioCotizacionForm(initial={'usuario':current_user, 'orden':orden, 'estatus':estatus})
 	form.fields['usuario'].widget = forms.HiddenInput()
 	form.fields['orden'].widget = forms.HiddenInput()
+	form.fields['estatus'].widget = forms.HiddenInput()
 
 	if 'save' in request.POST:
 		form = comentarioCotizacionForm(request.POST)
@@ -1027,24 +1273,22 @@ def CotizacionProducto(request, orden):
 		print cantidad
 		productopk = request.POST['producto']
 		producto = get_object_or_404(Producto, pk = productopk) 
+		productomod = ProductoCotizacionMod.objects.create(orden=orden, producto=producto, nombre=producto.nombre, codigo=producto.codigo, descripcion=producto.descripcion, categoria=producto.categoria, costo=producto.costo, precio_venta=producto.precio_venta, file=producto.file) 
 		insumos = InsumoProducto.objects.filter(producto=producto)
+
+		costos_especiales = CostoEspecial.objects.filter(producto=producto)
+
+		for costo in costos_especiales:
+			costomod = CostoEspecialCotizacion.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
+
 		for insumo in insumos:
-			print insumo
-			total_insumos_producto = insumo.cantidad * int(cantidad)
-			print total_insumos_producto
-			if total_insumos_producto <= insumo.insumo.stock:
-				print 'suficiente'
-				newstock = insumo.insumo.stock - total_insumos_producto
-				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
-				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
-			else:
-				newstock = insumo.insumo.stock - total_insumos_producto
-				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
-				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
-				print 'no alcanza'
+			# crear insumo para producto duplicado
+			insumomod = InsumoCotizacionMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
+			print insumomod
+
 
 		#print producto
-		productoorden= ProductoCotizacion.objects.create(producto=producto, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
 		print 'guardado'
 		return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
@@ -1062,7 +1306,6 @@ def CotizacionProductoDetail(request, producto):
 	producto_orden = get_object_or_404(ProductoCotizacion, pk = producto)
 	orden = get_object_or_404(Cotizacion, pk = producto_orden.orden.id)
 	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
-	checkinsumos = CheckInsumoProductoCotizacion.objects.filter(productorden=producto_orden)
 	template =  get_template("detalle_producto_cotizacion.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
@@ -1099,7 +1342,7 @@ def CotizacionProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 'costoespeciales':costoespeciales,
+		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'form':form, 'costoespeciales':costoespeciales,
 	}
 	
 	return HttpResponse(template.render(context, request))
