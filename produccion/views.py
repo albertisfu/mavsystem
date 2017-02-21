@@ -444,7 +444,7 @@ def CotizacionProductoProduccion(request, orden):
 
 
 		#print producto
-		productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		productoorden= ProductoCotizacion.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
 		print 'guardado'
 		return HttpResponseRedirect(reverse('CotizacionDetailProduccion', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
@@ -461,36 +461,172 @@ def CotizacionProductoDetailProduccion(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoCotizacion, pk = producto)
 	orden = get_object_or_404(Cotizacion, pk = producto_orden.orden.id)
+	insumos = InsumoCotizacionMod.objects.filter(producto=producto_orden.producto)
+	pk = producto
 	template =  get_template("detalle_producto_cotizacion.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
-	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto_orden.producto)[:15]
 
-	form = estatusProductoInsumoCotizacion(initial={'usuario':current_user, 'productorden':producto_orden})
-	form.fields['usuario'].widget = forms.HiddenInput()
-	form.fields['productorden'].widget = forms.HiddenInput()
-	form.fields['insumo'].widget = forms.HiddenInput()
-
-	if 'save' in request.POST:
-		form = estatusProductoInsumoCotizacion(request.POST)
-		print request.POST
-		if form.is_valid():
-			print 'valid'
-			form.save()
-			return HttpResponseRedirect(reverse('CotizacionProductoDetail', args=(producto_orden.id,)))
-		else:
-			print 'error'
-			print form.errors, len(form.errors)
-
-
+	paginator = Paginator(insumos, 20)
+	page = request.GET.get('page')
+	try:
+		insumos= paginator.page(page)
+	except PageNotAnInteger:
+		# Si la pagina no es un entero muestra la primera pagina
+		insumos = paginator.page(1)
+	except EmptyPage:
+		# si la pagina esta fuera de rango, muestra la ultima pagina
+		insumos = paginator.page(paginator.num_pages)
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'form':form, 'costoespeciales':costoespeciales,
+		'pk':pk, 'orden':orden, 'producto_orden':producto_orden, 'costoespeciales':costoespeciales,'insumos':insumos,
 	}
 	
 	return HttpResponse(template.render(context, request))
 
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Asignar Material
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def ProductoInsumoProduccionCotizacion(request, productoalmacen):
+	productocot = get_object_or_404(ProductoCotizacion, pk = productoalmacen)
+	producto = productocot.producto
+	template =  get_template("producto_insumo_almacen.html")
+	form = ProductoInsumoCotizacionForm(initial={'producto':producto})
+	form.fields['producto'].widget = forms.HiddenInput()
+	context = {
+		'producto':producto,'form': form,
+	}
+	if request.method == 'POST':
+	#if 'save' in request.POST:
+		form = ProductoInsumoCotizacionForm(request.POST)
+		if form.is_valid():
+			
+			cantidad = request.POST['cantidad']
+			print cantidad
+			insumopk = request.POST['insumo']
+			insumo = get_object_or_404(Insumo, pk = insumopk) 
+			print insumo
+			insumoproducto= InsumoCotizacionMod.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
+			print 'guardado'
+			return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(productocot.id,)))
+		else:
+			print "Error en el form"
+			print form.errors
+
+	return HttpResponse(template.render(context, request))
+
+
+from django.http import Http404  
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Eliminar Material
+
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EliminarProductoInsumoProduccionCotizacion(request, pk, producto):
+	productocot = get_object_or_404(ProductoCotizacion, pk = producto)
+	producto = productocot.producto
+	try:
+		insumos = InsumoCotizacionMod.objects.get(pk=pk, producto=producto)
+	except:
+		raise Http404 
+	else:
+		
+		insumos.delete()
+		print 'insumo eliminado'
+		return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(productocot.pk,)))
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Editar Material
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EditarProductoInsumoProduccionCotizacion(request, pk, producto):
+	
+	post = get_object_or_404(InsumoCotizacionMod, pk=pk)
+        if request.method == "POST":
+            form = InsumoModCot(request.POST, instance=post)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.author = request.user
+                post.save()
+                return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(producto,)))
+        else:
+            form = InsumoMod(instance=post)
+        return render(request, 'editar_almacen_insumo.html', {'form': form})
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Eliminar Costo Especial
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EliminarCostoEspecialProduccionCotizacion(request, pk, producto):
+	try:
+		insumos = CostoEspecialAlmacen.objects.get(pk=pk)
+	except:
+		#return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		raise Http404 
+	else:
+		insumos.delete()
+		print 'insumo eliminado'
+		return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(producto,)))
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# Almacen > Detalle de producto > Editar Producto
+@login_required
+@group_required('Administrador', 'Produccion', 'Ventas')
+def EditarProductoProduccionCotizacion(request, pk, producto):
+
+	post = get_object_or_404(ProductoCotizacionMod, pk=pk)
+
+	if 'save' in request.POST:
+		form = ProductoModCot(request.POST, request.FILES, instance=post)
+		if form.is_valid():
+			post = form.save()
+			post.save()
+			#return redirect('listaProducto')
+			return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(producto,)))
+		else:
+			print "Error en edición de producto"
+			print form.errors
+	else:
+		form = ProductoModCot(instance=post)
+
+	form2 = productoaddcat()
+	if 'save1' in request.POST:
+		form2 = productoaddcat(request.POST)
+		print request.POST
+		if form2.is_valid():
+			print 'valid'
+			form2.save()
+			return HttpResponseRedirect(reverse('EditarProductoAlmacen', args=(producto,pk)))
+		else:
+			print 'error'
+			print form.errors, len(form.errors)
+	else:
+		form2 = productoaddcat()
+	
+	# post = get_object_or_404(ProductoAlmacenMod, pk=pk)
+ #        if request.method == "POST":
+ #            form = ProductoMod(request.POST, instance=post)
+ #            if form.is_valid():
+ #                post = form.save(commit=False)
+ #                post.author = request.user
+ #                post.save()
+ #                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(productos,)))
+ #        else:
+ #            form = ProductoMod(instance=post)
+        return render(request, 'editar_almacen_producto.html', {'form': form, 'form2':form2, 'prod':producto})
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
@@ -1253,101 +1389,6 @@ def CotizacionDetail(request, orden):
 
 from django.db.models.signals import post_save
 
-@login_required
-@group_required('Administrador', 'Produccion', 'Ventas')
-def CotizacionProducto(request, orden):
-	orden = get_object_or_404(Cotizacion, pk = orden)
-	template =  get_template("asignar_producto_cotizacion.html")
-	#form = OrdenProductoForm(initial={'orden':orden})
-	#form.fields['orden'].widget = forms.HiddenInput()
-
-	context = {
-		'orden':orden,
-	}
-	if 'save' in request.POST:
-		cantidad = request.POST['cantidad']
-		unidad = request.POST['unidad']
-		color = request.POST['color']
-		comentario = request.POST['comentario']
-
-		print cantidad
-		productopk = request.POST['producto']
-		producto = get_object_or_404(Producto, pk = productopk) 
-		productomod = ProductoCotizacionMod.objects.create(orden=orden, producto=producto, nombre=producto.nombre, codigo=producto.codigo, descripcion=producto.descripcion, categoria=producto.categoria, costo=producto.costo, precio_venta=producto.precio_venta, file=producto.file) 
-		insumos = InsumoProducto.objects.filter(producto=producto)
-
-		costos_especiales = CostoEspecial.objects.filter(producto=producto)
-
-		for costo in costos_especiales:
-			costomod = CostoEspecialCotizacion.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
-
-		for insumo in insumos:
-			# crear insumo para producto duplicado
-			insumomod = InsumoCotizacionMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
-			print insumomod
-
-
-		#print producto
-		productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
-		print 'guardado'
-		return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
-	return HttpResponse(template.render(context, request))
-
-
-# ---------------------------------------------------------
-# ---------------------------------------------------------
-# Ordenes > Detalle de cotizacion > Detalle de producto
-# /administrador/cotizacion/productos-cotizacion/pk/
-
-@login_required
-@group_required('Administrador', 'Produccion', 'Ventas')
-def CotizacionProductoDetail(request, producto):
-	current_user = request.user
-	producto_orden = get_object_or_404(ProductoCotizacion, pk = producto)
-	orden = get_object_or_404(Cotizacion, pk = producto_orden.orden.id)
-	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
-	template =  get_template("detalle_producto_cotizacion.html")
-	#form = OrdenProductoForm(initial={'orden':orden})
-	#form.fields['orden'].widget = forms.HiddenInput()
-
-	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
-
-	form = estatusProductoInsumoCotizacion(initial={'usuario':current_user, 'productorden':producto_orden})
-	form.fields['usuario'].widget = forms.HiddenInput()
-	form.fields['productorden'].widget = forms.HiddenInput()
-	form.fields['insumo'].widget = forms.HiddenInput()
-
-	if 'save' in request.POST:
-		form = estatusProductoInsumoCotizacion(request.POST)
-		print request.POST
-		if form.is_valid():
-			print 'valid'
-			form.save()
-			return HttpResponseRedirect(reverse('CotizacionProductoDetail', args=(producto_orden.id,)))
-		else:
-			print 'error'
-			print form.errors, len(form.errors)
-
-
-	paginator = Paginator(insumos, 20)
-	page = request.GET.get('page')
-	try:
-		insumos= paginator.page(page)
-	except PageNotAnInteger:
-		# Si la pagina no es un entero muestra la primera pagina
-		insumos = paginator.page(1)
-	except EmptyPage:
-		# si la pagina esta fuera de rango, muestra la ultima pagina
-		insumos = paginator.page(paginator.num_pages)
-
-
-	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'form':form, 'costoespeciales':costoespeciales,
-	}
-	
-	return HttpResponse(template.render(context, request))
-
-
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Ordenes > Detalle de cotizacion > Vista de impresion
@@ -1617,7 +1658,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrdenAlmacen, pk = producto)
 	orden = get_object_or_404(OrdenAlmacen, pk = producto_orden.orden.id)
-	insumos = InsumoProductoMod.objects.filter(producto=producto)
+	insumos = InsumoProductoMod.objects.filter(producto=producto_orden.producto)
 	checkinsumos = CheckInsumoProductoAlmacen.objects.filter(productorden=producto_orden)
 	template =  get_template("detalle_producto_orden_almacen.html")
 	pk = producto
@@ -1685,7 +1726,8 @@ def OrdenAlmacenProductoDetail(request, producto):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def ProductoInsumoAlmacen(request, productoalmacen):
-	producto = get_object_or_404(ProductoAlmacenMod, pk = productoalmacen)
+	productoal =  get_object_or_404(ProductoOrdenAlmacen, pk = productoalmacen)
+	producto = productoal.producto
 	template =  get_template("producto_insumo_almacen.html")
 	form = ProductoInsumoAlmacenForm(initial={'producto':producto})
 	form.fields['producto'].widget = forms.HiddenInput()
@@ -1704,7 +1746,7 @@ def ProductoInsumoAlmacen(request, productoalmacen):
 			print insumo
 			insumoproducto= InsumoProductoMod.objects.create(insumo=insumo, producto=producto, cantidad=cantidad)
 			print 'guardado'
-			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto.id,)))
+			return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(productoal.id,)))
 		else:
 			print "Error en el form"
 			print form.errors
@@ -1720,6 +1762,8 @@ from django.http import Http404
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def EliminarProductoInsumoAlmacen(request, pk, producto):
+	productoal = get_object_or_404(ProductoOrdenAlmacen, pk = producto)
+	producto = productoal.producto
 	try:
 		insumos = InsumoProductoMod.objects.get(pk=pk, producto=producto)
 	except:
@@ -1728,14 +1772,14 @@ def EliminarProductoInsumoAlmacen(request, pk, producto):
 		
 		insumos.delete()
 		print 'insumo eliminado'
-		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
+		return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(productoal.pk,)))
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Almacen > Detalle de producto > Editar Material
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
-def EditarProductoInsumoAlmacen(request, pk):
+def EditarProductoInsumoAlmacen(request, pk, producto):
 	
 	post = get_object_or_404(InsumoProductoMod, pk=pk)
         if request.method == "POST":
@@ -1744,7 +1788,7 @@ def EditarProductoInsumoAlmacen(request, pk):
                 post = form.save(commit=False)
                 post.author = request.user
                 post.save()
-                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(post.producto.pk,)))
+                return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
         else:
             form = InsumoMod(instance=post)
         return render(request, 'editar_almacen_insumo.html', {'form': form})

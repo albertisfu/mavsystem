@@ -30,6 +30,12 @@ class ProductoInsumoAlmacenForm(forms.ModelForm):
 		fields = ('insumo', 'producto', 'cantidad')
 
 
+class ProductoInsumoCotizacionForm(forms.ModelForm):
+	class Meta:
+		model = InsumoCotizacionMod
+		fields = ('insumo', 'producto', 'cantidad')
+
+
 class altaOrdenForm(forms.ModelForm):
 	fecha_entrega = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
 	fecha_entrega_almacen = forms.DateField(widget=forms.DateInput(attrs={'class':'datepicker1'}), required=False, input_formats=['%Y-%m-%d','%m/%d/%Y', '%m/%d/%y'])
@@ -183,6 +189,32 @@ class InsumoMod(forms.ModelForm):
 
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# Form Modificar insumo cotizacion
+
+class InsumoModCot(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(InsumoModCot, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.id:
+		  self.fields['insumo'].disabled = True
+
+	def clean_foo_field(self):
+		instance = getattr(self, 'instance', None)
+		if instance and instance.id:
+		  return instance.insumo
+		else:
+		  return self.cleaned_data['insumo']
+	  
+	class Meta:
+		model = InsumoCotizacionMod
+		fields = ('insumo','cantidad')
+		labels = {
+			'insumo': ('Insumo'),
+			'cantidad': ('Cantidad'),
+		}
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
 # Form Modificar producto almacen
 
 class ProductoMod(forms.ModelForm):	  
@@ -197,3 +229,21 @@ class ProductoMod(forms.ModelForm):
 			'precio_venta': ('Precio Venta'),
 			'categoria': ('Categoria'),
 		}
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++.
+# Form Modificar producto cotizacion
+
+class ProductoModCot(forms.ModelForm):	  
+	class Meta:
+		model = ProductoCotizacionMod
+		fields = ('nombre','codigo', 'descripcion', 'costo', 'precio_venta', 'categoria')
+		labels = {
+			'nombre': ('Nombre'),
+			'codigo': ('Codigo'),
+			'descripcion': ('Descripción'),
+			'costo': ('Costo'),
+			'precio_venta': ('Precio Venta'),
+			'categoria': ('Categoria'),
+		}
+

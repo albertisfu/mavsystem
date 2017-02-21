@@ -1,16 +1,22 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block title %}Detalle de Producto de Orden{% endblock %}
 
 {% block content %}
 {% load humanize %}
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+
 <div class="row  border-bottom white-bg dashboard-header">
     <h2>Detalle del Producto</h2>
 
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
-                <a href="#">Producción</a>
+                <a href="#">Cotizacion</a>
             </li>
             <li class="active"> <strong>Detalle del producto de orden</strong>
             </li>
@@ -22,7 +28,7 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-        <a href="javascript:window.location = document.referrer;">
+        <a href="#">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
@@ -60,14 +66,35 @@
                                             <dd class="font-16">{{producto_orden.color|default:"----"}}</dd>
                                             <dt class="font-16">Comentario:</dt>
                                             <dd class="font-16">{{producto_orden.comentario|default:"----"}}</dd>
-                                            <dt class="font-16">Costo Total:</dt>
+                                            <dt class="font-16">Precio Venta:</dt>
+                                            <dd class="font-16">${{producto_orden.producto.precio_venta|floatformat:2|intcomma}}</dd>
+                                            <dt class="font-16">Costo Producto:</dt>
                                             <dd class="font-16">${{producto_orden.producto.costo|floatformat:2|intcomma}}</dd>
                                         </dl>
                                     </div>
                                 </div>
                             </div>
 
+
+
+
                             <div class="col-lg-4">
+
+<div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i>
+                                        Acciones
+                                    </div>
+                                    <div class="panel-body align-center">
+<a href="{% url 'EditarProductoProduccionCotizacion' pk producto_orden.producto.pk %}" class="btn btn-lg btn-success m-t-n-xs button280"><i class="fa fa-pencil"></i>&nbsp;Editar Producto</a>
+<p></p>
+<a href="{% url 'ProductoInsumoProduccionCotizacion' producto_orden.pk %}" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-plus"></i>&nbsp;Agregar Material</a>
+    <p></p>
+
+
+                                         <button data-toggle="modal" data-target="#myModal66" type="button" class="btn btn-lg btn-primary m-t-n-xs button280"><i class="fa fa-usd"></i>&nbsp;Agregar Costo Especial</button>
+                                    </div>
+                                </div>
+
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <i class="fa fa-info-circle"></i> Costos Especiales
@@ -79,6 +106,7 @@
                                                 <tr>
                                                     <th>Concepto</th>
                                                     <th>Costo</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -86,6 +114,7 @@
                                                 <tr>
                                                     <td>{{costo.concepto}}</td>
                                                     <td>${{costo.costo|floatformat:2|intcomma}}</td>
+                                                    <td><a href="{% url 'EliminarCostoEspecialProduccionCotizacion' pk costo.pk %}" class="btn btn-sm btn-danger" title="Eliminar"><i class="fa fa-times"></i> </a></td>
                                                 </tr>
                                                 {% endfor %} {% else %} No hay costos especiales {% endif %}
                                             </tbody>
@@ -98,7 +127,11 @@
                     <!-- panel body -->
                 </div>
             </div> <!-- fin ibox -->
-                {% load ordertag %} {% if insumos %}
+
+
+                {% load ordertag %} 
+
+                
                 <div class="col-lg-12">
                     <section id="pagos">
                         <div class="panel panel-default" style="clear: both;">
@@ -107,47 +140,57 @@
                             </div>
                             <div class="panel-body">
                                 <div class="ibox-content">
+                                {% if insumos %}
                                     <table class="table table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Codigo</th>
-                                                <th>Estado</th>
-                                                <th>Fecha</th>
-                                                <th>Historial</th>
-                                                <th>Actualizar</th>
+                                                <th>Stock</th>
+                                                <th>Cantidad</th>
+                                                
+                                                 <th>Costo Unitario</th>
+                                                <th>Costo Total</th>
+                                                <th>Accion</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for insumo in insumos %}
+                                            {% for material in insumos %}
                                             <tr>
-                                                <td>{{insumo.insumo.nombre}}</td>
-                                                <td>{{insumo.insumo.codigo}}</td>
-                                                <td>{% get_obj insumo.pk producto_orden.pk %}</td>
-                                                <td>{% get_fecha insumo.pk producto_orden.pk %}</td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button>
+                                                <td class="text-navy" class="pull-left">
+                                                    <a href="{% url "adminInsumoDetail" material.insumo.pk %}">{{material.insumo.nombre}}</a>
                                                 </td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#myModal7" type="button" class="btn btn-primary" onClick="insumo({{insumo.pk}})">Actualizar</button>
-                                                </td>
+                                                <td class="" class="pull-left">{{material.insumo.codigo}}</td>
+                                                <td class="" class="pull-left">{{material.insumo.stock}}</td>
+                                                <td class="" class="pull-left">{{material.cantidad}}</td>
+                                                
+                                                <td class="" class="pull-left">${{material.insumo.costounitario|floatformat:2|intcomma}}</td>
+                                                 <td class="" class="pull-left">${{material.costototal|floatformat:2|intcomma}}</td>
+                                                
+                                                <td class="" class="pull-left"><a href="{% url 'EditarProductoInsumoProduccionCotizacion' material.pk pk %}" class="btn btn-w-m btn-primary"><i class="fa fa-pencil"></i> Editar</a>&nbsp;<a href="{% url 'EliminarProductoInsumoProduccionCotizacion' pk material.pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
+
                                             </tr>
                                             {% endfor %}
-                                        </tbody>
+                                            </tbody>
                                     </table>
                                     {% else %}
                                     <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
-                                            <div class="alert alert-danger">No se han agregado insumos.</div>
+                                            <div class="alert alert-danger">No se han agregado insumos.
+
+                                            </div>
                                         </div>
                                     </div>
                                     {% endif %}
                                 </div>
                             </div>
                         </div>
+
+                        <!-- paginacion-->
                          <div class="paginationbox">
                         <div class="pagination">
-                            <!-- paginacion-->
+                            
                             <span class="step-links">
                                 {% if insumos.has_previous %}
                                 <a href="?page={{ insumos.previous_page_number }}">
@@ -159,8 +202,14 @@
                             <a href="?page={{ insumos.next_page_number }}">Siguiente>></a> {% endif %}
                             </span>
                         </div></div>
+<!-- paginacion-->
+
+
                     </section>
                 </div>
+
+
+
             </div>
         </div>
               
@@ -211,6 +260,52 @@
     </div>
 </div>
 
+
+<!-- MODAL -->
+        <div class="modal inmodal fade" id="myModal66" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Agregar Concepto Especial</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Por favor agregue un concepto:</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form1.as_p}}</ul>
+
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<script>
+$(document).ready(function(){
+    // Iniciar autonumeric campos
+   $("#id_costo").autoNumeric('init');
+});
+
+    </script>
+
+<script>
+$('#formulario').submit(function() {
+
+    var txt = $('#id_costo');
+    txt.val(txt.val().replace(/,/g , ""));
+
+});
+</script>
 
 
 

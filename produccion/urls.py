@@ -40,8 +40,6 @@ urlpatterns = [
     url(r'^administrador/cotizacion/alta-cotizacion$', produccion_views.altaCotizacion, name='altaCotizacion'),
     url(r'^administrador/cotizacion/lista-cotizaciones$', produccion_views.listaCotizaciones, name='listaCotizaciones'), 
     url(r'^administrador/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetail, name='CotizacionDetail'),
-    url(r'^administrador/cotizacion/asignar-producto/(?P<orden>[-\w]+)/$', produccion_views.CotizacionProducto, name='CotizacionProducto'),
-    url(r'^administrador/cotizacion/productos-cotizacion/(?P<producto>[-\w]+)/$', produccion_views.CotizacionProductoDetail, name='CotizacionProductoDetail'),
     url(r'^administrador/cotizacion/imprimir/(?P<orden>[-\w]+)/$', produccion_views.cotizacion_impresion, name='cotizacion_impresion'),
 
     # Almacen
@@ -56,7 +54,7 @@ urlpatterns = [
     url(r'^administrador/almacen/producto/asignar-insumo/(?P<productoalmacen>[-\w]+)/$', produccion_views.ProductoInsumoAlmacen, name='ProductoInsumoAlmacen'),
     url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/eliminar-insumo/(?P<pk>[-\w]+)$', produccion_views.EliminarProductoInsumoAlmacen, name='EliminarProductoInsumoAlmacen'),
     url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/eliminar-especial/(?P<pk>[-\w]+)/$', produccion_views.EliminarCostoEspecialAlmacen, name='EliminarCostoEspecialAlmacen'),
-    url(r'^administrador/almacen/producto/editar-insumo/(?P<pk>[-\w]+)/$', produccion_views.EditarProductoInsumoAlmacen, name='EditarProductoInsumoAlmacen'),
+    url(r'^administrador/almacen/producto/editar-insumo/(?P<pk>[-\w]+)/(?P<producto>[-\w]+)/$', produccion_views.EditarProductoInsumoAlmacen, name='EditarProductoInsumoAlmacen'),
     url(r'^administrador/almacen/producto/(?P<producto>[-\w]+)/editar-insumo/(?P<pk>[-\w]+)/$', produccion_views.EditarProductoAlmacen, name='EditarProductoAlmacen'),
 
     # Buscar cotizaciones
@@ -83,6 +81,16 @@ urlpatterns = [
     # Buscar cotizaciones
     url(r'^produccion/cotizaciones_lista$', CotizacionesListViewProduccion.as_view(), name='search-orders-produccion'),
     url(r'^produccion/buscar/cotizacion/$', SearchCotizacionesListViewProduccion.as_view(), name='search_cotizacion_url_produccion'),
+
+
+# Cotizacion producto personalizado
+
+    url(r'^produccion/cotizacion/producto/asignar-insumo/(?P<productoalmacen>[-\w]+)/$', produccion_views.ProductoInsumoProduccionCotizacion, name='ProductoInsumoProduccionCotizacion'),
+    url(r'^produccion/cotizacion/producto/(?P<producto>[-\w]+)/eliminar-insumo/(?P<pk>[-\w]+)$', produccion_views.EliminarProductoInsumoProduccionCotizacion, name='EliminarProductoInsumoProduccionCotizacion'),
+    url(r'^produccion/cotizacion/producto/(?P<producto>[-\w]+)/eliminar-especial/(?P<pk>[-\w]+)/$', produccion_views.EliminarCostoEspecialProduccionCotizacion, name='EliminarCostoEspecialProduccionCotizacion'),
+    url(r'^produccion/cotizacion/producto/editar-insumo/(?P<pk>[-\w]+)/(?P<producto>[-\w]+)/$', produccion_views.EditarProductoInsumoProduccionCotizacion, name='EditarProductoInsumoProduccionCotizacion'),
+    url(r'^produccion/cotizacion/producto/(?P<producto>[-\w]+)/editar-insumo/(?P<pk>[-\w]+)/$', produccion_views.EditarProductoProduccionCotizacion, name='EditarProductoProduccionCotizacion'),
+
 
 
    ]

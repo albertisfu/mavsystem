@@ -168,7 +168,7 @@
                                                 <td class="" class="pull-left">${{material.insumo.costounitario|floatformat:2|intcomma}}</td>
                                                  <td class="" class="pull-left">${{material.costototal|floatformat:2|intcomma}}</td>
                                                 
-                                                <td class="" class="pull-left"><a href="{% url 'EditarProductoInsumoAlmacen' material.pk %}" class="btn btn-w-m btn-primary"><i class="fa fa-pencil"></i> Editar</a>&nbsp;<a href="{% url 'EliminarProductoInsumoAlmacen' pk material.pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
+                                                <td class="" class="pull-left"><a href="{% url 'EditarProductoInsumoAlmacen' material.pk pk %}" class="btn btn-w-m btn-primary"><i class="fa fa-pencil"></i> Editar</a>&nbsp;<a href="{% url 'EliminarProductoInsumoAlmacen' pk material.pk %}" class="btn btn-w-m btn-danger"><i class="fa fa-times"></i> Borrar</a></td>
 
                                             </tr>
                                             {% endfor %}

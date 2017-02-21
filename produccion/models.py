@@ -620,7 +620,7 @@ def producto_cotizacion(sender, instance, created,  **kwargs):
 	productoorden = ProductoCotizacion.objects.get(pk=currentinstanceid)
 	print productoorden
 	#producto = Producto.objects.get(pk=productoorden.producto.pk)
-	insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
+	insumos = InsumoCotizacionMod.objects.filter(producto=productoorden.producto)
 	print insumos
 	productos = ProductoCotizacion.objects.filter(orden=productoorden.orden)
 	costo=0
