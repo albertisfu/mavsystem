@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 from django.db.models import signals
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 
 #Correo
@@ -236,7 +236,7 @@ class ProductoCotizacion(models.Model):
 	      (litro, 'Litro'),
 	  )
 	unidad = models.IntegerField(choices=unidad_options, default=pieza)
-	#costo = models.FloatField(default=0)
+	costo = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.producto.nombre
 
@@ -337,7 +337,7 @@ class ProductoOrdenAlmacen(models.Model):
 	      (litro, 'Litro'),
 	  )
 	unidad = models.IntegerField(choices=unidad_options, default=pieza)
-	#costo = models.FloatField(default=0)
+	costo = models.FloatField(default=0)
 	def __unicode__(self):
 		return self.producto.nombre
 
@@ -647,12 +647,201 @@ def producto_ordenAlmacen(sender, instance, created,  **kwargs):
 	for producto in productos:
 		costo = costo+(producto.cantidad*producto.producto.costo)
 
-	Orden.objects.filter(pk=productoorden.orden.id).update(costo=costo)
+	OrdenAlmacen.objects.filter(pk=productoorden.orden.id).update(costo=costo)
+
+
+#update totals producto almacen *____****
+
+@receiver(post_save, sender=InsumoProductoMod)  
+def producto_insumo_almacen(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProductoMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProductoMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoAlmacenMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoOrdenAlmacen.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	OrdenAlmacen.objects.filter(pk=producto.orden.id).update(costo=costo)
+
+
+
+@receiver(post_delete, sender=InsumoProductoMod)  
+def producto_insumo_almacen_delete(sender, instance,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProductoMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProductoMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoAlmacenMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoOrdenAlmacen.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	OrdenAlmacen.objects.filter(pk=producto.orden.id).update(costo=costo)
+
+
+
+@receiver(post_save, sender=CostoEspecialAlmacen)  
+def producto_especial_almacen(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProductoMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProductoMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoAlmacenMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoOrdenAlmacen.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	OrdenAlmacen.objects.filter(pk=producto.orden.id).update(costo=costo)
+
+
+
+@receiver(post_delete, sender=CostoEspecialAlmacen)  
+def producto_especial_almacen_delete(sender, instance,  **kwargs):
+	producto = instance.producto
+	materials = InsumoProductoMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoProductoMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialAlmacen.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoAlmacenMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoOrdenAlmacen.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	OrdenAlmacen.objects.filter(pk=producto.orden.id).update(costo=costo)
 
 
 
 
+#update totals producto COTIZACION *____****
 
+@receiver(post_save, sender=InsumoCotizacionMod)  
+def producto_insumo_cotizacion(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoCotizacionMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoCotizacionMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+
+
+@receiver(post_delete, sender=InsumoCotizacionMod)  
+def producto_insumo_cotizacion_delete(sender, instance,  **kwargs):
+	producto = instance.producto
+	materials = InsumoCotizacionMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoCotizacionMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+
+@receiver(post_save, sender=CostoEspecialCotizacion)  
+def producto_especial_cotizacion(sender, instance, created,  **kwargs):
+	producto = instance.producto
+	materials = InsumoCotizacionMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoCotizacionMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+
+@receiver(post_delete, sender=CostoEspecialCotizacion)  
+def producto_especial_cotizacion_delete(sender, instance,  **kwargs):
+	producto = instance.producto
+	materials = InsumoCotizacionMod.objects.filter(producto=producto)
+	costoproducto = 0
+	for material in materials:
+		costotinsumo = material.insumo.costounitario * material.cantidad
+		InsumoCotizacionMod.objects.filter(pk=material.id).update(costototal=costotinsumo)
+		costoproducto = costoproducto + costotinsumo
+
+	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto)
+	costoespecial = 0
+	for costoe in costoespeciales:
+		costoespecial = costoespecial + costoe.costo
+
+	costototalp = costoespecial + costoproducto
+	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
 
 
 

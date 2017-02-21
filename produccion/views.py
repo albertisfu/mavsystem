@@ -453,7 +453,7 @@ def CotizacionProductoProduccion(request, orden):
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Ordenes > Detalle de cotizacion > Detalle de producto
-# /administrador/cotizacion/productos-cotizacion/pk/
+# /produccion/cotizacion/productos-cotizacion/pk/
 
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
@@ -466,6 +466,21 @@ def CotizacionProductoDetailProduccion(request, producto):
 	template =  get_template("detalle_producto_cotizacion.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
+
+	form1 = CostoEspecialCotizacionForm(initial={'producto':producto_orden.producto.pk})
+	form1.fields['producto'].widget = forms.HiddenInput()
+	if 'save' in request.POST:
+		form1 = CostoEspecialCotizacionForm(request.POST)
+		print request.POST
+		if form1.is_valid():
+			print 'valid'
+			form1.save()
+			return HttpResponseRedirect(reverse('CotizacionProductoDetailProduccion', args=(producto_orden.id,)))
+		else:
+			print 'error'
+			print form1.errors, len(form1.errors)
+
+
 
 	costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto_orden.producto)[:15]
 
@@ -481,7 +496,7 @@ def CotizacionProductoDetailProduccion(request, producto):
 		insumos = paginator.page(paginator.num_pages)
 
 	context = {
-		'pk':pk, 'orden':orden, 'producto_orden':producto_orden, 'costoespeciales':costoespeciales,'insumos':insumos,
+		'form1':form1,'pk':pk, 'orden':orden, 'producto_orden':producto_orden, 'costoespeciales':costoespeciales,'insumos':insumos,
 	}
 	
 	return HttpResponse(template.render(context, request))
@@ -569,7 +584,7 @@ def EditarProductoInsumoProduccionCotizacion(request, pk, producto):
 @group_required('Administrador', 'Produccion', 'Ventas')
 def EliminarCostoEspecialProduccionCotizacion(request, pk, producto):
 	try:
-		insumos = CostoEspecialAlmacen.objects.get(pk=pk)
+		insumos = CostoEspecialCotizacion.objects.get(pk=pk)
 	except:
 		#return HttpResponseRedirect(reverse('OrdenAlmacenProductoDetail', args=(producto,)))
 		raise Http404 
@@ -1665,7 +1680,7 @@ def OrdenAlmacenProductoDetail(request, producto):
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
-	form1 = CostoEspecialAlmacenForm(initial={'producto':producto_orden.pk})
+	form1 = CostoEspecialAlmacenForm(initial={'producto':producto_orden.producto.pk})
 	form1.fields['producto'].widget = forms.HiddenInput()
 	if 'save' in request.POST:
 		form1 = CostoEspecialAlmacenForm(request.POST)

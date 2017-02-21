@@ -117,6 +117,15 @@ class CostoEspecialAlmacenForm(forms.ModelForm):
 		}
 
 
+class CostoEspecialCotizacionForm(forms.ModelForm):
+	class Meta:
+		model = CostoEspecialCotizacion
+		fields = ('producto', 'concepto', 'costo')
+		widgets = {
+			'costo': forms.TextInput(),
+		}
+
+
 
 class comentarioOrdenForm(forms.ModelForm):
 	class Meta:
