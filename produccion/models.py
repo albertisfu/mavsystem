@@ -109,10 +109,16 @@ class Orden(models.Model):
 	nota = models.TextField(max_length=1000, blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
-
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class ProductoOrden(models.Model):
-	producto = models.ForeignKey(Producto)
+	#producto = models.ForeignKey(Producto)
+
+	content_type = models.ForeignKey(ContentType)
+	object_id = models.PositiveIntegerField()
+	content_object = GenericForeignKey('content_type', 'object_id')
+
 	orden = models.ForeignKey(Orden)
 	cantidad = models.FloatField()
 	color = models.CharField(max_length = 100, blank=True, null=True)
@@ -129,8 +135,8 @@ class ProductoOrden(models.Model):
 	  )
 	unidad = models.IntegerField(choices=unidad_options, default=pieza)
 	#costo = models.FloatField(default=0)
-	def __unicode__(self):
-		return self.producto.nombre
+	#def __unicode__(self):
+		#return self.content_object.nombre
 
 class ComentariosOrden(models.Model):
 	orden = models.ForeignKey(Orden)
@@ -405,7 +411,7 @@ def orden_nueva(sender, instance, created,  **kwargs):
 	message = get_template('email/emailtemplate.html').render(contexto)
 	msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	msg.content_subtype = 'html'
-	msg.send()
+	#msg.send()
 	print 'Correo enviado'
 	return HttpResponse('email_two')
 
@@ -433,7 +439,7 @@ def cotizacion_nueva(sender, instance, created,  **kwargs):
 	message = get_template('email/emailtemplate.html').render(contexto)
 	msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	msg.content_subtype = 'html'
-	msg.send()
+	#msg.send()
 	print 'Correo enviado'
 	return HttpResponse('email_two')
 
@@ -460,7 +466,7 @@ def ordenAlmacen_nueva(sender, instance, created,  **kwargs):
 	# message = get_template('email/emailtemplate.html').render(contexto)
 	# msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	# msg.content_subtype = 'html'
-	# msg.send()
+	# #msg.send()
 	#print 'Correo enviado'
 	return HttpResponse('email_two')
 
@@ -505,7 +511,7 @@ def orden_status(sender, instance, created, **kwargs):
 	message = get_template('email/emailtemplatestatus.html').render(contexto)
 	msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	msg.content_subtype = 'html'
-	msg.send()
+	#msg.send()
 	print 'Correo enviado'
 	return HttpResponse('email_two')
 
@@ -548,7 +554,7 @@ def cotizacion_status(sender, instance, created, **kwargs):
 	#message = get_template('email/emailtemplatestatus.html').render(contexto)
 	#msg = EmailMessage(subject, message, to=to, from_email=from_email)
 	#msg.content_subtype = 'html'
-	#msg.send()
+	##msg.send()
 	#print 'Correo enviado'
 	#return HttpResponse('email_two')
 
@@ -559,19 +565,17 @@ def cotizacion_status(sender, instance, created, **kwargs):
 def producto_orden(sender, instance, created,  **kwargs):
 	currentinstanceid = instance.id
 	productoorden = ProductoOrden.objects.get(pk=currentinstanceid)
-	print productoorden
 	#producto = Producto.objects.get(pk=productoorden.producto.pk)
-	insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
-	print insumos
-	for insumo in insumos:
-		CheckInsumoProducto.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
+	#insumos = InsumoProducto.objects.filter(producto=productoorden.producto)
+	#for insumo in insumos:
+	#	CheckInsumoProducto.objects.create(productorden=productoorden, insumo=insumo, estatus='Producto Creado' )
 
-	productos = ProductoOrden.objects.filter(orden=productoorden.orden)
-	costo=0
-	for producto in productos:
-		costo = costo+(producto.cantidad*producto.producto.costo)
+	#productos = ProductoOrden.objects.filter(orden=productoorden.orden)
+	#costo=0
+	#for producto in productos:
+	#	costo = costo+(producto.cantidad*producto.producto.costo)
 
-	Orden.objects.filter(pk=productoorden.orden.id).update(costo=costo)
+	#Orden.objects.filter(pk=productoorden.orden.id).update(costo=costo)
 
   
 @receiver(post_save, sender=InsumoProducto)  

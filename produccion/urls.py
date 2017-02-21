@@ -42,6 +42,9 @@ urlpatterns = [
     url(r'^administrador/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetail, name='CotizacionDetail'),
     url(r'^administrador/cotizacion/imprimir/(?P<orden>[-\w]+)/$', produccion_views.cotizacion_impresion, name='cotizacion_impresion'),
 
+    url(r'^ventas/cotizacion/lista-cotizaciones$', produccion_views.listaCotizacionesVentas, name='listaCotizacionesVentas'), 
+    url(r'^ventas/cotizacion/(?P<orden>[-\w]+)/$', produccion_views.CotizacionDetailVentas, name='CotizacionDetailVentas'),
+
     # Almacen
     url(r'^administrador/almacen/alta-orden$', produccion_views.altaOrdenAlmacen, name='altaOrdenAlmacen'),
     url(r'^administrador/almacen/lista-ordenes$', produccion_views.listaOrdenesAlmacen, name='listaOrdenesAlmacen'),

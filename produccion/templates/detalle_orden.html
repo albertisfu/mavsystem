@@ -186,33 +186,44 @@ Pendiente
                                                 <th>Codigo</th>
                                                 <th>Nombre</th>
                                                 <th>Unidad</th>
-                                                <th>Descripción</th>
-                                            
+                                              
                                                 <th>Color</th>
                                                 <th>Comentario</th>
                                                 <th>Foto</th>
                                                 <th>Cantidad</th>
-                                                <th>Costo Unitario</th>
-                                                <th>Costo Total</th>
+                                                <th>Costo U.P.</th>
+                                                <th>Costo T.P</th>
+                                                <th>Venta</th>
+                                                <th>Costo U.V.</th>
+                                                <th>Costo T.V</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for producto in productos %}
                                             <tr>
-                                                <td class="" class="pull-left">{{producto.producto.codigo}}</td>
+                                                <td class="" class="pull-left">{{producto.content_object.producto.codigo}}</td>
                                                 <td class="" class="pull-left">
-                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.producto.nombre}}</a>
+                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.content_object.producto.nombre}}</a>
                                                 </td>
                                                 <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
-                                                <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
+                                                
                                                 
                                                 <td class="" class="pull-left">{{producto.color|default:"----"}}</td>
                                                 <td class="" class="pull-left">{{producto.comentario|default:"----"}}</td>
                                                 <td class="" class="pull-left">
-                                                    <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.producto.file}}" width="100" height="100"></td>
+                                                    <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.content_object.producto.file}}" width="100" height="100"></td>
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
-                                                    <td class="" class="pull-left">${{producto.producto.costo|floatformat:2|intcomma}}</td>
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.producto.costo %}</td>
+                                                    <td class="" class="pull-left">${{producto.content_object.producto.costo|floatformat:2|intcomma}}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.costo %}</td>
+
+                                                     <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="button" id="{{producto.content_object.producto.pk}}" onClick="openmodal(this.id)">
+  Asignar
+</button></td>
+
+                                                     
+
+                                                    <td class="" class="pull-left">${{producto.content_object.producto.precio_venta|floatformat:2|intcomma}}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.precio_venta %}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>
@@ -280,4 +291,45 @@ Pendiente
                 </div>
             </div>
         </div>
+
+
+         <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModalventa" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Asignar Costo Venta</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Costo de Venta:</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <input type='hidden' name="pkp" id="pkp">
+                           <input type='text' name="precio" id="precio" class="form-control">
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+
+    function openmodal(id)
+{
+       $('#myModalventa').modal('show');
+        $('#pkp').val(id);
+        //edit(id)
+}
+
+</script>
+
         {% endblock %}

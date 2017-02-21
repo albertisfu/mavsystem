@@ -79,20 +79,15 @@
                                 </div>
 
 
-                                 <div class="panel-body text-center">
-                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Terminar Cotización</button>
-                                </div>
-
+                    
 
                             </div>
                             <div class="align-center">
-                                <a href="{% url 'CotizacionProductoProduccion' orden.pk %}" class="align-center">
-                                    <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
-                                </a>
-
+                               
                                 <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
+                                <button data-toggle="modal" data-target="#myModalventa" type="button" class="btn btn-primary">Generar orden de Venta</button>
                             </div>
                         </div>
 
@@ -137,15 +132,15 @@
                                             <tr>
                                                 <th>Codigo</th>
                                                 <th>Nombre</th>
-                                                <th>Unidad</th>
+                                               
                                                 <th>Descripción</th>
                                             
                                                 <th>Color</th>
                                                 <th>Comentario</th>
                                                 <th>Foto</th>
                                                 <th>Cantidad</th>
-                                                <th>Costo Unitario</th>
-                                                <th>Costo Total</th>
+                                                <th>Costo U.P.</th>
+                                                <th>Costo T.P.</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -155,7 +150,7 @@
                                                 <td class="" class="pull-left">
                                                     <a href="{% url 'CotizacionProductoDetailProduccion' producto.pk %}">{{producto.producto.nombre}}</a>
                                                 </td>
-                                                <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
+                                              
                                                 <td class="" class="pull-left">{{producto.producto.descripcion}}</td>
                                                 
                                                 <td class="" class="pull-left">{{producto.color|default:"----"}}</td>
@@ -207,10 +202,8 @@
 
 
 </div>
-
-
         <!-- MODAL -->
-        <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true">
+        <div class="modal inmodal fade" id="myModalventa" tabindex="-1" role="dialog"  aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -218,15 +211,16 @@
                             <span aria-hidden="true">&times;</span>
                             <span class="sr-only">Cerrar</span>
                         </button>
-                        <h3 class="modal-title">Terminar Cotización</h3>
+                        <h3 class="modal-title">Crear Orden de Venta</h3>
                     </div>
                     <div class="modal-body">
-                        <p>Confirme que ha terminado la cotización:</p>
+                        <p>Complete los siguientes Datos:</p>
                         <form id='formulario' method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
-                            <ul>{{form.as_p}}</ul>
+                            <ul>{{formventa.as_p}}</ul>
                               <div class="row align-center">
-                                <input type='submit' name="save" value='Confirmar' class="btn btn-w-m btn-primary"/>
+                                <input type='hidden' name="venta" value='venta'/>
+                                <input type='submit' name="venta" value='Confirmar' class="btn btn-w-m btn-primary"/>
                             </div>
 
                         </form>
