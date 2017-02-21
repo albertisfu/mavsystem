@@ -767,6 +767,23 @@ def producto_especial_almacen_delete(sender, instance,  **kwargs):
 
 #update totals producto COTIZACION *____****
 
+
+# ---------------------------------------------------------
+@receiver(post_save, sender=ProductoCotizacion)  
+def producto_cotizacion(sender, instance, created,  **kwargs):
+	currentinstanceid = instance.id
+	productoorden = ProductoCotizacion.objects.get(pk=currentinstanceid)
+	print productoorden
+
+	#update orden total
+	productos = ProductoCotizacion.objects.filter(orden=productoorden.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Cotizacion.objects.filter(pk=productoorden.orden.id).update(costo=costo)
+
+
 @receiver(post_save, sender=InsumoCotizacionMod)  
 def producto_insumo_cotizacion(sender, instance, created,  **kwargs):
 	producto = instance.producto
@@ -784,6 +801,15 @@ def producto_insumo_cotizacion(sender, instance, created,  **kwargs):
 
 	costototalp = costoespecial + costoproducto
 	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoCotizacion.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Cotizacion.objects.filter(pk=producto.orden.id).update(costo=costo)
+
 
 
 
@@ -805,6 +831,16 @@ def producto_insumo_cotizacion_delete(sender, instance,  **kwargs):
 	costototalp = costoespecial + costoproducto
 	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
 
+	#update orden total
+	productos = ProductoCotizacion.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Cotizacion.objects.filter(pk=producto.orden.id).update(costo=costo)
+
+
+
 
 @receiver(post_save, sender=CostoEspecialCotizacion)  
 def producto_especial_cotizacion(sender, instance, created,  **kwargs):
@@ -824,6 +860,14 @@ def producto_especial_cotizacion(sender, instance, created,  **kwargs):
 	costototalp = costoespecial + costoproducto
 	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
 
+	#update orden total
+	productos = ProductoCotizacion.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Cotizacion.objects.filter(pk=producto.orden.id).update(costo=costo)
+
 
 @receiver(post_delete, sender=CostoEspecialCotizacion)  
 def producto_especial_cotizacion_delete(sender, instance,  **kwargs):
@@ -842,6 +886,14 @@ def producto_especial_cotizacion_delete(sender, instance,  **kwargs):
 
 	costototalp = costoespecial + costoproducto
 	ProductoCotizacionMod.objects.filter(pk=producto.id).update(costo=costototalp)
+
+	#update orden total
+	productos = ProductoCotizacion.objects.filter(orden=producto.orden)
+	costo=0
+	for producto in productos:
+		costo = costo+(producto.cantidad*producto.producto.costo)
+
+	Cotizacion.objects.filter(pk=producto.orden.id).update(costo=costo)
 
 
 
