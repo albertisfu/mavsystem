@@ -38,9 +38,12 @@
                     <!-- panel body -->
                     <div class="panel-body">
                         <div class="row">
+
+                             {% if producto_orden.content_type.id == 24 %}  <!-- Producto Cotizacion -->
+
                             <div class="col-lg-3 align-center">
                                 <p>
-                                    <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.producto.file}}" style="width: 207px;" class="img-md1"></p>
+                                    <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.content_object.producto.file}}" style="width: 207px;" class="img-md1"></p>
                             </div>
                             <div class="col-lg-4">
                                 <div class="panel panel-default">
@@ -49,11 +52,11 @@
                                     <div class="panel-body">
                                         <dl class="dl-horizontal">
                                             <dt class="font-16">Codigo:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.codigo}}</dd>
+                                            <dd class="font-16">{{producto_orden.content_object.producto.codigo}}</dd>
                                             <dt class="font-16">Descripción:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.descripcion|default:"----"}}</dd>
+                                            <dd class="font-16">{{producto_orden.content_object.producto.descripcion|default:"----"}}</dd>
                                             <dt class="font-16">Categoría:</dt>
-                                            <dd class="font-16">{{producto_orden.producto.categoria|default_if_none:"----"}}</dd>
+                                            <dd class="font-16">{{producto_orden.content_object.producto.categoria|default_if_none:"----"}}</dd>
                                             <dt class="font-16">Cantidad:</dt>
                                             <dd class="font-16">{{producto_orden.cantidad}}</dd>
                                             <dt class="font-16">Color:</dt>
@@ -61,11 +64,45 @@
                                             <dt class="font-16">Comentario:</dt>
                                             <dd class="font-16">{{producto_orden.comentario|default:"----"}}</dd>
                                             <dt class="font-16">Costo Total:</dt>
-                                            <dd class="font-16">${{producto_orden.producto.costo|floatformat:2|intcomma}}</dd>
+                                            <dd class="font-16">${{producto_orden.content_object.producto.costo|floatformat:2|intcomma}}</dd>
                                         </dl>
                                     </div>
                                 </div>
                             </div>
+
+                            {% elif producto_orden.content_type.id == 13 %}  <!-- Producto Linea -->
+
+                                 <div class="col-lg-3 align-center">
+                                <p>
+                                    <img alt="{{producto_orden.producto.name}}" src="{{ MEDIA_URL }}{{producto_orden.content_object.file}}" style="width: 207px;" class="img-md1"></p>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading"> <i class="fa fa-info-circle"></i> Detalles
+                                    </div>
+                                    <div class="panel-body">
+                                        <dl class="dl-horizontal">
+                                            <dt class="font-16">Codigo:</dt>
+                                            <dd class="font-16">{{producto_orden.content_object.codigo}}</dd>
+                                            <dt class="font-16">Descripción:</dt>
+                                            <dd class="font-16">{{producto_orden.content_object.descripcion|default:"----"}}</dd>
+                                            <dt class="font-16">Categoría:</dt>
+                                            <dd class="font-16">{{producto_orden.content_object.categoria|default_if_none:"----"}}</dd>
+                                            <dt class="font-16">Cantidad:</dt>
+                                            <dd class="font-16">{{producto_orden.cantidad}}</dd>
+                                            <dt class="font-16">Color:</dt>
+                                            <dd class="font-16">{{producto_orden.color|default:"----"}}</dd>
+                                            <dt class="font-16">Comentario:</dt>
+                                            <dd class="font-16">{{producto_orden.comentario|default:"----"}}</dd>
+                                            <dt class="font-16">Costo Total:</dt>
+                                            <dd class="font-16">${{producto_orden.content_object.costo|floatformat:2|intcomma}}</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            {% endif %} 
 
                             <div class="col-lg-4">
                                 <div class="panel panel-default">
@@ -112,10 +149,8 @@
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Codigo</th>
-                                                <th>Estado</th>
-                                                <th>Fecha</th>
-                                                <th>Historial</th>
-                                                <th>Actualizar</th>
+                                    
+                                                
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -123,14 +158,8 @@
                                             <tr>
                                                 <td>{{insumo.insumo.nombre}}</td>
                                                 <td>{{insumo.insumo.codigo}}</td>
-                                                <td>{% get_obj insumo.pk producto_orden.pk %}</td>
-                                                <td>{% get_fecha insumo.pk producto_orden.pk %}</td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary" onClick="history({{producto_orden.pk}},{{insumo.pk}})">Historial</button>
-                                                </td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#myModal7" type="button" class="btn btn-primary" onClick="insumo({{insumo.pk}})">Actualizar</button>
-                                                </td>
+                                            
+                                               
                                             </tr>
                                             {% endfor %}
                                         </tbody>

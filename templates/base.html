@@ -87,12 +87,11 @@
     <!-- VENTAS-->
     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.is_superuser %}
     <li id="mainop">
-        <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">INVENTARIO</span> <span class="fa arrow"></span></a>
+        <a href="#"><i class="fa fa-arrow-circle-right"></i> <span class="nav-label">ALMACEN</span> <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
             <li><a href="{% url 'administradorInsumos' %}">Lista insumos</a></li>
             <li><a href="{% url 'administradorAlta' %}">Alta insumos</a></li>
-            <li><a href="{% url 'AddOrdenCompra' %}">Alta Orden Compra</a></li>
-            <li><a href="{% url 'listaOrdenesCompra' %}">Lista Ordenes Compra</a></li>
+            <li><a href="{% url 'listaOrdenesMaterial' %}">Lista Materiales Ordenes</a></li>
         </ul>
     </li>
     {% endif %}
@@ -105,20 +104,21 @@
             <li><a href="{% url 'altaProducto' %}">Alta producto línea</a></li>
             <li><a href="{% url 'listaProducto' %}">Lista de productos línea</a></li>
             <li><a href="{% url 'listaCotizacionesProduccion' %}">Lista de cotizaciones</a></li>
+            <li><a href="{% url 'altaOrdenAlmacen' %}">Nueva orden de Produccion</a></li>
+            <li><a href="{% url 'listaOrdenesAlmacen' %}">Lista de ordenes Produccion</a></li>
         </ul>
     </li>
     {% endif %}
 
 
-
-
     <!-- Elemento cobro menu lateral-->
     {% if user.groups.all.0.name == "Administrador" or user.groups.all.0.name == "Produccion" or user.groups.all.0.name == "Ventas" or user.is_superuser %}
     <li id="mainop6">
-        <a href="#"><i class="fa fa-cube"></i> <span class="nav-label">ALMACEN</span><span class="fa arrow"></span></a>
+        <a href="#"><i class="fa fa-cube"></i> <span class="nav-label">COMPRAS</span><span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
-            <li><a href="{% url 'altaOrdenAlmacen' %}">Nueva orden</a></li>
-            <li><a href="{% url 'listaOrdenesAlmacen' %}">Lista de ordenes</a></li>
+             <li><a href="{% url 'AddOrdenCompra' %}">Alta Orden Compra</a></li>
+            <li><a href="{% url 'listaOrdenesCompra' %}">Lista Ordenes Compra</a></li>
+            
         </ul>
     </li>
     {% endif %}

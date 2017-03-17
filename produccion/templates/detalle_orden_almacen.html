@@ -85,9 +85,7 @@
                                     <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
 
-                                <a href="#" class="align-center" target="_blank">
-                                    <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
-                                </a>
+                               <button type="button" class="btn btn-info btn-lg" id="{{orden.pk}}" onClick="confirmar(this.id)" ><i class="glyphicon glyphicon-ok"></i>&nbsp;Confirmar Materiales</button>
 
                             </div>
                         </div>
@@ -280,4 +278,46 @@ Pendiente
                 </div>
             </div>
         </div>
+
+
+
+         <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModalconfimar" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Confirmar Materiales</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Desea Confirmar estos Materiales?</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <input type='hidden' name="confirm" id="confirm">
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Confirmar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <script>
+    function confirmar(id)
+{
+       $('#myModalconfimar').modal('show');
+        $('#confirmar').val(id);
+        //edit(id)
+}
+
+
+        </script>
         {% endblock %}

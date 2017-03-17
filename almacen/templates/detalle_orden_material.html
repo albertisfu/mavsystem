@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+
+{% block title %} Detalle de orden de material {% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+{% load humanize %}
+
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.css">
+<link href="{% static "selectize/css/selectize.default.css" %}" rel="stylesheet">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/plugins/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="{% static "selectize/selectize.min.js"%}"></script>
+
+<script src="{% static "js/jquery.validate.js" %}"></script>
+<script src="{% static "js/additional-methods.js" %}"></script>
+<script src="{% static "js/autoNumeric.js" %}" type="text/javascript"></script>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-md-10">
+        <h2>Detalle de orden: {{orden.numero}}</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/entrada/orden_entrada/">Orden de Material</a>
+            </li>
+            <li class="active">
+                <strong>Detalle de orden</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="wrapper wrapper-content animated fadeInRight white-bg dashboard-header">
+        <div class="panel panel-success">
+            <div class="panel-heading"> <i class="fa fa-info-circle"></i> Información de orden de material
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <dl class="dl-horizontal">
+                            <dt>Numero:</dt>
+                            <dd>{{orden.numero}}</dd>
+                            <dt>Proveedor:</dt>
+                            <dd>{{orden.proveedor}}</dd>
+                            <dt>Orden:</dt>
+                            <dd>{{orden.orden.codigo}}</dd>
+                            <dt>Fecha de expedición:</dt>
+                            <dd>{{orden.fecha}}</dd>
+                             <dt>Estatus:</dt>
+                             <dd>{{orden.get_estatus_display}}</dd>
+                              <dt>¿Considerar IVA?:</dt>
+                             <dd>{{orden.iva}}</dd>
+                              <dt>Total:</dt>
+                             <dd>${{total|floatformat:2|intcomma}}</dd>
+                            <dt>IVA:</dt>
+                             <dd>${{calculoiva|floatformat:2|intcomma}}</dd>
+                             <dt>Total con IVA:</dt>
+                             <dd>${{totaliva|floatformat:2|intcomma}}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="doctorformstyle">
+                            <!-- AGRE -->
+
+                            {% if orden.estatus == 1 %}
+
+
+      
+
+
+{% endif %}
+
+                           
+                            <!-- listar conceptos -->
+                            <div class="panel-body">
+                                <div class="ibox-content">
+                                    <h1>Conceptos agregados:</h1> {% if insumos %} {% include 'conceptos_compra.html' %} {% else %} No se han agregado conceptos {% endif %}
+                                </div>
+                            </div>
+
+
+
+<button class="btn btn-info btn-w-m" type="button" onClick="submitconceptos()" id="boton-nota"><i class="fa fa-plus"></i>&nbsp;Ingresar Insumos</button>
+
+<p></p>
+<div class="alert alert-danger" id="mensaje1">
+                                Para ingresar un insumo selecciona por lo menos un concepto.
+                            </div>
+
+<div class="alert alert-success" id="mensaje2">
+                                Ya puedes ingresar insumos.
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+       <div class="wrapper wrapper-content">
+            <div class="row">
+                    <div class="col-md-12">
+            <a href="#">
+
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
+                </button>
+            </a>
+
+{% if orden.estatus == 1 %}
+
+            <button class="btn btn-info btn-w-m" type="button" id="{{orden.pk}}" onClick="openmodaledit(this.id)">
+                <i class="fa fa-pencil"></i> Modificar orden
+            </button>
+          
+
+            <button class="btn btn-success btn-facebook" type="button" id="{{orden.pk}}" onClick="confirmar(this.id)">
+                <i class="fa fa-check-circle-o"></i> Confirmar orden
+            </button>
+    
+
+  <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
+  Cancelar
+</button>
+
+
+{% elif orden.estatus == 2 %}
+
+          
+
+            <a href="{% url 'orden_compra_impresion' orden.pk %}" target="_blank"><button type="button" class="btn btn-warning" id="{{orden.pk}}" onClick="#">
+<i class="fa fa-print"></i> Imprimir información
+</button></a>
+
+  <button class="btn btn-w-m btn-danger" type="button" id="{{orden.pk}}" onClick="cancelo(this.id)"> <i class="glyphicon glyphicon-remove-circle" ></i>
+  Cancelar
+</button>
+
+
+
+            {% endif %}
+
+
+
+
+
+
+        
+            <!-- AGRE  Termina -->
+
+          </div>
+        </div>
+      </div>
+           
+        </div>
+    </div>
+  </div>
+
+  <form id="formulario-insumos" method="post" enctype="multipart/form-data"  aria-hidden="true">
+                          {% csrf_token %}
+    <input id="id_conceptos" name="conceptos" type="hidden" value="1">
+                        
+                        </form>
+
+
+    <!-- modal editar entrada -->
+    <div class="modal inmodal fade" id="myModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-m">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Cerrar</span>
+                    </button>
+                    <h3 class="modal-title">Editar Orden de Compra</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="edit-order">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal agregar concepto -->
+    <div class="modal inmodal fade" id="myModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-m">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Cerrar</span>
+                    </button>
+                    <h3 class="modal-title">Agregar nuevo concepto</h3>
+                </div>
+                <div class="modal-body">
+                    <p>Datos de concepto a agregar:</p>
+                    <div class="doctorformstyle">
+                        <form id='formulario-modal-product' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{form2.as_p}}</ul>
+                        
+                            <div class="row align-center margin-center ">
+                                <input type='submit' name="save1" value='Guardar' class="btn btn-w-m btn-primaryx" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal editar concepto -->
+    <div class="modal inmodal fade" id="myModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-m">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">Cerrar</span>
+                    </button>
+                    <h3 class="modal-title">Editar concepto</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="edit-concepto">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script>
+
+
+
+
+        $(document).ready(function() {
+            $('#boton-nota').attr('disabled', true);
+            $("#mensaje2").css("display", "none");
+            var conceptos = [];
+
+
+
+$(':checkbox').change(function() {
+        if($(this).is(":checked")) {
+            conceptos.push(this.name)
+            $('#boton-nota').prop('disabled', false);
+            $("#mensaje2").css("display", "block");
+            $("#mensaje1").css("display", "none");
+           $('#id_conceptos').val(conceptos);
+
+
+        }
+
+        if(!$(this).is(':checked')) {
+            $('#boton-nota').attr('disabled', true);
+            $("#mensaje2").css("display", "none");
+            $("#mensaje1").css("display", "block");
+            conceptos.splice( $.inArray(this.name,conceptos) ,1 );
+      
+           $('#id_conceptos').val(conceptos);
+        }
+
+      
+    });
+
+
+});
+
+
+
+
+function cancelo(id)
+
+{
+
+var retVal = confirm("Desea Cancelar la Orden");
+               if( retVal == true ){
+                  
+  $.ajax({
+                                 type: "POST",
+                                 url: "/administrador/orden_compra_detalle/"+id+"/",
+                                 data: { 
+                                     'cancel':id,
+                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
+                                 },
+                                 success: function(response){
+                                
+                                   location.reload(); 
+                 
+                           
+                                 }
+                             });
+
+
+                  return true;
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+
+
+
+function submitconceptos()
+
+{
+
+var retVal = confirm("Desea Ingresar los conceptos seleccionados");
+               if( retVal == true ){
+                  $('#formulario-insumos').submit();
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+
+
+
+    
+
+
+
+function confirmar(id)
+
+{
+
+var retVal = confirm("Desea Confirmar la Orden");
+               if( retVal == true ){
+                  
+  $.ajax({
+                                 type: "POST",
+                                 url: "/administrador/orden_compra_detalle/"+id+"/",
+                                 data: { 
+                                     'confirmar':id,
+                                     csrfmiddlewaretoken: '{{ csrf_token }}' 
+                                 },
+                                 success: function(response){
+                                  
+                                   location.reload(); 
+                 
+                           
+                                 }
+                             });
+
+
+                  return true;
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+   
+
+
+
+
+//// AGRE
+
+function imprimir(id)
+
+{
+
+var retVal = confirm("Desea Imprimir la Orden");
+               if( retVal == true ){
+ 
+window.open('/entrada/pdf/'+id, '_blank');
+
+                  return true;
+               }
+               else{
+                  
+                  return false;
+               }
+
+}
+
+
+
+//// Termina AGRE
+
+
+
+$('#id_insumo').selectize({
+    create: false,
+    sortField: 'text'
+});
+
+
+
+
+    function edit(id)
+{
+ //alert('carga');
+        //e.preventDefault();
+        $('#edit-order').load("/administrador/modificar_orden_compra/"+id+"/");
+        //var oButton = document.getElementsByTagName("button");
+        //oButton[0].setAttribute("id", id);
+       //$("button").attr("id",id);
+
+        //var id = $(this).attr('id');
+      
+        //return false;
+
+}
+
+
+
+    function openmodaledit(id)
+{
+       $('#myModal2').modal('show');
+      edit(id)
+
+        //edit(id)
+}
+
+
+
+
+</script>
+
+
+
+<script>
+// just for the demos, avoids form submit
+jQuery.validator.setDefaults({
+ ignore: [],
+});
+
+jQuery(document).ready(function(){
+
+$("#formulario-modal-product").validate({
+  rules: {
+    producto:"required",
+    cantidad:"required",
+    preciooption:"required",
+    precio:"required",
+
+},
+                messages: {
+                    producto: "Por favor seleccione un Producto",
+                    cantidad:"Por favor ingrese la cantidad",
+                    precio:"Por favor seleccione precio",
+                },
+                errorElement: "em",
+                errorPlacement: function ( error, element ) {
+                    // Add the `help-block` class to the error element
+                    error.addClass( "text-center help-block alert alert-danger" );
+
+                    if ( element.prop( "type" ) === "select" ) {
+                        error.insertAfter( ".errorplace" );
+                    } else {
+                         error.insertAfter(element);
+                    }
+                },
+           
+            });
+
+  } );
+</script>
+
+
+
+
+
+{% endblock %}

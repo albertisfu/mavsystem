@@ -33,6 +33,13 @@ urlpatterns = [
     url(r'^administrador/ordenes_compra_lista$', OrdenesCompraListView.as_view(), name='search-orders_compra'),
     url(r'^administrador/search_orden_compra/$', SearchOrdenesCompraListView.as_view(), name='search_orden_compra'),
 
+
+    #Orden de Materiales Almacen
+
+      url(r'^administrador/almacen/listas-ordenes-materiales$', almacen_views.listaOrdenesMaterial, name='listaOrdenesMaterial'),
+    url(r'^administrador/almacen/orden-material/(?P<pk>[-\w]+)/$', almacen_views.OrdenMaterialDetalle, name='OrdenMaterialDetalle'),
+
+
     url(r'', include ('panel.urls')),
    ]
 

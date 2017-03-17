@@ -36,7 +36,7 @@
                         <h2>{{orden.nombre}}</h2>
                     </div>
                     <div class="panel-body">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="panel panel-default">
                                 <div class="panel-heading"> <i class="fa fa-info-circle"></i>
                                     Información de orden
@@ -80,7 +80,12 @@
                                     </dl>
                                 </div>
                             </div>
-                            <div class="align-center">
+                           
+                        </div>
+
+                        <div class="col-md-6">
+
+                             <div class="align-center">
                                 <a href="{% url 'OrdenProducto' orden.pk %}" class="align-center">
                                     <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
@@ -89,8 +94,17 @@
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
 
+                            
+                                    <button type="button" class="btn btn-info btn-lg" id="{{orden.pk}}" onClick="confirmar(this.id)" ><i class="glyphicon glyphicon-ok"></i>&nbsp;Confirmar Venta</button>
+
+
+                                
+
                             </div>
-                        </div>
+
+
+</div>
+
 <!-- 
                         <div class="col-md-3">
 
@@ -193,14 +207,16 @@ Pendiente
                                                 <th>Cantidad</th>
                                                 <th>Costo U.P.</th>
                                                 <th>Costo T.P</th>
-                                                <th>Venta</th>
+                                                 <th>Asignar</th>
                                                 <th>Costo U.V.</th>
                                                 <th>Costo T.V</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for producto in productos %}
-                                            <tr>
+                                             {% if producto.content_type.id == 24 %}
+
+                                             <tr>
                                                 <td class="" class="pull-left">{{producto.content_object.producto.codigo}}</td>
                                                 <td class="" class="pull-left">
                                                     <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.content_object.producto.nombre}}</a>
@@ -215,16 +231,51 @@ Pendiente
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
                                                     <td class="" class="pull-left">${{producto.content_object.producto.costo|floatformat:2|intcomma}}</td>
                                                     <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.costo %}</td>
-
-                                                     <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="button" id="{{producto.content_object.producto.pk}}" onClick="openmodal(this.id)">
-  Asignar
-</button></td>
+                                                     <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="button" id="{{producto.content_object.producto.pk}}" onClick="openmodal(this.id)">Asignar</button></td>
 
                                                      
-
                                                     <td class="" class="pull-left">${{producto.content_object.producto.precio_venta|floatformat:2|intcomma}}</td>
+
+                                                  
                                                     <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.precio_venta %}</td>
                                             </tr>
+
+
+
+                                             {% elif producto.content_type.id == 13 %} 
+                                             <tr>
+                                                <td class="" class="pull-left">{{producto.content_object.codigo}}</td>
+                                                <td class="" class="pull-left">
+                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.content_object.nombre}}</a>
+                                                </td>
+                                                <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
+                                                
+                                                
+                                                <td class="" class="pull-left">{{producto.color|default:"----"}}</td>
+                                                <td class="" class="pull-left">{{producto.comentario|default:"----"}}</td>
+                                                <td class="" class="pull-left">
+                                                    <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.content_object.file}}" width="100" height="100"></td>
+                                                    <td class="" class="pull-left">{{producto.cantidad}}</td>
+                                                    <td class="" class="pull-left">${{producto.content_object.costo|floatformat:2|intcomma}}</td>
+
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.costo %}</td>
+
+                                                     
+                                                   <td class="" class="pull-left">--</td>
+
+                                                    <td class="" class="pull-left">${{producto.content_object.precio_venta|floatformat:2|intcomma}}</td>
+
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.precio_venta %}</td>
+
+
+                                                   
+                                            </tr>
+
+
+
+                                             {% endif %}  
+
+                                            
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -321,7 +372,37 @@ Pendiente
             </div>
         </div>
 
+         <!-- MODAL -->
+        <div class="modal inmodal fade" id="myModalconfimar" tabindex="-1" role="dialog"  aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                            <span class="sr-only">Cerrar</span>
+                        </button>
+                        <h3 class="modal-title">Confirmar Venta</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Desea Confirmar esta Venta?</p>
+                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <input type='hidden' name="confirm" id="confirm">
+                              <div class="row align-center">
+                                <input type='submit' name="save" value='Confirmar' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
 <script>
+
+
+
 
     function openmodal(id)
 {
@@ -329,6 +410,14 @@ Pendiente
         $('#pkp').val(id);
         //edit(id)
 }
+
+    function confirmar(id)
+{
+       $('#myModalconfimar').modal('show');
+        $('#confirmar').val(id);
+        //edit(id)
+}
+
 
 </script>
 

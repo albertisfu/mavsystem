@@ -64,7 +64,7 @@ urlpatterns = [
     url(r'^administrador/cotizaciones_lista$', CotizacionesListView.as_view(), name='search-orders'),
     url(r'^administrador/buscar/cotizacion/$', SearchCotizacionesListView.as_view(), name='search_cotizacion_url'),
 
-		# clientes
+	# clientes
 		url(r'^administrador/lista-clientes$', produccion_views.listaClientes, name='listaClientes'),
 		url(r'^administrador/alta-cliente$', produccion_views.altaCliente, name='altaCliente'),  
 

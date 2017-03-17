@@ -933,12 +933,53 @@ def OrdenDetail(request, orden):
 		productocot.save()
 		total = 0
 		for productove in productos:
-			total = (productove.content_object.producto.precio_venta * productove.cantidad) + total
+			if productove.content_type_id == 13: #producto linea
+
+				total = (productove.content_object.precio_venta * productove.cantidad) + total
+
+			elif productove.content_type_id == 24: #producto cotizacion
+
+				total = (productove.content_object.producto.precio_venta * productove.cantidad) + total
 			orden.costo = total
 			orden.save()
 
 
 		print 'pkp'
+
+	if 'confirm' in request.POST:
+		orden.estatus = 2
+		orden.save()
+		ordenal=OrdenAlmacen.objects.create(nombre = orden.nombre, codigo = orden.codigo, descripcion=orden.descripcion, cliente=orden.cliente, fecha_entrega=orden.fecha_entrega, estatus = 1, usuario=request.user, costo=orden.costo, fecha_entrega_almacen=orden.fecha_entrega_almacen, nota=orden.nota)
+
+		for producto in productos:
+			if producto.content_type_id==13: #si es un producto de linea
+				productomod = ProductoAlmacenMod.objects.create(orden=ordenal, producto=producto.content_object, nombre=producto.content_object.nombre, codigo=producto.content_object.codigo, descripcion=producto.content_object.descripcion, categoria=producto.content_object.categoria, costo=producto.content_object.costo, precio_venta=producto.content_object.precio_venta, file=producto.content_object.file)
+				insumos = InsumoProducto.objects.filter(producto=producto.content_object)
+				costos_especiales = CostoEspecial.objects.filter(producto=producto.content_object)
+				for costo in costos_especiales:
+					costomod = CostoEspecialAlmacen.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
+
+				for insumo in insumos:
+					# crear insumo para producto duplicado
+					insumomod = InsumoProductoMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
+					print insumomod
+				productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=ordenal, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
+
+
+			elif producto.content_type_id==24: #si es un producto de cotizacion
+				productomod = ProductoAlmacenMod.objects.create(orden=ordenal, producto=producto.content_object.producto.producto, nombre=producto.content_object.producto.nombre, codigo=producto.content_object.producto.codigo, descripcion=producto.content_object.producto.descripcion, categoria=producto.content_object.producto.categoria, costo=producto.content_object.producto.costo, precio_venta=producto.content_object.producto.precio_venta, file=producto.content_object.producto.file)
+				insumos = InsumoCotizacionMod.objects.filter(producto=producto.content_object.producto)
+				costos_especiales = CostoEspecialCotizacion.objects.filter(producto=producto.content_object.producto)
+				for costo in costos_especiales:
+					costomod = CostoEspecialAlmacen.objects.create(producto=productomod, concepto=costo.concepto, costo=costo.costo)
+
+				for insumo in insumos:
+					# crear insumo para producto duplicado
+					insumomod = InsumoProductoMod.objects.create(insumo=insumo.insumo, producto=productomod, cantidad=insumo.cantidad, costototal=insumo.costototal)
+					print insumomod
+				productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=ordenal, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
+
+		print 'confirm creacion'
 
 	comentarios = ComentariosOrden.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)
@@ -1006,7 +1047,8 @@ def OrdenProducto(request, orden):
 		print cantidad
 		productopk = request.POST['producto']
 		producto = get_object_or_404(Producto, pk = productopk) 
-		insumos = InsumoProducto.objects.filter(producto=producto)
+		
+		"""insumos = InsumoProducto.objects.filter(producto=producto)
 		for insumo in insumos:
 			print insumo
 			total_insumos_producto = insumo.cantidad * int(cantidad)
@@ -1021,9 +1063,10 @@ def OrdenProducto(request, orden):
 				Insumo.objects.filter(pk=insumo.insumo.pk).update(stock=newstock)
 				post_save.send(Insumo, instance=insumo.insumo, created=False) #signal update costo stock
 				print 'no alcanza'
+			"""
 
 		#print producto
-		productoorden= ProductoOrden.objects.create(producto=producto, orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		productoorden= ProductoOrden.objects.create(content_type_id =13 , object_id=producto.id , orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
 		print 'guardado'
 		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
@@ -1039,13 +1082,24 @@ def OrdenProductoDetail(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
 	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
-	insumos = InsumoProducto.objects.filter(producto=producto_orden.producto)
-	checkinsumos = CheckInsumoProducto.objects.filter(productorden=producto_orden)
+	if producto_orden.content_type_id==13: #producto linea
+		
+		insumos = InsumoProducto.objects.filter(producto=producto_orden.content_object)
+		costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.content_object)[:15]
+
+	if producto_orden.content_type_id==24: #producto de coizacion
+		
+
+		insumos = InsumoCotizacionMod.objects.filter(producto=producto_orden.content_object.producto)
+		costoespeciales = CostoEspecialCotizacion.objects.filter(producto=producto_orden.content_object.producto)[:15]
+
+
+	#checkinsumos = CheckInsumoProducto.objects.filter(productorden=producto_orden)
 	template =  get_template("detalle_producto_orden.html")
 	#form = OrdenProductoForm(initial={'orden':orden})
 	#form.fields['orden'].widget = forms.HiddenInput()
 
-	costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.producto)[:15]
+	
 
 	form = estatusProductoInsumo(initial={'usuario':current_user, 'productorden':producto_orden})
 	form.fields['usuario'].widget = forms.HiddenInput()
@@ -1077,7 +1131,7 @@ def OrdenProductoDetail(request, producto):
 
 
 	context = {
-		'orden':orden, 'producto_orden':producto_orden, 'insumos':insumos, 'checkinsumos':checkinsumos, 'form':form, 'costoespeciales':costoespeciales,
+		 'producto_orden':producto_orden, 'insumos':insumos, 'form':form, 'costoespeciales':costoespeciales,
 	}
 	
 	return HttpResponse(template.render(context, request))
@@ -1676,7 +1730,7 @@ def listaOrdenesAlmacen(request):
 # ---------------------------------------------------------
 # Almacen > Detalle de orden
 
-
+from almacen.models import OrdenMateriales, OrdenMaterialesConcepto
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenAlmacenDetail(request, orden):
@@ -1698,6 +1752,23 @@ def OrdenAlmacenDetail(request, orden):
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
+
+
+	if 'confirm' in request.POST:
+		#orden.estatus = 2
+		#orden.save()
+		ordenal=OrdenMateriales.objects.create(orden=orden, numero = orden.codigo, estatus = 1, usuario=request.user)
+
+		for producto in productos:
+			insumos = InsumoProductoMod.objects.filter(producto=producto.producto)
+				
+			for insumo in insumos:
+				# crear insumo para producto duplicado
+				material = OrdenMaterialesConcepto.objects.create(insumo=insumo.insumo, orden=ordenal, cantidad=insumo.cantidad)
+				
+		print 'confirm creacion'
+
+
 
 	comentarios = ComentariosOrdenAlmacen.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)

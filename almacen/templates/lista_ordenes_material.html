@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Ordenes Compra{% endblock %}
+
+{% block content %}
+<div class="row  border-bottom white-bg dashboard-header">
+    <h2>Lista de ordenes Materiales</h2>
+
+    <div class="col-lg-8">
+        <ol class="breadcrumb">
+            <li>
+                <a href="#">Ordenes</a>
+            </li>
+            <li class="active"> <strong>Lista de ordenes Materiales</strong>
+            </li>
+        </ol>
+    </div>
+
+</div>
+
+<!-- Area contenido -->
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content p-md">
+
+                    <!-- BOTON Y BARRA DE BUSQUEDA-->
+                    <div class="row">
+                      
+
+                        <div class="col-lg-4 pull-right">
+                           
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <section id="ordenes">
+
+                        <div class="row">
+                            <div class="col-lg-12 align-center">
+                                <br>
+                                <h3>Filtros</h3>
+                                <form action="" method="get" class="formfiltros">
+                                    <!-- formulario de filtros y orden -->
+                                    <ul class="elementsinline">
+                                        {{ filters.form.as_ul}}
+                                        <input type="submit" class="btn btn-w-m btn-primary"/>
+                                    </ul >
+                                </form>
+                                <br></div>
+                        </div>
+                        {% if ordenes %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h2>Ordenes</h2>
+                            </div>
+                            <div class="panel-body">
+                                <div class="ibox-content">
+
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th class="tablecolumnhosting"># Orden</th>
+                                               
+                                                <th>ID Orden</th>
+                                                <th>Fecha Expedición</th>
+                                                <th>Estatus</th>
+                                                <th>Usuario</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for orden in ordenes %}
+                                            <tr>
+                                            <td class="tablecolumnhosting"><a href="{% url "OrdenMaterialDetalle" orden.pk %}">{{orden.numero}}</a></td>
+
+                                              
+                                               
+                                                <td>{{orden.orden.codigo}}</td>
+                                
+                                                <td>{{orden.fecha}}</td>
+                                                <td>{{orden.get_estatus_display}}</td>
+                                                <td>{{orden.usuario|default_if_none:"----"}}</td>
+
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning payments">No hay Ordenes.</div>
+                        {% endif %}
+                        
+                        <div class="paginationbox">
+                            <div class="pagination">
+                                <!-- paginacion-->
+                                <span class="step-links">
+                                    {% if ordenes.has_previous %}
+                                    <a href="?page={{ ordenes.previous_page_number }}">
+                                        << Anterior</a>
+                                            {% endif %}
+                                            <span class="current">
+                                                Pagina {{ ordenes.number }} de {{ ordenes.paginator.num_pages }}.
+                                            </span>
+                                            {% if ordenes.has_next %}
+                                            <a href="?page={{ ordenes.next_page_number }}">Siguiente>></a>
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+        </div>
+        {% endblock %}

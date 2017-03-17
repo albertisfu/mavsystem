@@ -481,7 +481,6 @@ def listaOrdenesCompra(request):
 
 
 
-
 # ---------------------------------------------------------
 # ---------------------------------------------------------
 # Ordenes > Lista de ordenes > buscador
@@ -532,8 +531,7 @@ def OrdenCompraDetalle(request, pk):
 	#paginate_by = 2 # Elementos por pagina
 	orden = get_object_or_404(OrdenCompra, pk = pk)
 	form2 = addinsumo(initial={'orden':orden})
-	form2.fields['orden'].widget = forms.HiddenInput()
-
+	#form2.fields['orden'].widget = forms.HiddenInput()
 
 	if 'save1' in request.POST:
 		form2 = addinsumo(request.POST)
@@ -544,7 +542,7 @@ def OrdenCompraDetalle(request, pk):
 			return HttpResponseRedirect(reverse('OrdenCompraDetalle', args=(orden.id,)))
 		else:
 			print 'error'
-			print form.errors, len(form.errors)
+			print form2.errors, len(form2.errors)
 	insumos = OrdenConcepto.objects.filter(orden=orden.id)
 	total = 0
 	for insumo in insumos:
@@ -701,4 +699,111 @@ def modificar_orden_compra(request, pk):
 		form.fields['numero'].widget = forms.HiddenInput()
 		return render(request, 'editar_order_compra.html', {'form': form, 'post':post})
 
+
+
+
+
+# ---------------------------------------------------------
+# ---------------------------------------------------------
+# /administrador/lista_ordenes_material
+
+
+class OrdenesMaterialFilter(django_filters.FilterSet):
+	class Meta:
+		model = OrdenCompra
+		fields = { #creamos los filtros necesarios 
+        		  'estatus':['exact'],
+        		 }
+		order_by = (#definimos los terminos de orden y su alias, se coloca un - para indicar orden descendente
+				    ('-fecha', 'Fecha menor'),
+				    ('fecha', 'Fecha mayor'),
+				    )
+
+		
+
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def listaOrdenesMaterial(request):
+	filters = OrdenesMaterialFilter(request.GET, queryset=OrdenMateriales.objects.all()) 
+	paginator = Paginator(filters, 10)
+	page = request.GET.get('page')
+	try:
+		ordenes= paginator.page(page)
+	except PageNotAnInteger:
+        # Si la pagina no es un entero muestra la primera pagina
+		ordenes = paginator.page(1)
+	except EmptyPage:
+        # si la pagina esta fuera de rango, muestra la ultima pagina
+		ordenes = paginator.page(paginator.num_pages)
+	template =  get_template("lista_ordenes_material.html")
+	context = {
+		'ordenes': ordenes,'filters': filters,
+	}
+	
+	return HttpResponse(template.render(context, request))
+
+
+
+
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Ver a detalle de orden de compra
+
+@login_required
+@group_required('Administrador', 'Produccion')
+def OrdenMaterialDetalle(request, pk):
+	#paginate_by = 2 # Elementos por pagina
+	orden = get_object_or_404(OrdenMateriales, pk = pk)	
+	insumos = OrdenMaterialesConcepto.objects.filter(orden=orden.id)
+	for insumo in insumos:
+		print insumo
+	total = 0
+	for insumo in insumos:
+		total = total + insumo.total
+
+	totaliva = 0
+	if orden.iva ==True:
+		calculoiva = total*settings.IVA
+		totaliva = calculoiva+total
+
+	else:
+		calculoiva = 0
+
+	if 'cancel' in request.POST: #cancel order
+		orden.estatus = 4
+		orden.save()
+
+	if 'confirmar' in request.POST: #cancel order
+		print 'confirmar'
+		orden.estatus = 2
+		orden.save()
+	print request.POST
+
+	if 'conceptos' in request.POST:
+		data = request.POST.copy()
+		conceptos = request.POST.get('conceptos')
+		if not conceptos:
+			conceptoslist = []
+		else:
+			conceptoslist = conceptos.split(",")
+
+		if len(conceptoslist)>0:
+			conceptos = []
+ 			for concepto in conceptoslist:
+				if concepto != '':
+					concept = get_object_or_404(OrdenConcepto, pk = int(concepto))
+					OrdenConcepto.objects.filter(pk = int(concepto)).update(recibido=True)
+					insumo = Insumo.objects.get(pk=concept.insumo.pk)
+					print insumo
+					print insumo.stock
+					currentstock = insumo.stock
+					print currentstock
+					newstock = currentstock + concept.cantidad
+					print newstock
+					costostock = insumo.costounitario * newstock
+					Insumo.objects.filter(pk=concept.insumo.pk).update(stock=newstock, costostock=costostock)
+                  
+				
+	return render(request, 'detalle_orden_material.html', {'calculoiva':calculoiva,'totaliva':totaliva,'total':total,'orden': orden, 'insumos':insumos})
 

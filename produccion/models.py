@@ -166,9 +166,7 @@ class CheckInsumoProducto(models.Model):
 	fecha = models.DateTimeField(default=timezone.now)
 	estatus = models.CharField(max_length = 140)
 	usuario = models.ForeignKey(User, blank=True, null=True)
-	def __unicode__(self):
-		return self.productorden.producto.nombre
-
+	
 # ------------------------------------------
 # Cotizacion
 

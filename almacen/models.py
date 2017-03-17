@@ -107,12 +107,44 @@ class OrdenCompra(models.Model):
 
 class OrdenConcepto(models.Model):
 	insumo = models.ForeignKey(Insumo)
-	orden = models.ForeignKey(Orden)
+	orden = models.ForeignKey(OrdenCompra)
 	cantidad = models.FloatField()
 	total = models.FloatField(default=0)
 	recibido = models.BooleanField(default=False)
+
+
+from produccion.models import OrdenAlmacen
+
+class OrdenMateriales(models.Model):
+	numero = models.IntegerField(blank=True, null=True)
+	orden = models.ForeignKey(OrdenAlmacen)
+	fecha = models.DateField(default=timezone.now)
+	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
+	total = models.FloatField(default=0)
+	creada = 1
+	pendiente = 2
+	ingreso = 3
+	cancelada = 4
+	estatus_options = (
+	      (creada, 'Creada'),
+	      (pendiente, 'Pendiente'),
+	      (ingreso, 'Ingreso'),
+	      (cancelada, 'Cancelada'),
+	  )
+	estatus = models.IntegerField(choices=estatus_options, default=creada)
+	iva = models.BooleanField(default=False)
 	def __unicode__(self):
-		return self.producto.nombreprod
+		return self.proveedor.nombre
+
+
+class OrdenMaterialesConcepto(models.Model):
+	insumo = models.ForeignKey(Insumo)
+	orden = models.ForeignKey(OrdenMateriales)
+	cantidad = models.FloatField()
+	total = models.FloatField(default=0)
+	pedir = models.BooleanField(default=False)
+
+
 
 from django.shortcuts import get_object_or_404
 @receiver(post_save, sender=OrdenConcepto)  
@@ -120,6 +152,15 @@ def multi_concepto(sender, instance, created,  **kwargs):
 	concepto = get_object_or_404(OrdenConcepto, pk = instance.id)
 	total = concepto.cantidad*float(concepto.insumo.costounitario)
 	OrdenConcepto.objects.filter(pk=instance.id).update(total=total)
+
+
+
+
+@receiver(post_save, sender=OrdenMaterialesConcepto)  
+def multi_concepto(sender, instance, created,  **kwargs):
+	concepto = get_object_or_404(OrdenMaterialesConcepto, pk = instance.id)
+	total = concepto.cantidad*float(concepto.insumo.costounitario)
+	OrdenMaterialesConcepto.objects.filter(pk=instance.id).update(total=total)
 
 
 
@@ -190,7 +231,7 @@ def nuevo_insumo(sender, instance, created,  **kwargs):
 			costototalp = costoespecial + costoproducto
 			Producto.objects.filter(pk=producto.id).update(costo=costototalp)
 
-			productosorden = ProductoOrden.objects.filter(producto=producto)
+			productosorden = ProductoOrden.objects.filter(content_type_id = 13, object_id=producto.id)
 
 			for productorder in productosorden:
 				orders = Orden.objects.filter(productoorden__id=productorder.id)

@@ -7,7 +7,7 @@
     <table class="table table-hover">
         <thead>
             <tr>
-               <th>Ingresar</th>
+             
                 <th>Nombre</th>
                 <th>Cantidad</th>
                 <th>Precio</th>
@@ -21,13 +21,7 @@
         <tbody>
             {% for insumo in insumos %}
             <tr>
-               {% if insumo.recibido == False %}
-                 <td><input id="concept" type="checkbox" name="{{insumo.pk}}"></td>
-                 {% else %}
-                  <td>Recibido</td>
-
-                 {%endif %}
-
+               
 
 
                 <td>{{insumo.insumo}}</td>
