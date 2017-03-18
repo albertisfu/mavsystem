@@ -215,7 +215,7 @@
                     </div>
                     <div class="modal-body">
                         <p>Complete los siguientes Datos:</p>
-                        <form id='formulario' method='post' enctype='multipart/form-data'>
+                        <form id='formulario-ventas' method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
                             <ul>{{formventa.as_p}}</ul>
                               <div class="row align-center">
@@ -229,4 +229,28 @@
                 </div>
             </div>
         </div>
+
+<script type="text/javascript">
+    $(function() {
+        var myforms = $("#formulario-ventas");
+            myforms.each(function(i) {
+            var myform = myforms.eq(i);
+
+            var myfields = $("input", myform);
+            myfields.each(function(i) {
+            var myfield = myfields.eq(i);
+            myfield.addClass("form-control");
+            });
+
+            var myfields = $("select", myform);
+            myfields.each(function(i) {
+            var myfield = myfields.eq(i);
+            myfield.addClass("form-control");
+            });
+
+            });
+    });
+    $('#id_nota').addClass('form-control');
+</script>
+
         {% endblock %}
