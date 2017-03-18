@@ -137,6 +137,14 @@ class comentarioCotizacionForm(forms.ModelForm):
 		model = ComentariosCotizacion
 		fields = ('orden', 'comentario', 'estatus', 'usuario')
 
+class printdescCotizacion(forms.ModelForm):
+	class Meta:
+		model = Cotizacion
+		fields = ('printdesc',)
+		labels = {
+			'printdesc': ('Descripción para orden de impresión'),
+		}
+
 class comentarioOrdenAlmacenForm(forms.ModelForm):
 	class Meta:
 		model = ComentariosOrdenAlmacen

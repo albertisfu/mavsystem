@@ -23,6 +23,27 @@
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
+
+{% for message in messages %}
+<p></p>
+            {% if 'success' in message.tags %}
+            <div class="alert alert-success alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <ul{% if message.tags %} class="{{ message.tags }}" {% endif %}><strong>{{message}}</strong> </ul>
+            </div>
+            {% endif %}
+
+             {% if 'error' in message.tags %}
+<div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <ul{% if message.tags %} class="{{ message.tags }}" {% endif %}><strong>{{message}}</strong> </ul>
+            </div>
+             {% endif %}
+
+{% endfor %}
+
+
+
             <p></p>
             <div class="ibox float-e-margins">
                 <div class="panel panel-default">
@@ -79,12 +100,10 @@
                                 </div>
 
 
+
+
                             </div>
-                            <div class="align-center">
-                                <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
-                                    <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
-                                </a>
-                            </div>
+
                         </div>
 
                         <div class="col-md-6">
@@ -93,6 +112,31 @@
                                 </div>
                                 <div class="panel-body">
                                     {{orden.descripcion|linebreaks}}
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading"> <i class="fa fa-info-circle"></i> Impresión
+                                </div>
+
+                                <div class="panel-body">
+                                   
+                                    <form id='print-form' method='post' enctype='multipart/form-data'>
+                            {% csrf_token %}
+                            <ul>{{printf.as_p}}</ul>
+                              <div class="row align-center">
+                                <input type='submit' name="printd" value='Guardar descripción' class="btn btn-w-m btn-primary"/>
+                            </div>
+
+                        </form>
+
+
+                            <div class="align-center">
+                                <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
+                                    <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
+                                </a>
+                            </div>
+
                                 </div>
                             </div>
 </div>
@@ -141,4 +185,10 @@
                 </div>
             </div>
         </div>
+
+<script type="text/javascript">
+            $('#id_printdesc').addClass('form-control');
+        </script>
         {% endblock %}
+
+        

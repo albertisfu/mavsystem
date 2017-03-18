@@ -173,7 +173,7 @@ class CheckInsumoProducto(models.Model):
 class Cotizacion(models.Model):
 	nombre = models.CharField(max_length = 255)
 	codigo = models.CharField(max_length = 100)
-	descripcion = models.TextField(max_length=1000, blank=True, null=True)
+	descripcion = models.TextField(max_length=5000, blank=True, null=True)
 	cliente = models.ForeignKey(Cliente)
 	fecha_expedicion = models.DateField(default=timezone.now)
 
@@ -189,6 +189,7 @@ class Cotizacion(models.Model):
 	usuario = models.ForeignKey(User, blank=True, null=True) #quitar null
 	costo = models.FloatField(default=0)
 	#nota = models.TextField(max_length=1000, blank=True, null=True)
+	printdesc = models.TextField(max_length=5000, blank=True, null=True)
 	def __unicode__(self):
 		return self.nombre
 

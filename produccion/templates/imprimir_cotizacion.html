@@ -51,6 +51,12 @@
     display: table-cell;
     padding: 3px 10px;
 }
+
+.divTableCell {
+    display: table-cell;
+    padding: 3px 10px;
+}
+
 .divTableHeading {
     background-color: #EEE;
     display: table-header-group;
@@ -284,19 +290,6 @@
 </div>
 </div>
 
-<!-- Nota -->
-<br>
-<div class="divTable" style="width: 300px; page-break-inside: avoid;">
-<div class="divTableBody">
-<div class="divTableRow">
-<div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">NOTAS</div>
-<div class="divTableCell" style="border: 1px solid #999999;">{{orden.nota}}</div>
-</div>
-
-</div>
-</div>
-
-<!-- Totales -->
 
 
 
@@ -308,6 +301,19 @@
 
 
                 {% endif %}
+
+<!-- Nota -->
+<br>
+<div class="divTable" style="width: 95%;  margin: 0 auto;">
+<div class="divTableBody">
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999; background-color:#dadada;"><strong>Descripción</strong></div>
+</div>
+<div class="divTableRow">
+<div class="divTableCell font-16" style="border: 1px solid #999999;">{{orden.printdesc|linebreaks}}</div>
+</div>
+</div>
+</div>
 
     {% endblock %}
 </body>

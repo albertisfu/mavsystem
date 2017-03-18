@@ -17,6 +17,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test #permisos y grupos
 from django.utils.decorators import method_decorator #permisos y grupos
 
+# mensajes
+from django.contrib import messages
+
 #impresion
 from weasyprint import HTML, CSS
 from django.conf import settings
@@ -1541,10 +1544,23 @@ def CotizacionDetail(request, orden):
 		if form.is_valid():
 			print 'valid'
 			form.save()
+
 			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
+
+	if 'printd' in request.POST:
+		printf = printdescCotizacion(request.POST, instance=orden)
+		if printf.is_valid():
+			printf.save()
+			messages.add_message(request, messages.SUCCESS, 'Se actualizo correctamente la descripción para la orden de impresión.')
+			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
+		else:
+			print 'error'
+			print printf.errors, len(printf.errors)
+	else:
+		printf = printdescCotizacion(instance=orden)
 
 	comentarios = ComentariosCotizacion.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)
@@ -1559,7 +1575,7 @@ def CotizacionDetail(request, orden):
 		productos = paginator.page(paginator.num_pages)
 
 	context = {
-		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form, 'printf':printf
 	}
 
 	return HttpResponse(template.render(context, request))
