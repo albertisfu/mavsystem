@@ -20,6 +20,9 @@ from django.utils.decorators import method_decorator #permisos y grupos
 # mensajes
 from django.contrib import messages
 
+from django.db.models.signals import post_save
+from django.db.models import signals
+
 #impresion
 from weasyprint import HTML, CSS
 from django.conf import settings
@@ -1553,8 +1556,14 @@ def CotizacionDetail(request, orden):
 	if 'printd' in request.POST:
 		printf = printdescCotizacion(request.POST, instance=orden)
 		if printf.is_valid():
+
+			signals.post_save.disconnect(CotizacionDetail, sender=Cotizacion)
+
 			printf.save()
 			messages.add_message(request, messages.SUCCESS, 'Se actualizo correctamente la descripción para la orden de impresión.')
+			
+			signals.post_save.connect(CotizacionDetail, sender=Cotizacion)
+
 			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
 		else:
 			print 'error'
@@ -1587,7 +1596,7 @@ def CotizacionDetail(request, orden):
 # /administrador/cotizacion/asignar-producto/pk/
 
 
-from django.db.models.signals import post_save
+
 
 # ---------------------------------------------------------
 # ---------------------------------------------------------
