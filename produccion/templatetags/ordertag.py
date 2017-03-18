@@ -33,6 +33,10 @@ def get_fecha(insumo, orden):
 
 @register.simple_tag
 def get_costo(cantidad, unitario):
+	if not unitario:
+		unitario = 0
+	if not cantidad:
+		cantidad = 0
 	total = float(cantidad)*float(unitario)
 	print total
 	return total
