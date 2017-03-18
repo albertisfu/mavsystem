@@ -190,6 +190,7 @@ class Cotizacion(models.Model):
 	costo = models.FloatField(default=0)
 	#nota = models.TextField(max_length=1000, blank=True, null=True)
 	printdesc = models.TextField(max_length=5000, blank=True, null=True)
+	terminada = models.BooleanField(default=False)
 	def __unicode__(self):
 		return self.nombre
 

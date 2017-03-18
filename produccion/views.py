@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from models import *
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Context
@@ -22,6 +23,8 @@ from django.contrib import messages
 
 from django.db.models.signals import post_save
 from django.db.models import signals
+
+from datetime import datetime
 
 #impresion
 from weasyprint import HTML, CSS
@@ -465,6 +468,7 @@ def listaCotizacionesProduccion(request):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def CotizacionDetailProduccion(request, orden):
+	ordenpk = orden
 	current_user = request.user
 	orden = get_object_or_404(Cotizacion, pk = orden) 
 	template =  get_template("detalle_cotizacion_produccion.html")
@@ -481,14 +485,25 @@ def CotizacionDetailProduccion(request, orden):
 		form = comentarioCotizacionForm(request.POST)
 		print request.POST
 		if form.is_valid():
+			hoy = datetime.now()
+			ComentariosCotizacion.objects.create(orden=orden,fecha=str(hoy),comentario="Cotización terminada", estatus=2, usuario=request.user)
 			print 'valid'
+			#signals.post_save.disconnect(CotizacionDetailProduccion, sender=Cotizacion)
+
 			form.save()
+			
+			Cotizacion.objects.filter(pk = ordenpk).update(terminada=True)
+			#orden.terminada = True
+			#orden.save()
+			#signals.post_save.connect(CotizacionDetailProduccion, sender=Cotizacion)
+
+
 			return HttpResponseRedirect(reverse('CotizacionDetailProduccion', args=(orden.id,)))
 		else:
 			print 'error'
 			print form.errors, len(form.errors)
 
-	comentarios = ComentariosCotizacion.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
+	comentarios = ComentariosCotizacion.objects.filter(orden=orden).order_by('-fecha')[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)
 	page = request.GET.get('page')
 	try:
@@ -1531,6 +1546,7 @@ def listaCotizaciones(request):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def CotizacionDetail(request, orden):
+	ordenpk = orden
 	current_user = request.user
 	orden = get_object_or_404(Cotizacion, pk = orden) 
 	template =  get_template("detalle_cotizacion.html")
@@ -1556,13 +1572,13 @@ def CotizacionDetail(request, orden):
 	if 'printd' in request.POST:
 		printf = printdescCotizacion(request.POST, instance=orden)
 		if printf.is_valid():
-
-			signals.post_save.disconnect(CotizacionDetail, sender=Cotizacion)
-
-			printf.save()
+			contenido = printf.cleaned_data['printdesc']
+			#signals.post_save.disconnect(CotizacionDetail, sender=Cotizacion)
+			Cotizacion.objects.filter(pk=ordenpk).update(printdesc=contenido)
+			#printf.save()
 			messages.add_message(request, messages.SUCCESS, 'Se actualizo correctamente la descripción para la orden de impresión.')
 			
-			signals.post_save.connect(CotizacionDetail, sender=Cotizacion)
+			#signals.post_save.connect(CotizacionDetail, sender=Cotizacion)
 
 			return HttpResponseRedirect(reverse('CotizacionDetail', args=(orden.id,)))
 		else:

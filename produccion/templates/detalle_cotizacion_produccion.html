@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Detalle de la cotizacion: {{orden.codigo}}{% endblock %}
+{% block title %}Detalle de la cotización: {{orden.codigo}}{% endblock %}
 
 {% block content %}
 {% load humanize %}
@@ -9,7 +9,7 @@
     <div class="col-lg-8">
         <ol class="breadcrumb">
             <li>
-                <a href="#">Cotizaciones</a>
+                <a href="#">Producción</a>
             </li>
             <li class="active"> <strong>Detalle de la cotización</strong>
             </li>
@@ -23,6 +23,26 @@
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
+
+
+{% for message in messages %}
+<p></p>
+            {% if 'success' in message.tags %}
+            <div class="alert alert-success alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <ul{% if message.tags %} class="{{ message.tags }}" {% endif %}><strong>{{message}}</strong> </ul>
+            </div>
+            {% endif %}
+
+             {% if 'error' in message.tags %}
+<div class="alert alert-danger alert-dismissable">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                <ul{% if message.tags %} class="{{ message.tags }}" {% endif %}><strong>{{message}}</strong> </ul>
+            </div>
+             {% endif %}
+
+{% endfor %}
+
             <p></p>
             <div class="ibox float-e-margins">
                 <div class="panel panel-default">
@@ -80,7 +100,12 @@
 
 
                                  <div class="panel-body text-center">
+
+{% if not orden.terminada %}
                                     <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Terminar Cotización</button>
+
+                                    {% endif %}
+
                                 </div>
 
 
@@ -90,9 +115,16 @@
                                     <button type="button" class="btn btn-success btn-lg"><i class="fa fa-plus"></i>&nbsp;Agregar Productos</button>
                                 </a>
 
-                                <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
+                               {% if orden.terminada %} <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
+
+{% else %}
+
+<p><strong>Para imprimir es necesario terminar la cotización</strong></p>
+
+{% endif %}
+
                             </div>
                         </div>
 
