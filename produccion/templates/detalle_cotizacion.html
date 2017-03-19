@@ -94,11 +94,15 @@
                                     </table>
                                 </div>
 
-
+{% if not orden.terminada %}
                                  <div class="panel-body text-center">
                                     <button data-toggle="modal" data-target="#myModal6" type="button" class="btn btn-primary">Cancelar Cotización</button>
                                 </div>
-
+                                {% else %}
+                                <p style="text-align: center;">
+                                Cotización terminada. Ya no es posible cancelar.
+                                </p>
+{% endif %}
 
 
 
@@ -120,7 +124,8 @@
                                 </div>
 
                                 <div class="panel-body">
-                                   
+
+                                   {% if not orden.terminada %}
                                     <form id='print-form' method='post' enctype='multipart/form-data'>
                             {% csrf_token %}
                             <ul>{{printf.as_p}}</ul>
@@ -130,6 +135,11 @@
 
                         </form>
 
+                        {% else %}
+
+                        {{orden.printdesc|linebreaks}}
+
+{% endif %}
 
                             <div class="align-center">
                                 <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
