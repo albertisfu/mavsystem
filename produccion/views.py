@@ -1005,6 +1005,7 @@ def OrdenDetail(request, orden):
 				productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=ordenal, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
 
 		print 'confirm creacion'
+		return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(ordenal.id,)))
 
 	comentarios = ComentariosOrden.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)
@@ -1035,7 +1036,7 @@ def orden_impresion(request, orden):
 	orden = get_object_or_404(Orden, pk = orden) 
 	productos = ProductoOrden.objects.filter(orden=orden)
 	mediaurl = getattr(settings, 'MEDIA_URL', None)
-	contexto = {'orden':orden,'productos':productos, 'mediaurl':mediaurl}
+	contexto = {'orden':orden,'productos':productos, 'mediaurl':mediaurl, 'cid1':settings.PRODUCTO, 'cid2': settings.PRODUCTO_COTIZACION}
 	template = get_template('imprimir_orden.html')
 	rendered_html = template.render(contexto).encode(encoding="ISO-8859-1")
 	pdf_file = HTML(string=rendered_html).write_pdf(stylesheets=[CSS(settings.STATIC_ROOT +  '/css/pdf.css')])
@@ -1156,7 +1157,7 @@ def OrdenProductoDetail(request, producto):
 
 
 	context = {
-		 'producto_orden':producto_orden, 'insumos':insumos, 'form':form, 'costoespeciales':costoespeciales,
+		 'producto_orden':producto_orden, 'insumos':insumos, 'form':form, 'costoespeciales':costoespeciales, 'cid1':settings.PRODUCTO, 'cid2': settings.PRODUCTO_COTIZACION
 	}
 	
 	return HttpResponse(template.render(context, request))

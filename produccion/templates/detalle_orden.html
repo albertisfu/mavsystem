@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Detalle de la orden: {{orden.codigo}}{% endblock %}
+{% block title %}Detalle de orden de venta: {{orden.codigo}}{% endblock %}
 
 {% block content %}
 {% load humanize %}
@@ -219,7 +219,7 @@ Pendiente
                                              <tr>
                                                 <td class="" class="pull-left">{{producto.content_object.producto.codigo}}</td>
                                                 <td class="" class="pull-left">
-                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.content_object.producto.nombre}}</a>
+                                                    <a onclick="openWindow('{% url "OrdenProductoDetail" producto.pk %}?popup=1');" href="javascript:void(null);">{{producto.content_object.producto.nombre}}</a>
                                                 </td>
                                                 <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
                                                 
@@ -246,7 +246,10 @@ Pendiente
                                              <tr>
                                                 <td class="" class="pull-left">{{producto.content_object.codigo}}</td>
                                                 <td class="" class="pull-left">
-                                                    <a href="{% url "OrdenProductoDetail" producto.pk %}">{{producto.content_object.nombre}}</a>
+
+<a onclick="openWindow('{% url "OrdenProductoDetail" producto.pk %}?popup=1');" href="javascript:void(null);">{{producto.content_object.nombre}}</a>
+
+ 
                                                 </td>
                                                 <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
                                                 
@@ -362,6 +365,7 @@ Pendiente
                             <input type='hidden' name="pkp" id="pkp">
                            <input type='text' name="precio" id="precio" class="form-control">
                               <div class="row align-center">
+                              <br>
                                 <input type='submit' name="save" value='Guardar' class="btn btn-w-m btn-primary"/>
                             </div>
 
@@ -419,6 +423,15 @@ Pendiente
 }
 
 
+</script>
+
+<script type="text/javascript">
+    function openWindow(window_src)
+  {
+    window.open(window_src, 'newwindow', config='height=768, width=1024, '
+        + 'toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, '
+        + 'directories=no, status=no');
+  }
 </script>
 
         {% endblock %}

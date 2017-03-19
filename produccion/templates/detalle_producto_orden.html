@@ -22,10 +22,21 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-        <a href="javascript:window.location = document.referrer;">
+
+
+{% if request.GET.popup == "1" %}
+<a href="#" onclick="window.close();">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-times"></i> Cerrar ventana
+                </button>
+            </a>
+        
+{% else %}
+<a href="javascript:window.location = document.referrer;">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
+{% endif %}
+
             <p></p>
 
             <div class="ibox float-e-margins">
@@ -39,7 +50,7 @@
                     <div class="panel-body">
                         <div class="row">
 
-                             {% if producto_orden.content_type.id == 24 %}  <!-- Producto Cotizacion -->
+                             {% if producto_orden.content_type.id == cid2 %}  <!-- Producto Cotizacion -->
 
                             <div class="col-lg-3 align-center">
                                 <p>
@@ -70,7 +81,7 @@
                                 </div>
                             </div>
 
-                            {% elif producto_orden.content_type.id == 13 %}  <!-- Producto Linea -->
+                            {% elif producto_orden.content_type.id == cid1 %}  <!-- Producto Linea -->
 
                                  <div class="col-lg-3 align-center">
                                 <p>
@@ -131,13 +142,22 @@
                                 </div>
                             </div>
                         </div>
+
+
+
+
                     </div>
                     <!-- panel body -->
                 </div>
             </div> <!-- fin ibox -->
-                {% load ordertag %} {% if insumos %}
-                <div class="col-lg-12">
-                    <section id="pagos">
+
+<div class="row">
+<div class="col-lg-12">
+                {% load ordertag %} 
+
+                {% if insumos %}
+                
+                    
                         <div class="panel panel-default" style="clear: both;">
                             <div class="panel-heading">
                                 <h2>Lista de insumos</h2>
@@ -164,19 +184,31 @@
                                             {% endfor %}
                                         </tbody>
                                     </table>
+
+                                    </div>
+                            </div>
+                        </div>
                                     {% else %}
                                     <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
                                             <div class="alert alert-danger">No se han agregado insumos.</div>
                                         </div>
                                     </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                                    
+                                
+
+                        {% endif %}
+
+
+
+</div>
+
+</div>
+
+<!-- paginacion-->
                          <div class="paginationbox">
                         <div class="pagination">
-                            <!-- paginacion-->
+                            
                             <span class="step-links">
                                 {% if insumos.has_previous %}
                                 <a href="?page={{ insumos.previous_page_number }}">
@@ -188,8 +220,10 @@
                             <a href="?page={{ insumos.next_page_number }}">Siguiente>></a> {% endif %}
                             </span>
                         </div></div>
-                    </section>
-                </div>
+<!-- paginacion-->
+
+                    
+                
             </div>
         </div>
               
