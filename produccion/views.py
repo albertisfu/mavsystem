@@ -343,7 +343,7 @@ class CotizacionesFilter(django_filters.FilterSet):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def listaCotizacionesVentas(request):
-	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(estatus=2, ordenventa=False)) #cotizaciones completadas
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(estatus=2)) #cotizaciones completadas
 	paginator = Paginator(filters, 10)
 	page = request.GET.get('page')
 	try:
@@ -445,7 +445,7 @@ def CotizacionDetailVentas(request, orden):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def listaCotizacionesProduccion(request):
-	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(ordenventa=False)) 
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.all()) 
 	paginator = Paginator(filters, 10)
 	page = request.GET.get('page')
 	try:
