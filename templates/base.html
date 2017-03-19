@@ -204,6 +204,16 @@
     <!-- Toastr -->
 <!--     <script src="{% static "js/plugins/toastr/toastr.min.js" %}"></script>
  -->
+
+<script type="text/javascript">
+    function openWindow(window_src)
+  {
+    window.open(window_src, 'newwindow', config='height=768, width=1200, '
+        + 'toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, '
+        + 'directories=no, status=no');
+  }
+</script>
+
 <script>
 jQuery(function($) {
      var path = window.location.href; 

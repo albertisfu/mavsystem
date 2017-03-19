@@ -188,7 +188,12 @@
                                             <tr>
                                                 <td class="" class="pull-left">{{producto.producto.codigo}}</td>
                                                 <td class="" class="pull-left">
-                                                    <a href="{% url 'CotizacionProductoDetailProduccion' producto.pk %}">{{producto.producto.nombre}}</a>
+
+<a onclick="openWindow('{% url "CotizacionProductoDetailProduccion" producto.pk %}?popup=1');" href="javascript:void(null);">{{producto.producto.nombre}}</a>
+
+                                                 
+
+
                                                 </td>
                                                 <td class="" class="pull-left">{{producto.get_unidad_display}}</td>
                                                 <td class="" class="pull-left">{{producto.producto.descripcion}}</td>

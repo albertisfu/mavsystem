@@ -28,10 +28,21 @@
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12">
-        <a href="#">
+
+{% if request.GET.popup == "1" %}
+<a href="#" onclick="window.close();">
+                <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-times"></i> Cerrar ventana
+                </button>
+            </a>
+        
+{% else %}
+        <a href="javascript:window.location = document.referrer;">
                 <button class="btn btn-w-m btn-danger" type="submit"> <i class="fa fa-arrow-left"></i> Regresar
                 </button>
             </a>
+{% endif %}
+
+
             <p></p>
 
             <div class="ibox float-e-margins">
