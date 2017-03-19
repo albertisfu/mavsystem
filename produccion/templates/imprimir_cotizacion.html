@@ -335,11 +335,12 @@
 <div class="divTableCell" style="border: 1px solid #999999;">${{orden.costo|floatformat:2|intcomma}}</div>
 </div>
 
+{% if orden.costoflete %}
 <div class="divTableRow">
 <div class="divTableCell" style="border: 1px solid #999999; background-color:#dadada;">FLETE</div>
 <div class="divTableCell" style="border: 1px solid #999999;">${{orden.costoflete|floatformat:2|intcomma}}</div>
 </div>
-
+{% endif %}
 
 </div>
 </div>
