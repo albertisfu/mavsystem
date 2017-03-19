@@ -393,7 +393,7 @@ def CotizacionDetailVentas(request, orden):
 			ins = formventa.save()
 			print ins.pk
 			for producto in productos:
-				productoorden= ProductoOrden.objects.create(content_type_id=24, object_id=producto.id , orden=ins, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
+				productoorden= ProductoOrden.objects.create(content_type_id=settings.PRODUCTO_COTIZACION, object_id=producto.id , orden=ins, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
 
 			#return redirect('listaOrdenes')
 			return HttpResponseRedirect(reverse('OrdenDetail', args=(ins.id,)))
@@ -954,11 +954,11 @@ def OrdenDetail(request, orden):
 		productocot.save()
 		total = 0
 		for productove in productos:
-			if productove.content_type_id == 13: #producto linea
+			if productove.content_type_id == settings.PRODUCTO: #producto linea
 
 				total = (productove.content_object.precio_venta * productove.cantidad) + total
 
-			elif productove.content_type_id == 24: #producto cotizacion
+			elif productove.content_type_id == settings.PRODUCTO_COTIZACION: #producto cotizacion
 
 				total = (productove.content_object.producto.precio_venta * productove.cantidad) + total
 			orden.costo = total
@@ -973,7 +973,7 @@ def OrdenDetail(request, orden):
 		ordenal=OrdenAlmacen.objects.create(nombre = orden.nombre, codigo = orden.codigo, descripcion=orden.descripcion, cliente=orden.cliente, fecha_entrega=orden.fecha_entrega, estatus = 1, usuario=request.user, costo=orden.costo, fecha_entrega_almacen=orden.fecha_entrega_almacen, nota=orden.nota)
 
 		for producto in productos:
-			if producto.content_type_id==13: #si es un producto de linea
+			if producto.content_type_id==settings.PRODUCTO: #si es un producto de linea
 				productomod = ProductoAlmacenMod.objects.create(orden=ordenal, producto=producto.content_object, nombre=producto.content_object.nombre, codigo=producto.content_object.codigo, descripcion=producto.content_object.descripcion, categoria=producto.content_object.categoria, costo=producto.content_object.costo, precio_venta=producto.content_object.precio_venta, file=producto.content_object.file)
 				insumos = InsumoProducto.objects.filter(producto=producto.content_object)
 				costos_especiales = CostoEspecial.objects.filter(producto=producto.content_object)
@@ -987,7 +987,7 @@ def OrdenDetail(request, orden):
 				productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=ordenal, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
 
 
-			elif producto.content_type_id==24: #si es un producto de cotizacion
+			elif producto.content_type_id==settings.PRODUCTO_COTIZACION: #si es un producto de cotizacion
 				productomod = ProductoAlmacenMod.objects.create(orden=ordenal, producto=producto.content_object.producto.producto, nombre=producto.content_object.producto.nombre, codigo=producto.content_object.producto.codigo, descripcion=producto.content_object.producto.descripcion, categoria=producto.content_object.producto.categoria, costo=producto.content_object.producto.costo, precio_venta=producto.content_object.producto.precio_venta, file=producto.content_object.producto.file)
 				insumos = InsumoCotizacionMod.objects.filter(producto=producto.content_object.producto)
 				costos_especiales = CostoEspecialCotizacion.objects.filter(producto=producto.content_object.producto)
@@ -1087,7 +1087,7 @@ def OrdenProducto(request, orden):
 			"""
 
 		#print producto
-		productoorden= ProductoOrden.objects.create(content_type_id =13 , object_id=producto.id , orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
+		productoorden= ProductoOrden.objects.create(content_type_id = settings.PRODUCTO , object_id=producto.id , orden=orden, unidad=unidad, cantidad=cantidad, color=color, comentario=comentario)
 		print 'guardado'
 		return HttpResponseRedirect(reverse('OrdenDetail', args=(orden.id,)))
 	return HttpResponse(template.render(context, request))
@@ -1103,12 +1103,12 @@ def OrdenProductoDetail(request, producto):
 	current_user = request.user
 	producto_orden = get_object_or_404(ProductoOrden, pk = producto)
 	orden = get_object_or_404(Orden, pk = producto_orden.orden.id)
-	if producto_orden.content_type_id==13: #producto linea
+	if producto_orden.content_type_id==settings.PRODUCTO: #producto linea
 		
 		insumos = InsumoProducto.objects.filter(producto=producto_orden.content_object)
 		costoespeciales = CostoEspecial.objects.filter(producto=producto_orden.content_object)[:15]
 
-	if producto_orden.content_type_id==24: #producto de coizacion
+	if producto_orden.content_type_id==settings.PRODUCTO_COTIZACION: #producto de coizacion
 		
 
 		insumos = InsumoCotizacionMod.objects.filter(producto=producto_orden.content_object.producto)
