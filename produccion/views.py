@@ -1019,7 +1019,7 @@ def OrdenDetail(request, orden):
 		productos = paginator.page(paginator.num_pages)
 
 	context = {
-		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form,
+		'orden': orden, 'productos': productos, 'comentarios': comentarios, 'form':form, 'cid1':settings.PRODUCTO, 'cid2': settings.PRODUCTO_COTIZACION
 	}
 
 	return HttpResponse(template.render(context, request))

@@ -214,7 +214,7 @@ Pendiente
                                         </thead>
                                         <tbody>
                                             {% for producto in productos %}
-                                             {% if producto.content_type.id == 24 %}
+                                             {% if producto.content_type.id == cid2 %}
 
                                              <tr>
                                                 <td class="" class="pull-left">{{producto.content_object.producto.codigo}}</td>
@@ -242,7 +242,7 @@ Pendiente
 
 
 
-                                             {% elif producto.content_type.id == 13 %} 
+                                             {% elif producto.content_type.id == cid1 %} 
                                              <tr>
                                                 <td class="" class="pull-left">{{producto.content_object.codigo}}</td>
                                                 <td class="" class="pull-left">
