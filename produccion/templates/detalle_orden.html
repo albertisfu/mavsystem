@@ -230,14 +230,14 @@ Pendiente
                                                     <img alt="{{producto.producto.nombre}}" class="productoimg" src="{{ MEDIA_URL }}{{producto.content_object.producto.file}}" width="100" height="100"></td>
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
                                                     <td class="" class="pull-left">${{producto.content_object.producto.costo|floatformat:2|intcomma}}</td>
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.costo %}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.costo as pcosto %} {{pcosto|floatformat:2|intcomma}}</td>
                                                      <td class="" class="pull-left"><button class="btn btn-w-m btn-danger" type="button" id="{{producto.content_object.producto.pk}}" onClick="openmodal(this.id)">Asignar</button></td>
 
                                                      
                                                     <td class="" class="pull-left">${{producto.content_object.producto.precio_venta|floatformat:2|intcomma}}</td>
 
                                                   
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.precio_venta %}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.producto.precio_venta as pventa %} {{pventa|floatformat:2|intcomma}}</td>
                                             </tr>
 
 
@@ -258,14 +258,14 @@ Pendiente
                                                     <td class="" class="pull-left">{{producto.cantidad}}</td>
                                                     <td class="" class="pull-left">${{producto.content_object.costo|floatformat:2|intcomma}}</td>
 
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.costo %}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.costo as pcosto %}{{pcosto|floatformat:2|intcomma}}</td>
 
                                                      
                                                    <td class="" class="pull-left">--</td>
 
                                                     <td class="" class="pull-left">${{producto.content_object.precio_venta|floatformat:2|intcomma}}</td>
 
-                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.precio_venta %}</td>
+                                                    <td class="" class="pull-left">${% get_costo producto.cantidad producto.content_object.precio_venta as pventa %}{{pventa|floatformat:2|intcomma}}</td>
 
 
                                                    
