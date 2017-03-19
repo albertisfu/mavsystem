@@ -343,7 +343,7 @@ class CotizacionesFilter(django_filters.FilterSet):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def listaCotizacionesVentas(request):
-	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(estatus=2)) #cotizaciones completadas
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(estatus=2, ordenventa=False)) #cotizaciones completadas
 	paginator = Paginator(filters, 10)
 	page = request.GET.get('page')
 	try:
@@ -370,6 +370,7 @@ def listaCotizacionesVentas(request):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def CotizacionDetailVentas(request, orden):
+	ordenpk = orden
 	current_user = request.user
 	orden = get_object_or_404(Cotizacion, pk = orden) 
 	template =  get_template("detalle_cotizacion_ventas.html")
@@ -389,6 +390,9 @@ def CotizacionDetailVentas(request, orden):
 		formventa = altaOrdenForm(request.POST)
 		print request.POST
 		if formventa.is_valid():
+
+			Cotizacion.objects.filter(pk = ordenpk).update(ordenventa=True)
+
 			print 'valid'
 			ins = formventa.save()
 			print ins.pk
@@ -441,7 +445,7 @@ def CotizacionDetailVentas(request, orden):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def listaCotizacionesProduccion(request):
-	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.all()) 
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(ordenventa=False)) 
 	paginator = Paginator(filters, 10)
 	page = request.GET.get('page')
 	try:
@@ -1519,7 +1523,7 @@ class CotizacionesFilter(django_filters.FilterSet):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def listaCotizaciones(request):
-	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.all()) 
+	filters = CotizacionesFilter(request.GET, queryset=Cotizacion.objects.filter(ordenventa=False)) 
 	paginator = Paginator(filters, 10)
 	page = request.GET.get('page')
 	try:

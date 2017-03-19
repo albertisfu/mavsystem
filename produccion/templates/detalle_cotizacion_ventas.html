@@ -99,7 +99,15 @@
                                 <a href="{% url 'cotizacion_impresion' orden.pk %}" class="align-center" target="_blank">
                                     <button type="button" class="btn btn-warning btn-lg"><i class="fa fa-print"></i>&nbsp;Generar impresión</button>
                                 </a>
+
+{% if not orden.ordenventa %}
                                 <button data-toggle="modal" data-target="#myModalventa" type="button" class="btn btn-primary btn-lg"><i class="fa fa-print"></i>&nbsp;Generar orden de Venta</button>
+                                {% else %}
+                                <p>
+<i>Orden de venta ya generada.</i>
+</p>
+                                {% endif %}
+
                             </div>
                         </div>
 
