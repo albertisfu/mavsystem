@@ -206,6 +206,15 @@
  -->
 
 <script type="text/javascript">
+    if (window.location.search.indexOf('popup=1') > -1) {
+    //alert('popup present');
+    $("body").toggleClass("mini-navbar");
+    $("ul.nav li").not(".nav-header").remove();
+    $(".navbar-header").remove();
+}
+</script>
+
+<script type="text/javascript">
     function openWindow(window_src)
   {
     window.open(window_src, 'newwindow', config='height=768, width=1200, '
