@@ -1005,7 +1005,7 @@ def OrdenDetail(request, orden):
 				productoorden= ProductoOrdenAlmacen.objects.create(producto=productomod, orden=ordenal, unidad=producto.unidad, cantidad=producto.cantidad, color=producto.color, comentario=producto.comentario)
 
 		print 'confirm creacion'
-		return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(ordenal.id,)))
+		#return HttpResponseRedirect(reverse('OrdenAlmacenDetail', args=(ordenal.id,)))
 
 	comentarios = ComentariosOrden.objects.filter(orden=orden)[:15] #solamente los ultimos 5 comentarios
 	paginator = Paginator(productos, 5)

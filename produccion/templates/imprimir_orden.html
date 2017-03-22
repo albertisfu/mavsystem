@@ -300,7 +300,7 @@
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{ forloop.counter }}</div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.cantidad}}</div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.get_unidad_display}}</div>
-<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;"><img alt="{{producto.content_object.producto.nombre}}" class="productoimg" src="{{ mediaurl }}{{producto.content_object.producto.file}}" width="100" height="100"></div>
+<div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;"><img alt="{{producto.content_object.producto.nombre}}" class="productoimg" src="{{ mediaurl }}{{producto.content_object.file}}" width="100" height="100"></div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">Nombre:  {{producto.content_object.nombre}} | Descripción: {{producto.content_object.descripcion}} | Comentarios: {{producto.comentario|default:"----"}}</div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">{{producto.color|default:"----"}}</div>
 <div class="divTableCell font-16" style="text-align:center; vertical-align: top; border: 1px solid #999999;">${{producto.content_object.precio_venta|floatformat:2|intcomma}}</div>
