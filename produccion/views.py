@@ -1579,11 +1579,11 @@ def CotizacionDetail(request, orden):
 	if 'printd' in request.POST:
 		printf = printdescCotizacion(request.POST, instance=orden)
 		if printf.is_valid():
-			contenido = printf.cleaned_data['printdesc']
+			contenido = printf.cleaned_data['descripcion']
 			#signals.post_save.disconnect(CotizacionDetail, sender=Cotizacion)
-			Cotizacion.objects.filter(pk=ordenpk).update(printdesc=contenido)
+			Cotizacion.objects.filter(pk=ordenpk).update(descripcion=contenido)
 			#printf.save()
-			messages.add_message(request, messages.SUCCESS, 'Se actualizo correctamente la descripción para la orden de impresión.')
+			messages.add_message(request, messages.SUCCESS, 'Se actualizo correctamente la descripción de la orden.')
 			
 			#signals.post_save.connect(CotizacionDetail, sender=Cotizacion)
 
