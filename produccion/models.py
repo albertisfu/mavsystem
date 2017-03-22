@@ -26,6 +26,9 @@ from django.http import HttpResponse
 from django.template import Context
 from django.template.loader import render_to_string, get_template
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 
 class Cliente(models.Model):
 	nombrecontacto = models.CharField(max_length = 255)
@@ -107,10 +110,11 @@ class Orden(models.Model):
 	direccionentrega = models.CharField(max_length = 255, blank=True, null=True)
 	costoflete = models.FloatField(default=0)
 	nota = models.TextField(max_length=1000, blank=True, null=True)
+	vconfirm = models.BooleanField(default=False)
+
 	def __unicode__(self):
 		return self.nombre
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
+
 
 class ProductoOrden(models.Model):
 	#producto = models.ForeignKey(Producto)

@@ -95,8 +95,12 @@
                                 </a>
 
                             
+                            {% if not orden.vconfirm %}
                                     <button type="button" class="btn btn-info btn-lg" id="{{orden.pk}}" onClick="confirmar(this.id)" ><i class="glyphicon glyphicon-ok"></i>&nbsp;Confirmar Venta</button>
 
+                            {% else %}
+                            <p></p><p><i><strong>Venta confirmada</strong></i></p>
+                            {% endif %}
 
                                 
 

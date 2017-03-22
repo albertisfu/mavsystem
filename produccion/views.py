@@ -933,6 +933,7 @@ def listaOrdenes(request):
 @login_required
 @group_required('Administrador', 'Produccion', 'Ventas')
 def OrdenDetail(request, orden):
+	ordenpk = orden
 	current_user = request.user
 	orden = get_object_or_404(Orden, pk = orden) 
 	template =  get_template("detalle_orden.html")
@@ -973,6 +974,7 @@ def OrdenDetail(request, orden):
 
 	if 'confirm' in request.POST:
 		orden.estatus = 2
+		orden.vconfirm = True
 		orden.save()
 		ordenal=OrdenAlmacen.objects.create(nombre = orden.nombre, codigo = orden.codigo, descripcion=orden.descripcion, cliente=orden.cliente, fecha_entrega=orden.fecha_entrega, estatus = 1, usuario=request.user, costo=orden.costo, fecha_entrega_almacen=orden.fecha_entrega_almacen, nota=orden.nota)
 
